@@ -12,7 +12,7 @@ namespace Harvest.Test
 		}
 
 		[Fact]
-		public async void ListCreateGetPatchDelete()
+		public async Task ListCreateGetPatchDelete()
 		{
 			// Get the user
 			var user = await HarvestClient.Users.GetMeAsync().ConfigureAwait(false);

@@ -10,7 +10,7 @@ namespace Harvest.Test
 		}
 
 		[Fact]
-		public async void GetMe()
+		public async Task GetMe()
 		{
 			var harvestUser = await HarvestClient.Users.GetMeAsync().ConfigureAwait(false);
 			Assert.NotNull(harvestUser);

@@ -10,9 +10,9 @@ namespace Harvest.Test
 		}
 
 		[Fact]
-		public async void GetAllClients()
+		public async Task GetAllClients()
 		{
-			var _ = await HarvestClient.Clients.ListAllAsync().ConfigureAwait(false);
+			await HarvestClient.Clients.ListAllAsync().ConfigureAwait(false);
 		}
 	}
 }
