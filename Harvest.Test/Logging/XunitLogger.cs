@@ -83,6 +83,7 @@ namespace Harvest.Test.Logging
 		{
 			public void Dispose()
 			{
+				// No resources to dispose
 			}
 		}
 	}
@@ -113,6 +114,7 @@ namespace Harvest.Test.Logging
 
 		public void Dispose()
 		{
+			// No resources to dispose
 		}
 	}
 }

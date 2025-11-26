@@ -5,11 +5,11 @@ namespace Harvest.Models
 {
 	public class Company
 	{
-		public string BaseUri { get; set; }
+		public string? BaseUri { get; set; }
 
-		public string FullDomain { get; set; }
+		public string? FullDomain { get; set; }
 
-		public string Name { get; set; }
+		public string? Name { get; set; }
 
 		public bool IsActive { get; set; }
 
@@ -19,15 +19,15 @@ namespace Harvest.Models
 
 		public TimeFormat TimeFormat { get; set; }
 
-		public string PlanType { get; set; }
+		public string? PlanType { get; set; }
 
 		public Clock Clock { get; set; }
 
-		public string DecimalSymbol { get; set; }
+		public string? DecimalSymbol { get; set; }
 
-		public string ThousandsSeparator { get; set; }
+		public string? ThousandsSeparator { get; set; }
 
-		public string ColorScheme { get; set; }
+		public string? ColorScheme { get; set; }
 
 		public bool ExpenseFeature { get; set; }
 
@@ -37,4 +37,5 @@ namespace Harvest.Models
 
 		public bool ApprovalFeature { get; set; }
 	}
+}
 }

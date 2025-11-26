@@ -14,8 +14,13 @@ namespace Harvest
 	{
 		private readonly HttpClient _httpClient;
 
-		public HarvestClient(int accountId, string accessToken, string proxyUrl = null)
+		public HarvestClient(int accountId, string accessToken, string? proxyUrl = null)
 		{
+			if (string.IsNullOrWhiteSpace(accessToken))
+			{
+				throw new ArgumentException("Access token cannot be null or empty.", nameof(accessToken));
+			}
+
 			var refitSettings = new RefitSettings
 			{
 				ContentSerializer = new JsonContentSerializer(new JsonSerializerSettings
@@ -25,10 +30,10 @@ namespace Harvest
 				})
 			};
 
-			WebProxy proxy = null;
+			WebProxy? proxy = null;
 			if (proxyUrl != null)
 			{
-				proxy = new WebProxy()
+				proxy = new WebProxy
 				{
 					Address = new Uri(proxyUrl),
 					BypassProxyOnLocal = false,
@@ -41,7 +46,7 @@ namespace Harvest
 				};
 			}
 
-			var httpClientHandler = new HttpClientHandler()
+			var httpClientHandler = new HttpClientHandler
 			{
 				Proxy = proxy,
 			};
@@ -77,7 +82,7 @@ namespace Harvest
 		public IClientApi Clients { get; }
 
 		/// <summary>
-		/// Clients
+		/// Companies
 		/// </summary>
 		public ICompanyApi Companies { get; }
 

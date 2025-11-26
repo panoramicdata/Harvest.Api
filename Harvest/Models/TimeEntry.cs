@@ -63,22 +63,20 @@ namespace Harvest.Models
 		/// </summary>
 		public decimal Hours { get; set; }
 
-		/// <summary>
-		/// Time entry notes.
-		/// </summary>
-		public string Notes { get; set; }
+	/// <summary>
+	/// Time entry notes.
+	/// </summary>
+	public string? Notes { get; set; }
 
-		/// <summary>
-		/// Whether or not the time entry has been locked.
-		/// </summary>
-		public bool IsLocked { get; set; }
+	/// <summary>
+	/// Whether or not the time entry has been locked.
+	/// </summary>
+	public bool IsLocked { get; set; }
 
-		/// <summary>
-		/// Why the time entry has been locked.
-		/// </summary>
-		public string LockedReason { get; set; }
-
-		/// <summary>
+	/// <summary>
+	/// Why the time entry has been locked.
+	/// </summary>
+	public string? LockedReason { get; set; }		/// <summary>
 		/// Whether or not the time entry has been approved via Timesheet Approval.
 		/// </summary>
 		public bool IsClosed { get; set; }
@@ -96,22 +94,22 @@ namespace Harvest.Models
 		/// <summary>
 		/// Time the time entry was started (if tracking by start/end times).
 		/// </summary>
-		public string StartedTime { get; set; }
+		public string? StartedTime { get; set; }
 
 		/// <summary>
 		/// StartedTime comes back as a string in the form 12:34pm
 		/// </summary>
-		public TimeSpan? StartedTimeSpan => TimeSpan.ParseExact(StartedTime, "hh:mmtt", CultureInfo.InvariantCulture);
+		public TimeSpan? StartedTimeSpan => string.IsNullOrEmpty(StartedTime) ? null : TimeSpan.ParseExact(StartedTime, "hh:mmtt", CultureInfo.InvariantCulture);
 
 		/// <summary>
 		/// Time the time entry was ended (if tracking by start/end times).
 		/// </summary>
-		public string EndedTime { get; set; }
+		public string? EndedTime { get; set; }
 
 		/// <summary>
 		/// EndedTime comes back as a string in the form 12:34pm
 		/// </summary>
-		public TimeSpan? EndedTimeSpan => TimeSpan.ParseExact(EndedTime, "hh:mmtt", CultureInfo.InvariantCulture);
+		public TimeSpan? EndedTimeSpan => string.IsNullOrEmpty(EndedTime) ? null : TimeSpan.ParseExact(EndedTime, "hh:mmtt", CultureInfo.InvariantCulture);
 
 		/// <summary>
 		/// Whether or not the time entry is currently running.

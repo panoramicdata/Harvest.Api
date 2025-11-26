@@ -10,6 +10,6 @@ namespace Harvest.Test
 		/// <summary>
 		/// The account key
 		/// </summary>
-		public string AccessToken { get; set; }
+		public string AccessToken { get; set; } = string.Empty;
 	}
 }

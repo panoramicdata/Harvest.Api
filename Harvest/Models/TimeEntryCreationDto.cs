@@ -26,28 +26,24 @@ namespace Harvest.Models
 		[AliasAs("task_id")]
 		public long TaskId { get; set; }
 
-		[AliasAs("spent_date")]
-		public string SpentDate { get; set; }
+	[AliasAs("spent_date")]
+	public string? SpentDate { get; set; }
 
-		[AliasAs("started_time")]
-		public string StartedTime { get; set; }
+	[AliasAs("started_time")]
+	public string? StartedTime { get; set; }
 
-		[AliasAs("ended_time")]
-		public string EndedTime { get; set; }
-
-		/// <summary>
+	[AliasAs("ended_time")]
+	public string? EndedTime { get; set; }		/// <summary>
 		/// The current amount of time tracked. Defaults to 0.0.
 		/// </summary>
 		[AliasAs("hours")]
 		public decimal? Hours { get; set; }
 
-		/// <summary>
-		/// Any notes to be associated with the time entry.
-		/// </summary>
-		[AliasAs("notes")]
-		public string Notes { get; set; }
-
-		/// <summary>
+	/// <summary>
+	/// Any notes to be associated with the time entry.
+	/// </summary>
+	[AliasAs("notes")]
+	public string? Notes { get; set; }		/// <summary>
 		/// An object containing the id, group_id, and permalink of the external reference.
 		/// </summary>
 		[AliasAs("external_reference")]

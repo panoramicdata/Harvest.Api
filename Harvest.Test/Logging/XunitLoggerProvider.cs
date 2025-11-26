@@ -26,6 +26,7 @@ namespace Harvest.Test.Logging
 
 		public void Dispose()
 		{
+			// No resources to dispose
 		}
 	}
 }

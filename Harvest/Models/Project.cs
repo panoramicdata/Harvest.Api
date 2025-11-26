@@ -19,17 +19,15 @@ namespace Harvest.Models
 		/// </summary>
 		public string Name { get; set; }
 
-		/// <summary>
-		/// The code associated with the project.
-		/// </summary>
-		public string Code { get; set; }
+	/// <summary>
+	/// The code associated with the project.
+	/// </summary>
+	public string? Code { get; set; }
 
-		/// <summary>
-		/// Whether the project is active or archived.
-		/// </summary>
-		public bool IsActive { get; set; }
-
-		/// <summary>
+	/// <summary>
+	/// Whether the project is active or archived.
+	/// </summary>
+	public bool IsActive { get; set; }		/// <summary>
 		/// Whether the project is billable or not.
 		/// </summary>
 		public bool IsBillable { get; set; }
@@ -94,12 +92,10 @@ namespace Harvest.Models
 		/// </summary>
 		public decimal? Fee { get; set; }
 
-		/// <summary>
-		/// Project notes.
-		/// </summary>
-		public string Notes { get; set; }
-
-		/// <summary>
+	/// <summary>
+	/// Project notes.
+	/// </summary>
+	public string? Notes { get; set; }		/// <summary>
 		/// Date the project was started.
 		/// </summary>
 		public DateTime? StartsOn { get; set; }

@@ -22,47 +22,43 @@ namespace Harvest.Models
 		/// </summary>
 		public DateTime UpdatedAt { get; set; }
 
-		/// <summary>
-		/// E-Mail of the user.
-		/// </summary>
-		public string Email { get; set; }
+	/// <summary>
+	/// E-Mail of the user.
+	/// </summary>
+	public string? Email { get; set; }
 
-		/// <summary>
-		/// Telephone number of the user.
-		/// </summary>
-		public string Telephone { get; set; }
+	/// <summary>
+	/// Telephone number of the user.
+	/// </summary>
+	public string? Telephone { get; set; }
 
-		/// <summary>
-		/// First name of the user.
-		/// </summary>
-		public string FirstName { get; set; }
+	/// <summary>
+	/// First name of the user.
+	/// </summary>
+	public string? FirstName { get; set; }
 
-		/// <summary>
-		/// Last name of the user.
-		/// </summary>
-		public string LastName { get; set; }
+	/// <summary>
+	/// Last name of the user.
+	/// </summary>
+	public string? LastName { get; set; }	/// <summary>
+	/// Url to the avatar of the user.
+	/// </summary>
+	public string? AvatarUrl { get; set; }
 
-		/// <summary>
-		/// Url to the avatar of the user.
-		/// </summary>
-		public string AvatarUrl { get; set; }
+	/// <summary>
+	/// Url to the identity of the user.
+	/// </summary>
+	public string? IdentityUrl { get; set; }
 
-		/// <summary>
-		/// Url to the identity of the user.
-		/// </summary>
-		public string IdentityUrl { get; set; }
+	/// <summary>
+	/// Identifier for the open social.
+	/// </summary>
+	public string? OpensocialIdentifier { get; set; }
 
-		/// <summary>
-		/// Identifier for the open social.
-		/// </summary>
-		public string OpensocialIdentifier { get; set; }
-
-		/// <summary>
-		/// Department for user.
-		/// </summary>
-		public string Department { get; set; }
-
-		/// <summary>
+	/// <summary>
+	/// Department for user.
+	/// </summary>
+	public string? Department { get; set; }		/// <summary>
 		/// Value which describes if user is an admin.
 		/// </summary>
 		public bool IsAdmin { get; set; }
@@ -104,12 +100,10 @@ namespace Harvest.Models
 		/// </summary>
 		public decimal? CostRate { get; set; }
 
-		/// <summary>
-		/// To set a timezone other than the account default.
-		/// </summary>
-		public string Timezone { get; set; }
-
-		/// <summary>
+	/// <summary>
+	/// To set a timezone other than the account default.
+	/// </summary>
+	public string? Timezone { get; set; }		/// <summary>
 		/// The number of seconds per week this person is available to work.
 		/// </summary>
 		public long WeeklyCapacity { get; set; }

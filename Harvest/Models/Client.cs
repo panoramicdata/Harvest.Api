@@ -10,11 +10,9 @@ namespace Harvest.Models
 
 		public bool IsActive { get; set; }
 
-		public string Address { get; set; }
+	public string? Address { get; set; }
 
-		public string Currency { get; set; }
-
-		public DateTime CreatedAt { get; set; }
+	public string? Currency { get; set; }		public DateTime CreatedAt { get; set; }
 
 		public DateTime UpdatedAt { get; set; }
 	}

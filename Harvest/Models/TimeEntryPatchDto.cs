@@ -20,23 +20,23 @@ namespace Harvest.Models
 		[AliasAs("task_id")]
 		public long? TaskId { get; set; }
 
-		/// <summary>
-		/// The time the entry started. Defaults to the current time. Example: “8:00am”.
-		/// </summary>
-		[AliasAs("spent_date")]
-		public string SpentDate { get; set; }
+	/// <summary>
+	/// The time the entry started. Defaults to the current time. Example: "8:00am".
+	/// </summary>
+	[AliasAs("spent_date")]
+	public string? SpentDate { get; set; }
 
-		/// <summary>
-		/// The time the entry started. Defaults to the current time. Example: “8:00am”.
-		/// </summary>
-		[AliasAs("started_time")]
-		public string StartedTime { get; set; }
+	/// <summary>
+	/// The time the entry started. Defaults to the current time. Example: "8:00am".
+	/// </summary>
+	[AliasAs("started_time")]
+	public string? StartedTime { get; set; }
 
-		/// <summary>
-		/// The time the entry ended.
-		/// </summary>
-		[AliasAs("ended_time")]
-		public string EndedTime { get; set; }
+	/// <summary>
+	/// The time the entry ended.
+	/// </summary>
+	[AliasAs("ended_time")]
+	public string? EndedTime { get; set; }
 
 		/// <summary>
 		/// The current amount of time tracked.
@@ -44,13 +44,11 @@ namespace Harvest.Models
 		[AliasAs("hours")]
 		public decimal? Hours { get; set; }
 
-		/// <summary>
-		/// Any notes to be associated with the time entry.
-		/// </summary>
-		[AliasAs("notes")]
-		public string Notes { get; set; }
-
-		/// <summary>
+	/// <summary>
+	/// Any notes to be associated with the time entry.
+	/// </summary>
+	[AliasAs("notes")]
+	public string? Notes { get; set; }		/// <summary>
 		/// An object containing the id, group_id, and permalink of the external reference.
 		/// </summary>
 		[AliasAs("external_reference")]
