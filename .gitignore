@@ -323,3 +323,7 @@ ASALocalRun/
 # NVidia Nsight GPU debugger configuration file
 *.nvuser
 /Harvest.Test/appsettings.json
+
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md
