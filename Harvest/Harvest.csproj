@@ -1,29 +1,30 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Authors>David Bond</Authors>
 		<PackageId>Harvest</PackageId>
 		<LangVersion>latest</LangVersion>
 		<Version>2.3.0</Version>
 		<Company>Panoramic Data Limited</Company>
-		<Description>A wrapper for the Harvest time tracking API, forked from the Github project by Joel Potter, Data Research Group, Paul Irwin, updated to support .NET Standard 2.0.</Description>
-		<Copyright>Panoramic Data Limited 2018</Copyright>
-		<PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+		<Description>A wrapper for the Harvest time tracking API, forked from the Github project by Joel Potter, Data Research Group, Paul Irwin</Description>
+		<Copyright>Panoramic Data Limited 2025</Copyright>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://bitbucket.org/panoramicdata/harvest</PackageProjectUrl>
-		<PackageIconUrl>https://www.getharvest.com/assets/press/harvest-logo-icon-77a6f855102e2f85a7fbe070575f293346a643c371a49ceff341d2814e270468.png</PackageIconUrl>
 		<RepositoryUrl>ssh://bitbucket.org/panoramicdata/harvest.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>harvest;harvestapp;harvestapi;api;harvesthq;timetracking</PackageTags>
 		<PackageReleaseNotes></PackageReleaseNotes>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<AssemblyVersion>2.3.0.0</AssemblyVersion>
-		<FileVersion>2.3.0.0</FileVersion>
+		<Nullable>enable</Nullable>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Refit" Version="9.0.2" />
 	</ItemGroup>
 

@@ -1,7 +1,5 @@
-﻿using System;
+namespace Harvest.Models;
 
-namespace Harvest.Models
-{
 	/// <summary>
 	/// Model for interacting with users in the harvest API.
 	/// </summary>
@@ -108,4 +106,3 @@ namespace Harvest.Models
 		/// </summary>
 		public long WeeklyCapacity { get; set; }
 	}
-}

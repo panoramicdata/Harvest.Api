@@ -1,9 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Xunit.Abstractions;
 
-namespace Harvest.Test.Logging
-{
+namespace Harvest.Test.Logging;
+
 	public static class XunitLoggerFactoryExtensions
 	{
 		public static ILoggingBuilder AddXunit(this ILoggingBuilder builder, ITestOutputHelper output)
@@ -30,4 +29,3 @@ namespace Harvest.Test.Logging
 			return loggerFactory;
 		}
 	}
-}

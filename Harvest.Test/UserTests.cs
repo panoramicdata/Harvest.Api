@@ -1,19 +1,11 @@
-using Xunit;
-using Xunit.Abstractions;
+namespace Harvest.Test;
 
-namespace Harvest.Test
+public class UserTests(ITestOutputHelper testOutputHelper) : HarvestTest(testOutputHelper)
 {
-	public class UserTests : HarvestTest
+	[Fact]
+	public async Task GetMe()
 	{
-		public UserTests(ITestOutputHelper testOutputHelper) : base(testOutputHelper)
-		{
-		}
-
-		[Fact]
-		public async Task GetMe()
-		{
-			var harvestUser = await HarvestClient.Users.GetMeAsync().ConfigureAwait(false);
-			Assert.NotNull(harvestUser);
-		}
+		var harvestUser = await HarvestClient.Users.GetMeAsync(CancellationToken);
+		harvestUser.Should().NotBeNull();
 	}
 }

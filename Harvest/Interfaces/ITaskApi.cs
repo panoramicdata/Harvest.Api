@@ -1,20 +1,17 @@
-﻿using System;
-using System.Threading.Tasks;
-using Harvest.Models;
-using Refit;
+namespace Harvest.Interfaces;
 
-namespace Harvest.Interfaces
+public interface ITaskApi
 {
-	public interface ITaskApi
-	{
-		[Get("/v2/tasks")]
-		Task<TasksContainer> ListAllAsync(
-			[AliasAs("updated_since")] DateTime? updatedSince = null,
-			int? page = null,
-			[AliasAs("per_page")] int? perPage = null
-		);
+	[Get("/v2/tasks")]
+	Task<TasksContainer> ListAllAsync(
+		[AliasAs("updated_since")] DateTime? updatedSince = null,
+		int? page = null,
+		[AliasAs("per_page")] int? perPage = null,
+		CancellationToken cancellationToken = default
+	);
 
-		[Get("/v2/tasks/{id}")]
-		Task<Models.Task> GetAsync(long id);
-	}
+	[Get("/v2/tasks/{id}")]
+	Task<Models.Task> GetAsync(
+		long id,
+		CancellationToken cancellationToken);
 }

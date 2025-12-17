@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+namespace Harvest.Models;
 
-namespace Harvest.Models
+public class ClientsContainer : ListContainerBase
 {
-	public class ClientsContainer : ListContainerBase
-	{
-		public List<Client> Clients { get; set; }
-	}
+	public List<Client> Clients { get; set; } = [];
 }

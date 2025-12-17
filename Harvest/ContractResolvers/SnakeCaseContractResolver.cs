@@ -1,4 +1,4 @@
-﻿// The MIT License(MIT)
+// The MIT License(MIT)
 //
 // Copyright(c) 2016 Steven Atkinson
 //
@@ -22,33 +22,46 @@
 //
 // Original license: https://github.com/mrstebo/SnakeCase.JsonNet/blob/master/LICENSE
 
-using Newtonsoft.Json.Serialization;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace Harvest.ContractResolvers
+namespace Harvest.ContractResolvers;
+
+public partial class SnakeCaseNamingPolicy : JsonNamingPolicy
 {
-	public class SnakeCaseContractResolver : DefaultContractResolver
+	public static SnakeCaseNamingPolicy Instance { get; } = new();
+
+	public override string ConvertName(string name) => GetSnakeCase(name);
+
+	private static string GetSnakeCase(string input)
 	{
-		protected override string ResolvePropertyName(string propertyName)
+		if (string.IsNullOrEmpty(input))
 		{
-			return GetSnakeCase(propertyName);
+			return input;
 		}
 
-		private static string GetSnakeCase(string input)
-		{
-			if (string.IsNullOrEmpty(input))
-			{
-				return input;
-			}
+		var buffer = input;
 
-			var buffer = input;
-
-			buffer = Regex.Replace(buffer, "([A-Z]+)([A-Z][a-z])", "$1_$2");
-			buffer = Regex.Replace(buffer, @"([a-z\d])([A-Z])", "$1_$2");
-			buffer = Regex.Replace(buffer, "-", "_");
-			buffer = Regex.Replace(buffer, @"\s", "_");
-			buffer = Regex.Replace(buffer, "__+", "_");
-			return buffer.ToLowerInvariant();
-		}
+		buffer = UpperCaseSequenceRegex().Replace(buffer, "$1_$2");
+		buffer = LowerOrDigitToUpperRegex().Replace(buffer, "$1_$2");
+		buffer = HyphenRegex().Replace(buffer, "_");
+		buffer = WhitespaceRegex().Replace(buffer, "_");
+		buffer = MultipleUnderscoreRegex().Replace(buffer, "_");
+		return buffer.ToLowerInvariant();
 	}
+
+	[GeneratedRegex("([A-Z]+)([A-Z][a-z])")]
+	private static partial Regex UpperCaseSequenceRegex();
+
+	[GeneratedRegex(@"([a-z\d])([A-Z])")]
+	private static partial Regex LowerOrDigitToUpperRegex();
+
+	[GeneratedRegex("-")]
+	private static partial Regex HyphenRegex();
+
+	[GeneratedRegex(@"\s")]
+	private static partial Regex WhitespaceRegex();
+
+	[GeneratedRegex("__+")]
+	private static partial Regex MultipleUnderscoreRegex();
 }

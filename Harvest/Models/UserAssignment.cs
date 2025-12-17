@@ -1,7 +1,5 @@
-﻿using System;
+namespace Harvest.Models;
 
-namespace Harvest.Models
-{
 	/// <summary>
 	/// User assignment model in the harvest API.
 	/// </summary>
@@ -57,4 +55,3 @@ namespace Harvest.Models
 		/// </summary>
 		public decimal? Estimate { get; set; }
 	}
-}

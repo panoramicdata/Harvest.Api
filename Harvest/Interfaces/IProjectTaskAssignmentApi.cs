@@ -1,10 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using Harvest.Models;
-using Refit;
+namespace Harvest.Interfaces;
 
-namespace Harvest.Interfaces
-{
 	public interface IProjectTaskAssignmentApi
 	{
 		[Get("/v2/projects/{id}/task_assignments")]
@@ -15,4 +10,3 @@ namespace Harvest.Interfaces
 			[AliasAs("per_page")] int? perPage = null
 		);
 	}
-}

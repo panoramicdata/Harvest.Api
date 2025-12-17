@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+namespace Harvest.Models;
 
-namespace Harvest.Models
+public class TimeEntriesContainer : ListContainerBase
 {
-	public class TimeEntriesContainer : ListContainerBase
-	{
-		public List<TimeEntry> TimeEntries { get; set; }
-	}
+	public List<TimeEntry> TimeEntries { get; set; } = [];
 }

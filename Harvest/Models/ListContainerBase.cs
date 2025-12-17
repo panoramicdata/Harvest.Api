@@ -1,5 +1,5 @@
-﻿namespace Harvest.Models
-{
+﻿namespace Harvest.Models;
+
 	public abstract class ListContainerBase
 	{
 		public int PerPage { get; set; }
@@ -14,4 +14,3 @@
 
 		public int Page { get; set; }
 	}
-}

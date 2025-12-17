@@ -1,5 +1,5 @@
-﻿namespace Harvest.Models
-{
+﻿namespace Harvest.Models;
+
 	public class ExternalReference
 	{
 		public long Id { get; set; }
@@ -12,4 +12,3 @@
 
 		public long ServiceIconUrl { get; set; }
 	}
-}

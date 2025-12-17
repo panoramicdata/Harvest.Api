@@ -1,7 +1,7 @@
 using Harvest.Dtos;
 
-namespace Harvest.Models
-{
+namespace Harvest.Models;
+
 	public class ExternalReferenceCreationDto : CreationDto
 	{
 		/// <summary>
@@ -19,4 +19,3 @@ namespace Harvest.Models
 		/// </summary>
 		public long Permalink { get; set; }
 	}
-}

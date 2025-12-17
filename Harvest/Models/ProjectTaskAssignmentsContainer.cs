@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
+namespace Harvest.Models;
 
-namespace Harvest.Models
+public class ProjectTaskAssignmentsContainer : ListContainerBase
 {
-	public class ProjectTaskAssignmentsContainer : ListContainerBase
-	{
-		public List<ProjectTaskAssignment> ProjectTaskAssignments { get; set; }
-	}
+	public List<ProjectTaskAssignment> ProjectTaskAssignments { get; set; } = [];
 }

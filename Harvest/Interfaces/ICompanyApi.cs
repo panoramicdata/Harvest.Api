@@ -1,12 +1,7 @@
-﻿using System.Threading.Tasks;
-using Harvest.Models;
-using Refit;
+namespace Harvest.Interfaces;
 
-namespace Harvest.Interfaces
+public interface ICompanyApi
 {
-	public interface ICompanyApi
-	{
-		[Get("/v2/company")]
-		Task<Company> GetAsync();
-	}
+	[Get("/v2/company")]
+	Task<Company> GetAsync(CancellationToken cancellationToken);
 }

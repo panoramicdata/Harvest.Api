@@ -1,10 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using Harvest.Models;
-using Refit;
+namespace Harvest.Interfaces;
 
-namespace Harvest.Interfaces
-{
 	public interface IProjectApi
 	{
 		[Get("/v2/projects")]
@@ -17,4 +12,3 @@ namespace Harvest.Interfaces
 		[Get("/v2/projects/{id}")]
 		Task<Project> GetAsync(long id);
 	}
-}
