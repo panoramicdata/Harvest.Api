@@ -27,7 +27,11 @@ public class HarvestTest
 			.CreateLogger<HarvestTest>();
 
 		Configuration = LoadConfiguration("appsettings.json");
-		HarvestClient = new HarvestClient(Configuration.AccountId, Configuration.AccessToken);
+		HarvestClient = new HarvestClient(new HarvestClientOptions
+		{
+			AccountId = Configuration.AccountId,
+			AccessToken = Configuration.AccessToken
+		});
 	}
 
 	private static Configuration LoadConfiguration(string jsonFilePath)

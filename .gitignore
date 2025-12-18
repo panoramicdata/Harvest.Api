@@ -327,3 +327,6 @@ ASALocalRun/
 
 #Ignore vscode AI rules
 .github\instructions\codacy.instructions.md
+
+# NuGet API key
+nuget-key.txt
