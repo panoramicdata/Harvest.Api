@@ -13,63 +13,15 @@ public class HarvestClient : IHarvestClient, IDisposable
 {
 	private readonly HttpClient _httpClient;
 
-	public HarvestClient(int accountId, string accessToken, string? proxyUrl = null)
+	public HarvestClient(HarvestClientOptions options)
 	{
-		if (string.IsNullOrWhiteSpace(accessToken))
+		if (string.IsNullOrWhiteSpace(options.AccessToken))
 		{
-			throw new ArgumentException("Access token cannot be null or empty.", nameof(accessToken));
+			throw new ArgumentException("Access token cannot be null or empty.", nameof(options));
 		}
 
-		var refitSettings = new RefitSettings
-		{
-			ContentSerializer = new SystemTextJsonContentSerializer(new JsonSerializerOptions
-			{
-				PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance,
-				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-				Converters = { new JsonStringEnumConverter(SnakeCaseNamingPolicy.Instance) }
-			})
-		};
-
-		WebProxy? proxy = null;
-		if (proxyUrl != null)
-		{
-			proxy = new WebProxy
-			{
-				Address = new Uri(proxyUrl),
-				BypassProxyOnLocal = false,
-				UseDefaultCredentials = false,
-
-				//// *** These credentials are given to the proxy server, not the web server ***
-				//Credentials = new NetworkCredential(
-				//	userName: proxyUserName,
-				//	password: proxyPassword);
-			};
-		}
-
-		var httpClientHandler = new HttpClientHandler
-		{
-			Proxy = proxy,
-		};
-
-		_httpClient = new HttpClient(handler: httpClientHandler, disposeHandler: true)
-		{
-			BaseAddress = new Uri("https://api.harvestapp.com"),
-			DefaultRequestHeaders =
-			{
-				Authorization = new AuthenticationHeaderValue("Bearer", accessToken),
-				UserAgent =
-				{
-					new ProductInfoHeaderValue(
-						"harvest.net",
-						// Assembly version
-						Assembly.GetExecutingAssembly().GetName().Version?.ToString()
-					)
-				},
-			},
-		};
-
-		_httpClient.DefaultRequestHeaders.Add("Harvest-Account-Id", accountId.ToString(CultureInfo.InvariantCulture));
-
+		var refitSettings = CreateRefitSettings();
+		_httpClient = CreateHttpClient(options);
 		Companies = RestService.For<ICompanyApi>(_httpClient, refitSettings);
 		Clients = RestService.For<IClientApi>(_httpClient, refitSettings);
 		TimeEntries = RestService.For<ITimeEntryApi>(_httpClient, refitSettings);
@@ -79,6 +31,53 @@ public class HarvestClient : IHarvestClient, IDisposable
 		Users = RestService.For<IUserApi>(_httpClient, refitSettings);
 		UserProjectAssignments = RestService.For<IUserProjectAssignmentApi>(_httpClient, refitSettings);
 	}
+
+	private static RefitSettings CreateRefitSettings()
+		=> new()
+		{
+			ContentSerializer = new SystemTextJsonContentSerializer(new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance,
+				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+				Converters = { new JsonStringEnumConverter(SnakeCaseNamingPolicy.Instance) }
+			})
+		};
+
+	private static HttpClient CreateHttpClient(HarvestClientOptions options)
+	{
+		var httpClientHandler = new HttpClientHandler
+		{
+			Proxy = CreateProxy(options.ProxyUrl),
+		};
+
+		var httpClient = new HttpClient(handler: httpClientHandler, disposeHandler: true)
+		{
+			BaseAddress = new Uri("https://api.harvestapp.com"),
+			DefaultRequestHeaders =
+			{
+				Authorization = new AuthenticationHeaderValue("Bearer", options.AccessToken),
+				UserAgent =
+				{
+					new ProductInfoHeaderValue(
+						"harvest.net",
+						Assembly.GetExecutingAssembly().GetName().Version?.ToString()
+					)
+				},
+			},
+		};
+
+		httpClient.DefaultRequestHeaders.Add("Harvest-Account-Id", options.AccountId.ToString(CultureInfo.InvariantCulture));
+		return httpClient;
+	}
+
+	private static WebProxy? CreateProxy(string? proxyUrl) => proxyUrl is null
+			? null
+			: new WebProxy
+			{
+				Address = new Uri(proxyUrl),
+				BypassProxyOnLocal = false,
+				UseDefaultCredentials = false,
+			};
 
 	/// <summary>
 	/// Clients
