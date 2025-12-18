@@ -10,9 +10,9 @@
 		<Description>A wrapper for the Harvest time tracking API, forked from the Github project by Joel Potter, Data Research Group, Paul Irwin</Description>
 		<Copyright>Panoramic Data Limited 2025</Copyright>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://bitbucket.org/panoramicdata/harvest</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/panoramicdata/Harvest.Api</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<RepositoryUrl>ssh://bitbucket.org/panoramicdata/harvest.git</RepositoryUrl>
+		<RepositoryUrl>https://github.com/panoramicdata/Harvest.Api.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>harvest;harvestapp;harvestapi;api;harvesthq;timetracking</PackageTags>
 		<PackageReleaseNotes></PackageReleaseNotes>
