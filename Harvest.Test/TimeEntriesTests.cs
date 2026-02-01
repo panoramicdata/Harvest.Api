@@ -1,6 +1,3 @@
-using Harvest.Models;
-using System.Linq;
-
 namespace Harvest.Test;
 
 public class TimeEntriesTests(ITestOutputHelper testOutputHelper) : HarvestTest(testOutputHelper)
@@ -8,66 +5,100 @@ public class TimeEntriesTests(ITestOutputHelper testOutputHelper) : HarvestTest(
 	[Fact]
 	public async System.Threading.Tasks.Task ListCreateGetPatchDelete()
 	{
-		// Get the user
-		var user = await HarvestClient.Users.GetMeAsync(CancellationToken);
-		user.Should().NotBeNull();
-		var userId = user.Id;
+		try
+		{
+			// Get the user
+			var user = await HarvestClient.Users.GetMeAsync(CancellationToken);
+			user.Should().NotBeNull();
+			var userId = user.Id;
 
-		// Get User project assignments
-		var userProjectAssignments = (await HarvestClient.UserProjectAssignments.ListAllMineAsync(cancellationToken: CancellationToken)).ProjectAssignments;
-		userProjectAssignments.Should().NotBeNullOrEmpty();
+			// Ensure we have test project and task
+			var project = await TestDataManager.EnsureTestProjectAsync("Time Entry Test Project");
+			var task = await TestDataManager.EnsureTestTaskAsync("Time Entry Test Task");
 
-		// Get the test project
-		var userProjectAssignment = userProjectAssignments.SingleOrDefault(p => p.Project?.Name == "Panoramic Data Limited Test Project");
-		userProjectAssignment.Should().NotBeNull();
+			// List existing time entries
+			var timeEntriesContainer = await HarvestClient.TimeEntries.ListAllAsync(
+				projectId: project.Id,
+				userId: userId,
+				from: "2018-01-24",
+				toDate: "2018-05-24",
+				page: 1,
+				perPage: 100,
+				cancellationToken: CancellationToken
+			);
 
-		// Get the task assignments
-		var taskAssignments = userProjectAssignment.TaskAssignments;
-		taskAssignments.Should().NotBeNullOrEmpty();
-		var taskId = taskAssignments[0].Task!.Id;
+			timeEntriesContainer.Should().NotBeNull();
 
-		// Get the projectId
-		var projectId = userProjectAssignment.Project!.Id;
+			// Create a time entry
+			var newTimeEntry = await HarvestClient.TimeEntries.CreateAsync(new TimeEntryCreationDto
+			{
+				UserId = userId,
+				ProjectId = project.Id,
+				Notes = $"{Configuration.TestSettings.TestDataPrefix}Test time entry",
+				SpentDate = "2018-06-20",
+				TaskId = task.Id,
+				Hours = 1
+			},
+			CancellationToken
+			);
+			newTimeEntry.Should().NotBeNull();
+			TestDataManager.TrackTimeEntry(newTimeEntry.Id); // Track for cleanup
 
-		// List existing
+			// Get (Re-fetch) it
+			var refetchedTimeEntry = await HarvestClient.TimeEntries.GetAsync(newTimeEntry.Id, CancellationToken);
+			refetchedTimeEntry.Should().NotBeNull();
+
+			// Patch it
+			await HarvestClient.TimeEntries.PatchAsync(refetchedTimeEntry.Id, new TimeEntryPatchDto
+			{
+				Notes = $"{Configuration.TestSettings.TestDataPrefix}Updated test time entry"
+			}, CancellationToken);
+
+			// Verify the update
+			var updatedEntry = await HarvestClient.TimeEntries.GetAsync(newTimeEntry.Id, CancellationToken);
+			updatedEntry.Notes.Should().Be($"{Configuration.TestSettings.TestDataPrefix}Updated test time entry");
+
+			// Delete
+			await HarvestClient.TimeEntries.DeleteAsync(refetchedTimeEntry.Id, CancellationToken);
+			TestDataManager.UntrackTimeEntry(newTimeEntry.Id); // Remove from tracking since we deleted it
+		}
+		finally
+		{
+			await TestDataManager.CleanupAsync();
+		}
+	}
+
+	[Fact]
+	public async System.Threading.Tasks.Task ListAllTimeEntries()
+	{
 		var timeEntriesContainer = await HarvestClient.TimeEntries.ListAllAsync(
-			projectId: projectId,
-			userId: userId,
-			from: "2018-01-24",
-			toDate: "2018-05-24",
 			page: 1,
-			perPage: 100,
+			perPage: 10,
 			cancellationToken: CancellationToken
 		);
 
 		timeEntriesContainer.Should().NotBeNull();
-		timeEntriesContainer.TotalEntries.Should().Be(0);
+		timeEntriesContainer.TimeEntries.Should().NotBeNull();
+	}
 
-		// Create a time entry
-		var newTimeEntry = await HarvestClient.TimeEntries.CreateAsync(new TimeEntryCreationDto
+	[Fact]
+	public async System.Threading.Tasks.Task GetTimeEntry()
+	{
+		try
 		{
-			UserId = userId,
-			ProjectId = projectId,
-			Notes = "Woo!",
-			SpentDate = "2018-06-20",
-			TaskId = taskId,
-			Hours = 1
-		},
-		CancellationToken
-		);
-		newTimeEntry.Should().NotBeNull();
+			// Create a test time entry
+			var timeEntry = await TestDataManager.CreateTestTimeEntryAsync("Get test entry", 2.0m);
 
-		// Get (Re-fetch) it
-		var refetchedTimeEntry = await HarvestClient.TimeEntries.GetAsync(newTimeEntry.Id, CancellationToken);
-		refetchedTimeEntry.Should().NotBeNull();
-
-		// Patch it
-		await HarvestClient.TimeEntries.PatchAsync(refetchedTimeEntry.Id, new TimeEntryPatchDto
+			// Get the time entry
+			var retrievedEntry = await HarvestClient.TimeEntries.GetAsync(timeEntry.Id, CancellationToken);
+			retrievedEntry.Should().NotBeNull();
+			retrievedEntry.Id.Should().Be(timeEntry.Id);
+			retrievedEntry.Notes.Should().Be($"{Configuration.TestSettings.TestDataPrefix}Get test entry");
+			retrievedEntry.Hours.Should().Be(2.0m);
+		}
+		finally
 		{
-			Notes = "Yay!"
-		}, CancellationToken);
-
-		// Delete
-		await HarvestClient.TimeEntries.DeleteAsync(refetchedTimeEntry.Id, CancellationToken);
+			await TestDataManager.CleanupAsync();
+		}
 	}
 }

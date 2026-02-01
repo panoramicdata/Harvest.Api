@@ -14,4 +14,13 @@ public interface ITaskApi
 	Task<Models.Task> GetAsync(
 		long id,
 		CancellationToken cancellationToken);
+
+	[Post("/v2/tasks")]
+	Task<Models.Task> CreateAsync(TaskCreationDto creationDto, CancellationToken cancellationToken = default);
+
+	[Patch("/v2/tasks/{id}")]
+	Task<Models.Task> UpdateAsync(long id, TaskPatchDto patchDto, CancellationToken cancellationToken = default);
+
+	[Delete("/v2/tasks/{id}")]
+	System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken = default);
 }

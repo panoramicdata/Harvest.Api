@@ -9,4 +9,16 @@ namespace Harvest.Interfaces;
 			int? page = null,
 			[AliasAs("per_page")] int? perPage = null
 		);
+
+		[Get("/v2/projects/{projectId}/task_assignments/{id}")]
+		Task<ProjectTaskAssignment> GetAsync(long projectId, long id, CancellationToken cancellationToken = default);
+
+		[Post("/v2/projects/{projectId}/task_assignments")]
+		Task<ProjectTaskAssignment> CreateAsync(long projectId, ProjectTaskAssignmentCreationDto creationDto, CancellationToken cancellationToken = default);
+
+		[Patch("/v2/projects/{projectId}/task_assignments/{id}")]
+		Task<ProjectTaskAssignment> UpdateAsync(long projectId, long id, ProjectTaskAssignmentPatchDto patchDto, CancellationToken cancellationToken = default);
+
+		[Delete("/v2/projects/{projectId}/task_assignments/{id}")]
+		System.Threading.Tasks.Task DeleteAsync(long projectId, long id, CancellationToken cancellationToken = default);
 	}

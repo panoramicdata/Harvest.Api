@@ -13,4 +13,13 @@ public interface IClientApi
 	[Get("/v2/clients/{id}")]
 	Task<Client> GetAsync(long id,
 		CancellationToken cancellationToken);
+
+	[Post("/v2/clients")]
+	Task<Client> CreateAsync(ClientCreationDto creationDto, CancellationToken cancellationToken = default);
+
+	[Patch("/v2/clients/{id}")]
+	Task<Client> UpdateAsync(long id, ClientPatchDto patchDto, CancellationToken cancellationToken = default);
+
+	[Delete("/v2/clients/{id}")]
+	System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken = default);
 }

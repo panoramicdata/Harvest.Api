@@ -20,7 +20,7 @@ public class Task
 	/// <summary>
 	/// The hourly rate to use for this task when it is added to a project.
 	/// </summary>
-	public decimal DefaultHourlyRate { get; set; }
+	public decimal? DefaultHourlyRate { get; set; }
 
 	/// <summary>
 	/// Whether this task should be automatically added to future projects.

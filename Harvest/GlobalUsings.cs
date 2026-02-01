@@ -1,4 +1,3 @@
-global using Harvest.Enums;
 global using Harvest.Models;
 global using Refit;
 global using System;

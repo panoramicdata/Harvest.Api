@@ -1,21 +1,21 @@
 using Harvest.Test.Logging;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 
 namespace Harvest.Test;
 
-public class HarvestTest
+public class HarvestTest : IDisposable
 {
 	protected ILogger Logger { get; }
 
 	protected HarvestClient HarvestClient { get; }
 
 	protected Configuration Configuration { get; }
+
+	protected TestDataManager TestDataManager { get; }
 
 	protected static CancellationToken CancellationToken => TestContext.Current.CancellationToken;
 
@@ -32,6 +32,8 @@ public class HarvestTest
 			AccountId = Configuration.AccountId,
 			AccessToken = Configuration.AccessToken
 		});
+
+		TestDataManager = new TestDataManager(HarvestClient, Configuration.TestSettings);
 	}
 
 	private static Configuration LoadConfiguration(string jsonFilePath)
@@ -56,4 +58,6 @@ public class HarvestTest
 
 		return configuration;
 	}
+
+	public void Dispose() => TestDataManager?.Dispose();
 }

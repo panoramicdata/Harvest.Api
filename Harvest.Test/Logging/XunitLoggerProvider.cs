@@ -1,6 +1,3 @@
-using Microsoft.Extensions.Logging;
-using System;
-
 namespace Harvest.Test.Logging;
 
 public class XunitLoggerProvider(ITestOutputHelper output, LogLevel minLevel) : ILoggerProvider

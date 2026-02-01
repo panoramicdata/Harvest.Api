@@ -5,7 +5,6 @@
 		<Authors>David Bond</Authors>
 		<PackageId>Harvest</PackageId>
 		<LangVersion>latest</LangVersion>
-		<Version>2.3.0</Version>
 		<Company>Panoramic Data Limited</Company>
 		<Description>A wrapper for the Harvest time tracking API, forked from the Github project by Joel Potter, Data Research Group, Paul Irwin</Description>
 		<Copyright>Panoramic Data Limited 2025</Copyright>

@@ -14,11 +14,11 @@ public class Company
 
 	public bool WantsTimestampTimers { get; set; }
 
-	public TimeFormat TimeFormat { get; set; }
+	public string? TimeFormat { get; set; }
 
 	public string? PlanType { get; set; }
 
-	public Clock Clock { get; set; }
+	public string? Clock { get; set; }
 
 	public string? DecimalSymbol { get; set; }
 
