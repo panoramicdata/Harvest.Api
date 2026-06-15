@@ -47,13 +47,13 @@ Write-Host "Working directory is clean." -ForegroundColor Green
 # Step 2: Determine Nerdbank git version
 Write-Step "Determining Nerdbank git version"
 
-$versionOutput = nbgv get-version --format json 2>&1
+$project = Join-Path $PSScriptRoot 'Harvest/Harvest.csproj'
+$buildOutput = dotnet build $project -t:GetBuildVersion --getProperty:NuGetPackageVersion -nologo -v:quiet -p:TreatWarningsAsErrors=false
 if ($LASTEXITCODE -ne 0) {
-    Exit-WithError "Failed to get Nerdbank git version. Ensure nbgv is installed (dotnet tool install -g nbgv).`n$versionOutput"
+    Exit-WithError "Failed to determine version from Nerdbank.GitVersioning.`n$buildOutput"
 }
 
-$versionInfo = $versionOutput | ConvertFrom-Json
-$version = $versionInfo.NuGetPackageVersion
+$version = ($buildOutput | Select-Object -Last 1).ToString().Trim()
 if (-not $version) {
     Exit-WithError "Could not determine NuGet package version from Nerdbank.GitVersioning."
 }
