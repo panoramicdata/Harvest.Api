@@ -65,7 +65,7 @@ public class EstimateMessageApiTests
 			Subject = "Estimate #1001",
 			Body = "Here is our estimate.",
 			SendMeACopy = true,
-			Recipients = [new EstimateMessageRecipientCreationDto { Name = "Richard Roe", Email = "richard@example.com" }]
+			Recipients = [new MessageRecipientCreationDto { Name = "Richard Roe", Email = "richard@example.com" }]
 		}, TestClient.Ct);
 
 		stub.Calls.Should().ContainSingle().Subject.ShouldBe(HttpMethod.Post, "/v2/estimates/1439818/messages", body: """
@@ -81,8 +81,8 @@ public class EstimateMessageApiTests
 		{
 			Recipients =
 			[
-				new EstimateMessageRecipientCreationDto { Name = "A", Email = "a@example.com" },
-				new EstimateMessageRecipientCreationDto { Email = "b@example.com" }
+				new MessageRecipientCreationDto { Name = "A", Email = "a@example.com" },
+				new MessageRecipientCreationDto { Email = "b@example.com" }
 			],
 			Subject = "S",
 			Body = "B",

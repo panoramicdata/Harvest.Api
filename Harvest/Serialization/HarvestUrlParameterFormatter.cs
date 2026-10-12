@@ -11,13 +11,16 @@ internal sealed class HarvestUrlParameterFormatter : DefaultUrlParameterFormatte
 	/// <summary>The format of a date-time query value, applied after conversion to UTC.</summary>
 	internal const string DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
+	/// <summary>The format of a date value (<c>YYYY-MM-DD</c>), shared with <see cref="HarvestFormValue"/>.</summary>
+	internal const string DateFormat = "yyyy-MM-dd";
+
 	/// <inheritdoc />
 	public override string? Format(object? parameterValue, ICustomAttributeProvider attributeProvider, Type type)
 		=> parameterValue switch
 		{
 			bool value => value ? "true" : "false",
 			DateTimeOffset value => value.UtcDateTime.ToString(DateTimeFormat, CultureInfo.InvariantCulture),
-			DateOnly value => value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+			DateOnly value => value.ToString(DateFormat, CultureInfo.InvariantCulture),
 			_ => base.Format(parameterValue, attributeProvider, type)
 		};
 }

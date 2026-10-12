@@ -30,5 +30,5 @@ internal static class HarvestFormValue
 	/// <summary>Formats a date as <c>YYYY-MM-DD</c>.</summary>
 	/// <param name="value">The value.</param>
 	/// <returns>The field text, or <see langword="null"/> to omit the field.</returns>
-	public static string? Of(DateOnly? value) => value?.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+	public static string? Of(DateOnly? value) => value?.ToString(HarvestUrlParameterFormatter.DateFormat, CultureInfo.InvariantCulture);
 }

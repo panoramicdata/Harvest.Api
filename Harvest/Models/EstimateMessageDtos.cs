@@ -10,7 +10,7 @@ namespace Harvest.Models;
 public class EstimateMessageCreationDto : CreationDto
 {
 	/// <summary>The recipients of the message; required unless the message only runs an <see cref="EventType"/>.</summary>
-	public List<EstimateMessageRecipientCreationDto>? Recipients { get; set; }
+	public List<MessageRecipientCreationDto>? Recipients { get; set; }
 
 	/// <summary>The message subject.</summary>
 	public string? Subject { get; set; }
@@ -39,14 +39,4 @@ public class EstimateMessageCreationDto : CreationDto
 	/// </param>
 	/// <returns>The message.</returns>
 	public static EstimateMessageCreationDto ForEvent(string eventType) => new() { EventType = eventType };
-}
-
-/// <summary>A recipient in <see cref="EstimateMessageCreationDto.Recipients"/>.</summary>
-public class EstimateMessageRecipientCreationDto : CreationDto
-{
-	/// <summary>Name of the message recipient.</summary>
-	public string? Name { get; set; }
-
-	/// <summary>Email of the message recipient.</summary>
-	public required string Email { get; set; }
 }

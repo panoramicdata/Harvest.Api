@@ -19,7 +19,7 @@ public class InvoiceMessage
 	public string? SentFromEmail { get; set; }
 
 	/// <summary>The message's recipients.</summary>
-	public List<InvoiceMessageRecipient>? Recipients { get; set; }
+	public List<MessageRecipient>? Recipients { get; set; }
 
 	/// <summary>The message subject.</summary>
 	public string? Subject { get; set; }
@@ -60,16 +60,6 @@ public class InvoiceMessage
 
 	/// <summary>Date and time the message was last updated.</summary>
 	public DateTime UpdatedAt { get; set; }
-}
-
-/// <summary>A recipient of an <see cref="InvoiceMessage"/>.</summary>
-public class InvoiceMessageRecipient
-{
-	/// <summary>Name of the message recipient.</summary>
-	public string? Name { get; set; }
-
-	/// <summary>Email of the message recipient.</summary>
-	public string? Email { get; set; }
 }
 
 /// <summary>

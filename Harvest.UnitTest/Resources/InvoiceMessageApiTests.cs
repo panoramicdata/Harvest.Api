@@ -106,7 +106,7 @@ public class InvoiceMessageApiTests
 			Body = "The invoice is attached below.",
 			AttachPdf = true,
 			SendMeACopy = true,
-			Recipients = [new InvoiceMessageRecipientCreationDto { Name = "Richard Roe", Email = "richardroe@example.com" }]
+			Recipients = [new MessageRecipientCreationDto { Name = "Richard Roe", Email = "richardroe@example.com" }]
 		}, TestClient.Ct);
 
 		stub.Calls.Should().ContainSingle().Subject.ShouldBe(HttpMethod.Post, "/v2/invoices/13150403/messages", body: """
@@ -122,8 +122,8 @@ public class InvoiceMessageApiTests
 		{
 			Recipients =
 			[
-				new InvoiceMessageRecipientCreationDto { Name = "Richard Roe", Email = "richardroe@example.com" },
-				new InvoiceMessageRecipientCreationDto { Email = "accounts@example.com" }
+				new MessageRecipientCreationDto { Name = "Richard Roe", Email = "richardroe@example.com" },
+				new MessageRecipientCreationDto { Email = "accounts@example.com" }
 			],
 			Subject = "s",
 			Body = "b",

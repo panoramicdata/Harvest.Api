@@ -19,7 +19,7 @@ public class EstimateMessage
 	public string? SentFromEmail { get; set; }
 
 	/// <summary>The message recipients; empty for an event-only message.</summary>
-	public List<EstimateMessageRecipient>? Recipients { get; set; }
+	public List<MessageRecipient>? Recipients { get; set; }
 
 	/// <summary>The message subject.</summary>
 	public string? Subject { get; set; }
@@ -42,14 +42,4 @@ public class EstimateMessage
 
 	/// <summary>Date and time the message was last updated.</summary>
 	public DateTime UpdatedAt { get; set; }
-}
-
-/// <summary>A recipient of an <see cref="EstimateMessage"/>.</summary>
-public class EstimateMessageRecipient
-{
-	/// <summary>Name of the message recipient.</summary>
-	public string? Name { get; set; }
-
-	/// <summary>Email of the message recipient.</summary>
-	public string? Email { get; set; }
 }

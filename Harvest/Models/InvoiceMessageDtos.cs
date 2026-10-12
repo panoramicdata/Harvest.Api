@@ -11,7 +11,7 @@ namespace Harvest.Models;
 public class InvoiceMessageCreationDto : CreationDto
 {
 	/// <summary>The message's recipients.</summary>
-	public List<InvoiceMessageRecipientCreationDto>? Recipients { get; set; }
+	public List<MessageRecipientCreationDto>? Recipients { get; set; }
 
 	/// <summary>The message subject.</summary>
 	public string? Subject { get; set; }
@@ -40,14 +40,4 @@ public class InvoiceMessageCreationDto : CreationDto
 	/// <c>close</c>, <c>draft</c> or <c>re-open</c>.
 	/// </summary>
 	public string? EventType { get; set; }
-}
-
-/// <summary>A recipient in <see cref="InvoiceMessageCreationDto.Recipients"/>.</summary>
-public class InvoiceMessageRecipientCreationDto : CreationDto
-{
-	/// <summary>Name of the message recipient.</summary>
-	public string? Name { get; set; }
-
-	/// <summary>Email of the message recipient.</summary>
-	public required string Email { get; set; }
 }
