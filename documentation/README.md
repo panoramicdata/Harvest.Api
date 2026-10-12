@@ -12,6 +12,7 @@ The Harvest API v2 provides RESTful access to Harvest's time tracking and projec
 |-----|-------------|--------|
 | [Clients](clients.md) | Client management | ✅ **Complete** |
 | [Company](company.md) | Company information | ✅ **Complete** |
+| [Estimates](estimates.md) | Estimates, line items, estimate messages and item categories | ✅ **Complete** |
 | [Projects](projects.md) | Project management | ✅ **Complete** |
 | [Project Task Assignments](project-task-assignments.md) | Task assignments per project | ✅ **Complete** |
 | [Tasks](tasks.md) | Task management | ✅ **Complete** |
@@ -32,6 +33,7 @@ The Harvest API v2 provides RESTful access to Harvest's time tracking and projec
 | **Project Task Assignments** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
 | **User Project Assignments** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
 | **Company** | ✅ Get | N/A | **100% Complete** |
+| **Estimates** | ✅ List, Get; messages List; item categories List, Get | ✅ Create, Update (line items), Delete; messages Create (events), Delete; item categories Create, Update, Delete | **100% Complete** |
 
 ### ⚠️ Partially Implemented APIs
 

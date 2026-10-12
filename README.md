@@ -136,6 +136,9 @@ The `HarvestClient` (and `IHarvestClient`) provides access to the following API 
 |----------|-------------|
 | `Clients` | Manage clients |
 | `Companies` | Access company information |
+| `EstimateItemCategories` | Manage estimate item categories |
+| `EstimateMessages` | Send estimate messages and mark estimates sent, accepted, declined or re-opened |
+| `Estimates` | Manage estimates and their line items |
 | `Projects` | Manage projects |
 | `ProjectTaskAssignments` | Manage task assignments for projects |
 | `Tasks` | Manage tasks |
