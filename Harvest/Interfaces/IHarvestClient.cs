@@ -12,6 +12,9 @@ public interface IHarvestClient : IDisposable
 	/// <summary>The company of the authenticated user.</summary>
 	ICompanyApi Companies { get; }
 
+	/// <summary>Estimate item categories.</summary>
+	IEstimateItemCategoryApi EstimateItemCategories { get; }
+
 	/// <summary>Projects.</summary>
 	IProjectApi Projects { get; }
 
