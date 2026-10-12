@@ -243,7 +243,7 @@ public class EstimateApiTests
 			body: """{"line_items":[{"kind":"Service","description":"Another Project","unit_price":1000.0}]}""");
 		estimate.Amount.Should().Be(6000m);
 		estimate.LineItems.Should().HaveCount(2);
-		estimate.LineItems![1].Id.Should().Be(53339200);
+		estimate.LineItems[1].Id.Should().Be(53339200);
 		estimate.LineItems[1].Description.Should().Be("Another Project");
 	}
 

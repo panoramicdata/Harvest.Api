@@ -1,39 +1,41 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net10.0</TargetFramework>
-		<LangVersion>latest</LangVersion>
+		<OutputType>Exe</OutputType>
+		<UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
 		<IsPackable>false</IsPackable>
+		<IsTestProject>true</IsTestProject>
+		<!-- IDE0005 (unnecessary usings) only runs on build when a documentation file is generated; tests carry no XML docs (CS1591). -->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<!-- Live credentials: dotnet user-secrets set AccountId ... and AccessToken ... (appsettings.json remains optional). -->
+		<UserSecretsId>324ef7b8-9e70-4836-a0eb-f081cd2125ae</UserSecretsId>
+		<!-- CA2007: xUnit tests must not use ConfigureAwait(false) (xUnit1030). -->
+		<NoWarn>$(NoWarn);CS1591;CA2007</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.1" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.1" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
-		<PackageReference Include="xunit.v3" Version="3.2.1" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="coverlet.collector" Version="6.0.4">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Xunit.Microsoft.DependencyInjection" Version="10.0.1" />
-		<PackageReference Include="AwesomeAssertions" Version="9.3.0" />
-		<PackageReference Include="AwesomeAssertions.Analyzers" Version="9.0.8">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Harvest\Harvest.csproj" />
+		<PackageReference Include="AwesomeAssertions" />
+		<PackageReference Include="AwesomeAssertions.Analyzers">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Configuration" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+		<PackageReference Include="Microsoft.Extensions.Logging" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" />
+		<PackageReference Include="xunit.v3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Harvest\Harvest.csproj" />
 	</ItemGroup>
 
 </Project>

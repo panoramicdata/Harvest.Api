@@ -10,7 +10,7 @@ public class ProjectTaskAssignmentApiTests
 		"task":{"id":8083369,"name":"Research"}}
 		""";
 
-	private static readonly ListOptions EveryOption = new()
+	private static readonly ListOptions _everyOption = new()
 	{
 		IsActive = true,
 		UpdatedSince = new DateTimeOffset(2017, 6, 26, 21, 52, 18, TimeSpan.Zero),
@@ -40,7 +40,7 @@ public class ProjectTaskAssignmentApiTests
 	[Fact]
 	public async Task ListAsync_ForProject_SendsEveryOption()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.ProjectTaskAssignments.ListAsync(14308069, EveryOption, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.ProjectTaskAssignments.ListAsync(14308069, _everyOption, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/projects/14308069/task_assignments", EveryOptionQuery);
 	}
@@ -56,7 +56,7 @@ public class ProjectTaskAssignmentApiTests
 	[Fact]
 	public async Task ListAsync_AllProjects_SendsEveryOption()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.ProjectTaskAssignments.ListAsync(EveryOption, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.ProjectTaskAssignments.ListAsync(_everyOption, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/task_assignments", EveryOptionQuery);
 	}

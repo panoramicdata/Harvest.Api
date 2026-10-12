@@ -11,7 +11,7 @@ namespace Harvest.Models;
 /// </summary>
 public class PtoAssignmentPatchDto : PatchDto
 {
-	private static readonly JsonElement JsonNull = JsonSerializer.SerializeToElement<object?>(null);
+	private static readonly JsonElement _jsonNull = JsonSerializer.SerializeToElement<object?>(null);
 
 	/// <summary>ID of the holiday calendar to assign; <see langword="null"/> leaves it unchanged.</summary>
 	[JsonIgnore]
@@ -46,5 +46,5 @@ public class PtoAssignmentPatchDto : PatchDto
 	internal JsonElement? WorkScheduleIdJson => ToJson(WorkScheduleId, UnassignWorkSchedule);
 
 	private static JsonElement? ToJson(long? id, bool unassign)
-		=> unassign ? JsonNull : id is { } value ? JsonSerializer.SerializeToElement(value) : null;
+		=> unassign ? _jsonNull : id is { } value ? JsonSerializer.SerializeToElement(value) : null;
 }

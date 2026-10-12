@@ -143,10 +143,8 @@ public class ContactApiTests
 
 	[Fact]
 	public void InvoiceRecipientStatus_HasTheDocumentedValues()
-	{
-		new[] { InvoiceRecipientStatus.None, InvoiceRecipientStatus.Recipient, InvoiceRecipientStatus.Cc, InvoiceRecipientStatus.Bcc }
+		=> new[] { InvoiceRecipientStatus.None, InvoiceRecipientStatus.Recipient, InvoiceRecipientStatus.Cc, InvoiceRecipientStatus.Bcc }
 			.Should().Equal("none", "recipient", "cc", "bcc");
-	}
 
 	private static void ShouldBeJane(Contact contact)
 	{

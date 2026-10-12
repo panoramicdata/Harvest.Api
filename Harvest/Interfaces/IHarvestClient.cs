@@ -104,5 +104,4 @@ public interface IHarvestClient : IDisposable
 
 	/// <summary>Users.</summary>
 	IUserApi Users { get; }
-
 }

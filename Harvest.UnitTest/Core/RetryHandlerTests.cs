@@ -187,9 +187,9 @@ public class RetryHandlerTests
 
 		using var response = await harness.SendAsync(HttpMethod.Get);
 
-		var entry = harness.Logger.Entries.Should().ContainSingle().Subject;
-		entry.Level.Should().Be(LogLevel.Warning);
-		entry.Message.Should().Contain("429").And.Contain("GET /v2/time_entries").And.NotContain("user_id");
+		var (level, message) = harness.Logger.Entries.Should().ContainSingle().Subject;
+		level.Should().Be(LogLevel.Warning);
+		message.Should().Contain("429").And.Contain("GET /v2/time_entries").And.NotContain("user_id");
 	}
 
 	[Fact]

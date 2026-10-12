@@ -185,7 +185,7 @@ public class InvoiceMessageApiTests
 		message.AttachPdf.Should().BeTrue();
 		message.EventType.Should().BeNull();
 		message.Recipients.Should().HaveCount(2);
-		message.Recipients![0].Name.Should().Be("Richard Roe");
+		message.Recipients[0].Name.Should().Be("Richard Roe");
 		message.Recipients[0].Email.Should().Be("richardroe@example.com");
 		message.Recipients[1].Name.Should().Be("Bob Powell");
 		message.Recipients[1].Email.Should().Be("bob@example.com");

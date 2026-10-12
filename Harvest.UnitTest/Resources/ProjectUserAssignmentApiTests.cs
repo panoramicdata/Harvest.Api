@@ -16,7 +16,7 @@ public class ProjectUserAssignmentApiTests
 		"project":{"id":14308069,"name":"Online Store - Phase 1","code":"OS1"},"user":{"id":1782974,"name":"Jim Allen"}}
 		""";
 
-	private static readonly UserAssignmentListOptions EveryOption = new()
+	private static readonly UserAssignmentListOptions _everyOption = new()
 	{
 		UserId = 1782959,
 		IsActive = true,
@@ -40,7 +40,7 @@ public class ProjectUserAssignmentApiTests
 	[Fact]
 	public async Task ListAsync_AllProjects_SendsEveryOption()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.ProjectUserAssignments.ListAsync(EveryOption, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.ProjectUserAssignments.ListAsync(_everyOption, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/user_assignments", EveryOptionQuery);
 	}
@@ -76,7 +76,7 @@ public class ProjectUserAssignmentApiTests
 	[Fact]
 	public async Task ListAsync_ForProject_SendsEveryOption()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.ProjectUserAssignments.ListAsync(14308069, EveryOption, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.ProjectUserAssignments.ListAsync(14308069, _everyOption, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/projects/14308069/user_assignments", EveryOptionQuery);
 	}

@@ -168,7 +168,7 @@ public class EstimateMessageApiTests
 		message.CreatedAt.Should().Be(new DateTime(2017, 8, 25, 21, 23, 40, DateTimeKind.Utc));
 		message.UpdatedAt.Should().Be(new DateTime(2017, 8, 25, 21, 23, 41, DateTimeKind.Utc));
 		message.Recipients.Should().HaveCount(2);
-		message.Recipients![0].Name.Should().Be("Richard Roe");
+		message.Recipients[0].Name.Should().Be("Richard Roe");
 		message.Recipients[0].Email.Should().Be("richard@example.com");
 		message.Recipients[1].Name.Should().Be("Bob Powell");
 		message.EventType.Should().BeNull();
