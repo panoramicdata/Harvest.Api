@@ -38,4 +38,7 @@ public interface IHarvestClient : IDisposable
 
 	/// <summary>PTO time off requests (403 for accounts without the gradually rolled-out PTO API).</summary>
 	IPtoRequestApi PtoRequests { get; }
+
+	/// <summary>PTO time off balances (403 for accounts without the gradually rolled-out PTO API).</summary>
+	IPtoBalanceApi PtoBalances { get; }
 }

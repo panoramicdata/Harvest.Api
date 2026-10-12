@@ -115,7 +115,7 @@ public class HarvestClientTests
 			.Select(p => $"{p.PropertyType.Name} {p.Name}");
 
 		ApiProperties(typeof(IHarvestClient)).Should().BeEquivalentTo(ApiProperties(typeof(HarvestClient)));
-		ApiProperties(typeof(IHarvestClient)).Should().HaveCount(11);
+		ApiProperties(typeof(IHarvestClient)).Should().HaveCount(12);
 	}
 
 	[Fact]
@@ -135,6 +135,7 @@ public class HarvestClientTests
 		client.PtoWorkSchedules.Should().NotBeNull();
 		client.PtoTypes.Should().NotBeNull();
 		client.PtoRequests.Should().NotBeNull();
+		client.PtoBalances.Should().NotBeNull();
 	}
 
 	[Fact]
