@@ -62,4 +62,25 @@ public interface IHarvestClient : IDisposable
 
 	/// <summary>The project assignments of users.</summary>
 	IUserProjectAssignmentApi UserProjectAssignments { get; }
+
+	/// <summary>PTO work schedules (403 for accounts without the gradually rolled-out PTO API).</summary>
+	IPtoWorkScheduleApi PtoWorkSchedules { get; }
+
+	/// <summary>PTO time off policies (PTO types; 403 for accounts without the gradually rolled-out PTO API).</summary>
+	IPtoTypeApi PtoTypes { get; }
+
+	/// <summary>PTO time off requests (403 for accounts without the gradually rolled-out PTO API).</summary>
+	IPtoRequestApi PtoRequests { get; }
+
+	/// <summary>PTO time off balances (403 for accounts without the gradually rolled-out PTO API).</summary>
+	IPtoBalanceApi PtoBalances { get; }
+
+	/// <summary>PTO holiday calendars and their entries (403 for accounts without the gradually rolled-out PTO API).</summary>
+	IPtoHolidayCalendarApi PtoHolidayCalendars { get; }
+
+	/// <summary>PTO user assignments of holiday calendars and work schedules (403 for accounts without the gradually rolled-out PTO API).</summary>
+	IPtoAssignmentApi PtoAssignments { get; }
+
+	/// <summary>PTO user allocations (403 for accounts without the gradually rolled-out PTO API).</summary>
+	IPtoAllocationApi PtoAllocations { get; }
 }

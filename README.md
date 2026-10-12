@@ -153,6 +153,13 @@ The `HarvestClient` (and `IHarvestClient`) provides access to the following API 
 | `TimeEntries` | Create, update, and delete time entries |
 | `Users` | Manage users |
 | `UserProjectAssignments` | List project assignments for users |
+| `PtoWorkSchedules` | PTO work schedules (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
+| `PtoTypes` | PTO time off policies (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
+| `PtoRequests` | PTO time off requests: create, approve, decline, cancel (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
+| `PtoBalances` | PTO time off balances (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
+| `PtoHolidayCalendars` | PTO holiday calendars and entries (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
+| `PtoAssignments` | PTO holiday calendar and work schedule assignments (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
+| `PtoAllocations` | PTO per-user allocations (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
 
 Contributors adding resources should follow [docs/IMPLEMENTING.md](docs/IMPLEMENTING.md).
 
