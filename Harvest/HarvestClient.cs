@@ -60,6 +60,10 @@ public sealed class HarvestClient : IHarvestClient
 		EstimateItemCategories = For<IEstimateItemCategoryApi>();
 		EstimateMessages = For<IEstimateMessageApi>();
 		Estimates = For<IEstimateApi>();
+		InvoiceItemCategories = For<IInvoiceItemCategoryApi>();
+		InvoiceMessages = For<IInvoiceMessageApi>();
+		InvoicePayments = For<IInvoicePaymentApi>();
+		Invoices = For<IInvoiceApi>();
 		Projects = For<IProjectApi>();
 		ProjectTaskAssignments = For<IProjectTaskAssignmentApi>();
 		Reports = For<IReportApi>();
@@ -120,6 +124,18 @@ public sealed class HarvestClient : IHarvestClient
 
 	/// <inheritdoc />
 	public IEstimateApi Estimates { get; }
+
+	/// <inheritdoc />
+	public IInvoiceItemCategoryApi InvoiceItemCategories { get; }
+
+	/// <inheritdoc />
+	public IInvoiceMessageApi InvoiceMessages { get; }
+
+	/// <inheritdoc />
+	public IInvoicePaymentApi InvoicePayments { get; }
+
+	/// <inheritdoc />
+	public IInvoiceApi Invoices { get; }
 
 	/// <inheritdoc />
 	public IProjectApi Projects { get; }

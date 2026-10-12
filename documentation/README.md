@@ -16,6 +16,10 @@ The Harvest API v2 provides RESTful access to Harvest's time tracking and projec
 | [Expense Categories](expense-categories.md) | Expense category management | ✅ **Complete** |
 | [Expenses](expenses.md) | Expense management, with receipts | ✅ **Complete** |
 | [Estimates](estimates.md) | Estimates, line items, estimate messages and item categories | ✅ **Complete** |
+| [Invoices](invoices.md) | Invoices and their line items | ✅ **Complete** |
+| [Invoice Messages](invoice-messages.md) | Sending invoices and changing their state | ✅ **Complete** |
+| [Invoice Payments](invoice-payments.md) | Invoice payments | ✅ **Complete** |
+| [Invoice Item Categories](invoice-item-categories.md) | Invoice line item categories | ✅ **Complete** |
 | [Projects](projects.md) | Project management | ✅ **Complete** |
 | [Project Task Assignments](project-task-assignments.md) | Task assignments per project | ✅ **Complete** |
 | [Reports](reports.md) | Time, expense, uninvoiced and project budget reports | ✅ **Complete** |

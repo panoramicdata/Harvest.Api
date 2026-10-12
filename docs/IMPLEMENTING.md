@@ -43,7 +43,6 @@ Always confirm field lists, parameters and required flags against the resource's
   `DateTimeOffset?` (sent ISO 8601 UTC). `HarvestUrlParameterFormatter` does this formatting; do not pre-format strings.
 - Known filters still to add as resources are built:
   - project user assignments: `user_id` (on `GET /v2/user_assignments`), `is_active`, `updated_since`.
-  - invoices: `client_id`, `project_id`, `from`, `to`, `state`.
   - estimates: `client_id`, `from`, `to`, `state`.
   - expenses: `user_id`, `client_id`, `project_id`, `is_billed`, `approval_status`, `from`, `to`.
   - reports: `from`, `to` are required and go in the reports' own options type.

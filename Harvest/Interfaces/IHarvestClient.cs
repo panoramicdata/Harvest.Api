@@ -30,6 +30,18 @@ public interface IHarvestClient : IDisposable
 	/// <summary>Estimates.</summary>
 	IEstimateApi Estimates { get; }
 
+	/// <summary>Invoice item categories.</summary>
+	IInvoiceItemCategoryApi InvoiceItemCategories { get; }
+
+	/// <summary>The messages of invoices.</summary>
+	IInvoiceMessageApi InvoiceMessages { get; }
+
+	/// <summary>The payments of invoices.</summary>
+	IInvoicePaymentApi InvoicePayments { get; }
+
+	/// <summary>Invoices.</summary>
+	IInvoiceApi Invoices { get; }
+
 	/// <summary>Projects.</summary>
 	IProjectApi Projects { get; }
 
