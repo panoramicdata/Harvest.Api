@@ -5,7 +5,7 @@ public class ProjectTests(ITestOutputHelper testOutputHelper) : HarvestTest(test
 	[Fact]
 	public async System.Threading.Tasks.Task ListAllProjects()
 	{
-		var projectsContainer = await HarvestClient.Projects.ListAllAsync(
+		var projectsContainer = await HarvestClient.Projects.ListAsync(
 			new() { Page = 1, PerPage = 10 }, CancellationToken
 		);
 
@@ -17,7 +17,7 @@ public class ProjectTests(ITestOutputHelper testOutputHelper) : HarvestTest(test
 	public async System.Threading.Tasks.Task GetProject()
 	{
 		// First get a project from the list
-		var projectsContainer = await HarvestClient.Projects.ListAllAsync(
+		var projectsContainer = await HarvestClient.Projects.ListAsync(
 			new() { Page = 1, PerPage = 1 }, CancellationToken
 		);
 

@@ -5,7 +5,7 @@ public class TimeEntriesTests(ITestOutputHelper testOutputHelper) : HarvestTest(
 	[Fact]
 	public async System.Threading.Tasks.Task ListAllTimeEntries()
 	{
-		var timeEntriesContainer = await HarvestClient.TimeEntries.ListAllAsync(
+		var timeEntriesContainer = await HarvestClient.TimeEntries.ListAsync(
 			new() { Page = 1, PerPage = 10 }, CancellationToken
 		);
 
@@ -88,7 +88,7 @@ public class TimeEntriesTests(ITestOutputHelper testOutputHelper) : HarvestTest(
 				UserId = currentUser.Id,
 				ProjectId = createdProject.Id,
 				TaskId = createdTask.Id,
-				SpentDate = DateTime.UtcNow.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+				SpentDate = DateOnly.FromDateTime(DateTime.UtcNow),
 				Hours = 2.5m,
 				Notes = $"{Configuration.TestSettings.TestDataPrefix}CRUD Test Time Entry"
 			};
@@ -125,7 +125,7 @@ public class TimeEntriesTests(ITestOutputHelper testOutputHelper) : HarvestTest(
 				Hours = 3.0m,
 				Notes = $"{Configuration.TestSettings.TestDataPrefix}Updated CRUD Test Time Entry"
 			};
-			var updatedTimeEntry = await HarvestClient.TimeEntries.PatchAsync(createdTimeEntry.Id, updateDto, CancellationToken);
+			var updatedTimeEntry = await HarvestClient.TimeEntries.UpdateAsync(createdTimeEntry.Id, updateDto, CancellationToken);
 			updatedTimeEntry.Should().NotBeNull();
 			updatedTimeEntry.Hours.Should().Be(3.0m);
 			updatedTimeEntry.Notes.Should().Be($"{Configuration.TestSettings.TestDataPrefix}Updated CRUD Test Time Entry");

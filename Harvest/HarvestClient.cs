@@ -1,128 +1,158 @@
-using Harvest.ContractResolvers;
+using Harvest.Handlers;
 using Harvest.Interfaces;
+using Harvest.Serialization;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Harvest;
 
-public class HarvestClient : IHarvestClient, IDisposable
+/// <summary>
+/// A client for the Harvest API v2 (<see href="https://help.getharvest.com/api-v2/"/>). Each resource is exposed as a
+/// property; every call takes a <see cref="CancellationToken"/> as its last argument.
+/// </summary>
+/// <remarks>
+/// <para>
+/// A client is thread-safe and intended to be long-lived: create one per account and token, and dispose it when done.
+/// </para>
+/// <para>
+/// A non-success response raises <see cref="HarvestApiException"/> (a Refit <see cref="ApiException"/>) carrying
+/// Harvest's error message. Throttled (429) and transient server-error responses are retried first, as configured by
+/// <see cref="HarvestClientOptions.MaxRetries"/>.
+/// </para>
+/// </remarks>
+public sealed class HarvestClient : IHarvestClient
 {
+	/// <summary>The address every request is sent to.</summary>
+	public static Uri BaseAddress { get; } = new("https://api.harvestapp.com");
+
 	private readonly HttpClient _httpClient;
 
-	public HarvestClient(HarvestClientOptions options)
+	/// <summary>Creates a client that sends requests over the network, through <see cref="HarvestClientOptions.ProxyUrl"/> if set.</summary>
+	/// <param name="options">The client options.</param>
+	/// <exception cref="ArgumentNullException"><paramref name="options"/> is <see langword="null"/>.</exception>
+	/// <exception cref="ArgumentException">An option is invalid.</exception>
+	public HarvestClient(HarvestClientOptions options) : this(options, CreateTransport(Validated(options)))
 	{
-		if (string.IsNullOrWhiteSpace(options.AccessToken))
-		{
-			throw new ArgumentException("Access token cannot be null or empty.", nameof(options));
-		}
-
-		var refitSettings = CreateRefitSettings();
-		_httpClient = CreateHttpClient(options);
-		Companies = RestService.For<ICompanyApi>(_httpClient, refitSettings);
-		Clients = RestService.For<IClientApi>(_httpClient, refitSettings);
-		TimeEntries = RestService.For<ITimeEntryApi>(_httpClient, refitSettings);
-		Projects = RestService.For<IProjectApi>(_httpClient, refitSettings);
-		Tasks = RestService.For<ITaskApi>(_httpClient, refitSettings);
-		ProjectTaskAssignments = RestService.For<IProjectTaskAssignmentApi>(_httpClient, refitSettings);
-		Users = RestService.For<IUserApi>(_httpClient, refitSettings);
-		UserProjectAssignments = RestService.For<IUserProjectAssignmentApi>(_httpClient, refitSettings);
 	}
-
-	private static RefitSettings CreateRefitSettings()
-		=> new()
-		{
-			ContentSerializer = new SystemTextJsonContentSerializer(new JsonSerializerOptions
-			{
-				PropertyNamingPolicy = SnakeCaseNamingPolicy.Instance,
-				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-				Converters = { new JsonStringEnumConverter(SnakeCaseNamingPolicy.Instance) }
-			})
-		};
-
-	private static HttpClient CreateHttpClient(HarvestClientOptions options)
-	{
-		var httpClientHandler = new HttpClientHandler
-		{
-			Proxy = CreateProxy(options.ProxyUrl),
-		};
-
-		var httpClient = new HttpClient(handler: httpClientHandler, disposeHandler: true)
-		{
-			BaseAddress = new Uri("https://api.harvestapp.com"),
-			DefaultRequestHeaders =
-			{
-				Authorization = new AuthenticationHeaderValue("Bearer", options.AccessToken),
-				UserAgent =
-				{
-					new ProductInfoHeaderValue(
-						"harvest.net",
-						Assembly.GetExecutingAssembly().GetName().Version?.ToString()
-					)
-				},
-			},
-		};
-
-		httpClient.DefaultRequestHeaders.Add("Harvest-Account-Id", options.AccountId.ToString(CultureInfo.InvariantCulture));
-		return httpClient;
-	}
-
-	private static WebProxy? CreateProxy(string? proxyUrl) => proxyUrl is null
-			? null
-			: new WebProxy
-			{
-				Address = new Uri(proxyUrl),
-				BypassProxyOnLocal = false,
-				UseDefaultCredentials = false,
-			};
 
 	/// <summary>
-	/// Clients
+	/// Creates a client that sends requests through <paramref name="innerHandler"/> (for example an instrumented handler,
+	/// or a stub in tests). The client takes ownership of the handler and disposes it;
+	/// <see cref="HarvestClientOptions.ProxyUrl"/> is ignored.
 	/// </summary>
+	/// <param name="options">The client options.</param>
+	/// <param name="innerHandler">The handler that sends requests to the network.</param>
+	/// <exception cref="ArgumentNullException"><paramref name="options"/> or <paramref name="innerHandler"/> is <see langword="null"/>.</exception>
+	/// <exception cref="ArgumentException">An option is invalid.</exception>
+	public HarvestClient(HarvestClientOptions options, HttpMessageHandler innerHandler)
+	{
+		ArgumentNullException.ThrowIfNull(innerHandler);
+		Validated(options);
+		_httpClient = CreateHttpClient(options, new RetryHandler(options) { InnerHandler = innerHandler });
+		Clients = For<IClientApi>();
+		Companies = For<ICompanyApi>();
+		Projects = For<IProjectApi>();
+		ProjectTaskAssignments = For<IProjectTaskAssignmentApi>();
+		Tasks = For<ITaskApi>();
+		TimeEntries = For<ITimeEntryApi>();
+		Users = For<IUserApi>();
+		UserProjectAssignments = For<IUserProjectAssignmentApi>();
+	}
+
+	/// <summary>
+	/// The <c>User-Agent</c> sent when <see cref="HarvestClientOptions.UserAgent"/> is not set:
+	/// <c>Harvest.Api/{version} (+https://github.com/panoramicdata/Harvest.Api)</c>.
+	/// </summary>
+	public static string DefaultUserAgent { get; } =
+		$"Harvest.Api/{typeof(HarvestClient).Assembly.GetName().Version!.ToString(3)} (+https://github.com/panoramicdata/Harvest.Api)";
+
+	/// <summary>
+	/// The JSON settings for request and response bodies: snake_case property names, nulls omitted when writing, enums as
+	/// snake_case strings.
+	/// </summary>
+	internal static JsonSerializerOptions JsonOptions { get; } = new()
+	{
+		PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
+		DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+		Converters = { new JsonStringEnumConverter(JsonNamingPolicy.SnakeCaseLower) }
+	};
+
+	/// <summary>The Refit settings shared by every resource API.</summary>
+	internal static RefitSettings Settings { get; } = new()
+	{
+		ContentSerializer = new SystemTextJsonContentSerializer(JsonOptions),
+		UrlParameterFormatter = new HarvestUrlParameterFormatter(),
+		// Unbuffered, Refit sends a serialized body as a read-once push stream, which RetryHandler could not resend.
+		Buffered = true,
+		ExceptionFactory = HarvestErrorMapper.CreateAsync
+	};
+
+	/// <inheritdoc />
 	public IClientApi Clients { get; }
 
-	/// <summary>
-	/// Companies
-	/// </summary>
+	/// <inheritdoc />
 	public ICompanyApi Companies { get; }
 
-	/// <summary>
-	/// TimeEntries
-	/// </summary>
-	public ITimeEntryApi TimeEntries { get; }
-
-	/// <summary>
-	/// Projects
-	/// </summary>
+	/// <inheritdoc />
 	public IProjectApi Projects { get; }
 
-	/// <summary>
-	/// ProjectTaskAssignments
-	/// </summary>
+	/// <inheritdoc />
 	public IProjectTaskAssignmentApi ProjectTaskAssignments { get; }
 
-	/// <summary>
-	/// Users
-	/// </summary>
-	public IUserApi Users { get; }
-
-	/// <summary>
-	/// User project assignments
-	/// </summary>
-	public IUserProjectAssignmentApi UserProjectAssignments { get; }
-
-	/// <summary>
-	/// Tasks
-	/// </summary>
+	/// <inheritdoc />
 	public ITaskApi Tasks { get; }
 
-	public void Dispose()
-	{
-		_httpClient.Dispose();
+	/// <inheritdoc />
+	public ITimeEntryApi TimeEntries { get; }
 
-		GC.SuppressFinalize(this);
+	/// <inheritdoc />
+	public IUserApi Users { get; }
+
+	/// <inheritdoc />
+	public IUserProjectAssignmentApi UserProjectAssignments { get; }
+
+	/// <inheritdoc />
+	public void Dispose() => _httpClient.Dispose();
+
+	private T For<T>() => RestService.For<T>(_httpClient, Settings);
+
+	// Validation comes before the transport is created, so invalid options do not leave an undisposed network handler.
+	private static HarvestClientOptions Validated(HarvestClientOptions options)
+	{
+		ArgumentNullException.ThrowIfNull(options);
+		options.Validate();
+		return options;
+	}
+
+	/// <summary>The network handler used when the caller supplies none.</summary>
+	internal static HttpClientHandler CreateTransport(HarvestClientOptions options)
+		=> new() { Proxy = CreateProxy(options.ProxyUrl) };
+
+	private static WebProxy? CreateProxy(string? proxyUrl) => proxyUrl is null
+		? null
+		: new WebProxy
+		{
+			Address = new Uri(proxyUrl),
+			BypassProxyOnLocal = false,
+			UseDefaultCredentials = false,
+		};
+
+	private static HttpClient CreateHttpClient(HarvestClientOptions options, HttpMessageHandler pipeline)
+	{
+		var httpClient = new HttpClient(pipeline, disposeHandler: true)
+		{
+			BaseAddress = BaseAddress,
+			Timeout = options.Timeout
+		};
+		var headers = httpClient.DefaultRequestHeaders;
+		headers.Authorization = new AuthenticationHeaderValue("Bearer", options.AccessToken);
+		headers.Add("Harvest-Account-Id", options.AccountId.ToString(CultureInfo.InvariantCulture));
+		// Harvest asks for "AppName (contact)", which is not a strict RFC 9110 product list, so it is not validated.
+		_ = headers.TryAddWithoutValidation("User-Agent", options.UserAgent ?? DefaultUserAgent);
+		headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+		return httpClient;
 	}
 }

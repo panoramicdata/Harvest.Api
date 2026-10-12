@@ -19,7 +19,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		if (!testSettings.CreateTestData)
 		{
 			// Return first available client
-			var clients = await harvestClient.Clients.ListAllAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
+			var clients = await harvestClient.Clients.ListAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
 			if (clients.Clients.Count > 0)
 			{
 				return clients.Clients[0];
@@ -29,7 +29,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		}
 
 		var fullClientName = $"{testSettings.TestDataPrefix}{clientName}";
-		var existingClients = await harvestClient.Clients.ListAllAsync(null, CancellationToken.None);
+		var existingClients = await harvestClient.Clients.ListAsync(null, CancellationToken.None);
 		var existingClient = existingClients.Clients.FirstOrDefault(c => c.Name == fullClientName);
 
 		if (existingClient != null)
@@ -58,7 +58,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		catch (Refit.ApiException)
 		{
 			// Fall back to first available client if creation fails
-			var clients = await harvestClient.Clients.ListAllAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
+			var clients = await harvestClient.Clients.ListAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
 			if (clients.Clients.Count > 0)
 			{
 				return clients.Clients[0];
@@ -76,7 +76,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		if (!testSettings.CreateTestData)
 		{
 			// Return first available project
-			var projects = await harvestClient.Projects.ListAllAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
+			var projects = await harvestClient.Projects.ListAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
 			if (projects.Projects.Count > 0)
 			{
 				return projects.Projects[0];
@@ -86,7 +86,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		}
 
 		var fullProjectName = $"{testSettings.TestDataPrefix}{projectName}";
-		var existingProjects = await harvestClient.Projects.ListAllAsync(null, CancellationToken.None);
+		var existingProjects = await harvestClient.Projects.ListAsync(null, CancellationToken.None);
 		var existingProject = existingProjects.Projects.FirstOrDefault(p => p.Name == fullProjectName);
 
 		if (existingProject != null)
@@ -122,7 +122,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		catch (Refit.ApiException)
 		{
 			// Fall back to first available project if creation fails
-			var projects = await harvestClient.Projects.ListAllAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
+			var projects = await harvestClient.Projects.ListAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
 			if (projects.Projects.Count > 0)
 			{
 				return projects.Projects[0];
@@ -140,7 +140,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		if (!testSettings.CreateTestData)
 		{
 			// Return first available task
-			var tasks = await harvestClient.Tasks.ListAllAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
+			var tasks = await harvestClient.Tasks.ListAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
 			if (tasks.Tasks.Count > 0)
 			{
 				return tasks.Tasks[0];
@@ -150,7 +150,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		}
 
 		var fullTaskName = $"{testSettings.TestDataPrefix}{taskName}";
-		var existingTasks = await harvestClient.Tasks.ListAllAsync(null, CancellationToken.None);
+		var existingTasks = await harvestClient.Tasks.ListAsync(null, CancellationToken.None);
 		var existingTask = existingTasks.Tasks.FirstOrDefault(t => t.Name == fullTaskName);
 
 		if (existingTask != null)
@@ -181,7 +181,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		catch (Refit.ApiException)
 		{
 			// Fall back to first available task if creation fails
-			var tasks = await harvestClient.Tasks.ListAllAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
+			var tasks = await harvestClient.Tasks.ListAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
 			if (tasks.Tasks.Count > 0)
 			{
 				return tasks.Tasks[0];
@@ -205,7 +205,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 			UserId = user.Id,
 			ProjectId = project.Id,
 			TaskId = task.Id,
-			SpentDate = DateTime.UtcNow.ToString("yyyy-MM-dd"),
+			SpentDate = DateOnly.FromDateTime(DateTime.UtcNow),
 			Hours = hours,
 			Notes = $"{testSettings.TestDataPrefix}{notes}"
 		};

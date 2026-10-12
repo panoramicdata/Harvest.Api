@@ -18,10 +18,16 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Nullable>enable</Nullable>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<!-- Every public member must carry XML documentation: CS1591 is an error under TreatWarningsAsErrors. -->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Harvest.UnitTest" />
 	</ItemGroup>
 
 	<ItemGroup>

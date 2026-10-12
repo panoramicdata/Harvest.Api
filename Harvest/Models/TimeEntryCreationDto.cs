@@ -3,48 +3,35 @@ using Harvest.Dtos;
 namespace Harvest.Models;
 
 /// <summary>
-/// Time entry given by the Harvest API.
+/// The body of <c>POST /v2/time_entries</c>. Give <see cref="Hours"/> on an account that tracks time by duration, or
+/// <see cref="StartedTime"/> and <see cref="EndedTime"/> on one that tracks start and end times.
 /// </summary>
 public class TimeEntryCreationDto : CreationDto
 {
-	/// <summary>
-	/// The ID of the user to associate with the time entry. Defaults to the currently authenticated user’s ID.
-	/// </summary>
-	[AliasAs("user_id")]
+	/// <summary>The ID of the user to associate with the time entry. Defaults to the currently authenticated user's ID.</summary>
 	public long? UserId { get; set; }
 
-	/// <summary>
-	/// The ID of the project to associate with the time entry.
-	/// </summary>
-	[AliasAs("project_id")]
-	public long ProjectId { get; set; }
+	/// <summary>The ID of the project to associate with the time entry.</summary>
+	public required long ProjectId { get; set; }
 
-	/// <summary>
-	/// The ID of the task to associate with the time entry.
-	/// </summary>
-	[AliasAs("task_id")]
-	public long TaskId { get; set; }
+	/// <summary>The ID of the task to associate with the time entry.</summary>
+	public required long TaskId { get; set; }
 
-	[AliasAs("spent_date")]
-	public string? SpentDate { get; set; }
+	/// <summary>The date of the time entry.</summary>
+	public required DateOnly SpentDate { get; set; }
 
-	[AliasAs("started_time")]
+	/// <summary>The time the entry started, for example <c>8:00am</c>. Defaults to the current time.</summary>
 	public string? StartedTime { get; set; }
 
-	[AliasAs("ended_time")]
-	public string? EndedTime { get; set; }      /// <summary>
-												/// The current amount of time tracked. Defaults to 0.0.
-												/// </summary>
-	[AliasAs("hours")]
+	/// <summary>The time the entry ended, for example <c>9:30am</c>. If omitted, a timer is started.</summary>
+	public string? EndedTime { get; set; }
+
+	/// <summary>The current amount of time tracked. If omitted, a timer is started.</summary>
 	public decimal? Hours { get; set; }
 
-	/// <summary>
-	/// Any notes to be associated with the time entry.
-	/// </summary>
-	[AliasAs("notes")]
-	public string? Notes { get; set; }      /// <summary>
-											/// An object containing the id, group_id, and permalink of the external reference.
-											/// </summary>
-	[AliasAs("external_reference")]
+	/// <summary>Any notes to be associated with the time entry.</summary>
+	public string? Notes { get; set; }
+
+	/// <summary>An external reference to associate with the time entry.</summary>
 	public ExternalReferenceCreationDto? ExternalReference { get; set; }
 }

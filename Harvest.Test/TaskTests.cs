@@ -5,7 +5,7 @@ public class TaskTests(ITestOutputHelper testOutputHelper) : HarvestTest(testOut
 	[Fact]
 	public async System.Threading.Tasks.Task ListAllTasks()
 	{
-		var tasksContainer = await HarvestClient.Tasks.ListAllAsync(
+		var tasksContainer = await HarvestClient.Tasks.ListAsync(
 			new() { Page = 1, PerPage = 10 }, CancellationToken
 		);
 
@@ -17,7 +17,7 @@ public class TaskTests(ITestOutputHelper testOutputHelper) : HarvestTest(testOut
 	public async System.Threading.Tasks.Task GetTask()
 	{
 		// First get a task from the list
-		var tasksContainer = await HarvestClient.Tasks.ListAllAsync(
+		var tasksContainer = await HarvestClient.Tasks.ListAsync(
 			new() { Page = 1, PerPage = 1 }, CancellationToken
 		);
 

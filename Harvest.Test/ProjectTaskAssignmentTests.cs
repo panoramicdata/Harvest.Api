@@ -6,7 +6,7 @@ public class ProjectTaskAssignmentTests(ITestOutputHelper testOutputHelper) : Ha
 	public async System.Threading.Tasks.Task ListAllProjectTaskAssignments()
 	{
 		// First get a project
-		var projectsContainer = await HarvestClient.Projects.ListAllAsync(
+		var projectsContainer = await HarvestClient.Projects.ListAsync(
 			new() { Page = 1, PerPage = 1 }, CancellationToken
 		);
 
@@ -17,20 +17,20 @@ public class ProjectTaskAssignmentTests(ITestOutputHelper testOutputHelper) : Ha
 		}
 
 		var projectId = projectsContainer.Projects[0].Id;
-		var taskAssignmentsContainer = await HarvestClient.ProjectTaskAssignments.ListAllAsync(
+		var taskAssignmentsContainer = await HarvestClient.ProjectTaskAssignments.ListAsync(
 			projectId,
 			new() { Page = 1, PerPage = 10 }, CancellationToken
 		);
 
 		taskAssignmentsContainer.Should().NotBeNull();
-		taskAssignmentsContainer.ProjectTaskAssignments.Should().NotBeNull();
+		taskAssignmentsContainer.TaskAssignments.Should().NotBeNull();
 	}
 
 	[Fact]
 	public async System.Threading.Tasks.Task GetProjectTaskAssignment()
 	{
 		// First get a project with task assignments
-		var projectsContainer = await HarvestClient.Projects.ListAllAsync(
+		var projectsContainer = await HarvestClient.Projects.ListAsync(
 			new() { Page = 1, PerPage = 1 }, CancellationToken
 		);
 
@@ -41,18 +41,18 @@ public class ProjectTaskAssignmentTests(ITestOutputHelper testOutputHelper) : Ha
 		}
 
 		var projectId = projectsContainer.Projects[0].Id;
-		var taskAssignmentsContainer = await HarvestClient.ProjectTaskAssignments.ListAllAsync(
+		var taskAssignmentsContainer = await HarvestClient.ProjectTaskAssignments.ListAsync(
 			projectId,
 			new() { Page = 1, PerPage = 1 }, CancellationToken
 		);
 
-		if (taskAssignmentsContainer.ProjectTaskAssignments.Count == 0)
+		if (taskAssignmentsContainer.TaskAssignments.Count == 0)
 		{
 			Logger.LogInformation("No task assignments exist to test");
 			return;
 		}
 
-		var assignmentId = taskAssignmentsContainer.ProjectTaskAssignments[0].Id;
+		var assignmentId = taskAssignmentsContainer.TaskAssignments[0].Id;
 		var assignment = await HarvestClient.ProjectTaskAssignments.GetAsync(projectId, assignmentId, CancellationToken);
 
 		assignment.Should().NotBeNull();

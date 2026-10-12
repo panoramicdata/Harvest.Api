@@ -5,7 +5,7 @@ public class ClientTests(ITestOutputHelper testOutputHelper) : HarvestTest(testO
 	[Fact]
 	public async System.Threading.Tasks.Task ListAllClients()
 	{
-		var clientsContainer = await HarvestClient.Clients.ListAllAsync(
+		var clientsContainer = await HarvestClient.Clients.ListAsync(
 			new() { Page = 1, PerPage = 10 }, CancellationToken
 		);
 
@@ -17,7 +17,7 @@ public class ClientTests(ITestOutputHelper testOutputHelper) : HarvestTest(testO
 	public async System.Threading.Tasks.Task GetClient()
 	{
 		// First get a client from the list
-		var clientsContainer = await HarvestClient.Clients.ListAllAsync(
+		var clientsContainer = await HarvestClient.Clients.ListAsync(
 			new() { Page = 1, PerPage = 1 }, CancellationToken
 		);
 
