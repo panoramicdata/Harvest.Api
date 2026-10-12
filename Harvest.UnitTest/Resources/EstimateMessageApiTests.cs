@@ -103,11 +103,16 @@ public class EstimateMessageApiTests
 		call.ShouldBe(HttpMethod.Post, "/v2/estimates/5/messages", body: "{}");
 	}
 
+	public static TheoryData<string, string> SendableEventTypes => new()
+	{
+		{ EstimateMessageEventType.Send, "send" },
+		{ EstimateMessageEventType.Accept, "accept" },
+		{ EstimateMessageEventType.Decline, "decline" },
+		{ EstimateMessageEventType.ReOpen, "re-open" }
+	};
+
 	[Theory]
-	[InlineData(EstimateMessageEventType.Send, "send")]
-	[InlineData(EstimateMessageEventType.Accept, "accept")]
-	[InlineData(EstimateMessageEventType.Decline, "decline")]
-	[InlineData(EstimateMessageEventType.ReOpen, "re-open")]
+	[MemberData(nameof(SendableEventTypes))]
 	public async Task CreateAsync_EventOnly_SendsEventTypeAndMapsTheEventMessage(string eventType, string expected)
 	{
 		var stub = new StubHandler().Enqueue(HttpStatusCode.Created, EventMessageJson(expected));
@@ -125,9 +130,14 @@ public class EstimateMessageApiTests
 		message.Body.Should().BeNull();
 	}
 
+	public static TheoryData<string, string> ReadOnlyEventTypes => new()
+	{
+		{ EstimateMessageEventType.View, "view" },
+		{ EstimateMessageEventType.Invoice, "invoice" }
+	};
+
 	[Theory]
-	[InlineData(EstimateMessageEventType.View, "view")]
-	[InlineData(EstimateMessageEventType.Invoice, "invoice")]
+	[MemberData(nameof(ReadOnlyEventTypes))]
 	public async Task ListAsync_ReadOnlyEventTypes_AreRead(string eventType, string wire)
 	{
 		eventType.Should().Be(wire);

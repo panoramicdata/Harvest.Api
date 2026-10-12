@@ -10,7 +10,7 @@ namespace Harvest;
 public class HarvestClientOptions
 {
 	/// <summary>The default number of retries for throttled (429) and transient server-error responses.</summary>
-	public const int DefaultMaxRetries = 3;
+	public static int DefaultMaxRetries => 3;
 
 	/// <summary>
 	/// The Harvest account ID, sent as the <c>Harvest-Account-Id</c> header. Find it, with a personal access token, at
@@ -65,6 +65,13 @@ public class HarvestClientOptions
 	/// <exception cref="ArgumentException">A setting is invalid; the message names it.</exception>
 	internal void Validate()
 	{
+		ValidateIdentity();
+		ValidateRetriesAndTimeout();
+	}
+
+	/// <summary>Throws if the account, token or User-Agent is invalid.</summary>
+	private void ValidateIdentity()
+	{
 		if (string.IsNullOrWhiteSpace(AccessToken))
 		{
 			throw new ArgumentException("Access token cannot be null or empty.", nameof(AccessToken));
@@ -79,7 +86,11 @@ public class HarvestClientOptions
 		{
 			throw new ArgumentException("User-Agent cannot be blank; leave it null for the default.", nameof(UserAgent));
 		}
+	}
 
+	/// <summary>Throws if a retry or timeout setting is invalid.</summary>
+	private void ValidateRetriesAndTimeout()
+	{
 		if (MaxRetries < 0)
 		{
 			throw new ArgumentException("MaxRetries cannot be negative.", nameof(MaxRetries));

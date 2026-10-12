@@ -8,6 +8,12 @@ public class EstimateItemCategoryApiTests
 		{"id":1378704,"name":"Product","created_at":"2017-06-26T20:41:00Z","updated_at":"2017-06-26T20:42:00Z"}
 		""";
 
+	private const string CategoriesPageJson = $$$"""
+		{"estimate_item_categories":[{{{CategoryJson}}},{"id":1378703,"name":"Service","created_at":"2017-06-26T20:41:00Z","updated_at":"2017-06-26T20:41:00Z"}],
+		"per_page":2000,"total_pages":1,"total_entries":2,"next_page":null,"previous_page":null,"page":1,
+		"links":{"first":"https://api.harvestapp.com/v2/estimate_item_categories?page=1&per_page=2000","next":null,"previous":null,"last":"https://api.harvestapp.com/v2/estimate_item_categories?page=1&per_page=2000"}}
+		""";
+
 	[Fact]
 	public async Task ListAsync_NoOptions_SendsNoQuery()
 	{
@@ -34,11 +40,7 @@ public class EstimateItemCategoryApiTests
 	[Fact]
 	public async Task ListAsync_MapsTheCategoriesAndPaging()
 	{
-		var page = await TestClient.ReadAsync((c, ct) => c.EstimateItemCategories.ListAsync(null, ct), $$$"""
-			{"estimate_item_categories":[{{{CategoryJson}}},{"id":1378703,"name":"Service","created_at":"2017-06-26T20:41:00Z","updated_at":"2017-06-26T20:41:00Z"}],
-			"per_page":2000,"total_pages":1,"total_entries":2,"next_page":null,"previous_page":null,"page":1,
-			"links":{"first":"https://api.harvestapp.com/v2/estimate_item_categories?page=1&per_page=2000","next":null,"previous":null,"last":"https://api.harvestapp.com/v2/estimate_item_categories?page=1&per_page=2000"}}
-			""");
+		var page = await TestClient.ReadAsync((c, ct) => c.EstimateItemCategories.ListAsync(null, ct), CategoriesPageJson);
 
 		page.EstimateItemCategories.Should().HaveCount(2);
 		ShouldBeTheCategory(page.EstimateItemCategories[0]);

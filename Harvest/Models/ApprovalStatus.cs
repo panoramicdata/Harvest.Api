@@ -7,11 +7,11 @@ namespace Harvest.Models;
 public static class ApprovalStatus
 {
 	/// <summary>Not yet submitted for approval.</summary>
-	public const string Unsubmitted = "unsubmitted";
+	public static string Unsubmitted => "unsubmitted";
 
 	/// <summary>Submitted and awaiting approval.</summary>
-	public const string Submitted = "submitted";
+	public static string Submitted => "submitted";
 
 	/// <summary>Approved.</summary>
-	public const string Approved = "approved";
+	public static string Approved => "approved";
 }

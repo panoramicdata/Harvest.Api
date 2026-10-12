@@ -26,6 +26,12 @@ public class EstimateApiTests
 		"unit_price":5000.0,"amount":5000.0,"taxed":false,"taxed2":false}]}
 		""";
 
+	private const string EstimatesPageJson = $$$"""
+		{"estimates":[{{{EstimateJson}}},{{{DraftEstimateJson}}}],"per_page":2000,"total_pages":1,"total_entries":2,
+		"next_page":null,"previous_page":null,"page":1,
+		"links":{"first":"https://api.harvestapp.com/v2/estimates?page=1&per_page=2000","next":null,"previous":null,"last":"https://api.harvestapp.com/v2/estimates?page=1&per_page=2000"}}
+		""";
+
 	[Fact]
 	public async Task ListAsync_NoOptions_SendsNoQuery()
 	{
@@ -53,11 +59,16 @@ public class EstimateApiTests
 			"?client_id=5735776&from=2017-01-01&to=2017-06-30&state=sent&updated_since=2017-06-26T21%3A52%3A18Z&cursor=c1&page=2&per_page=100");
 	}
 
+	public static TheoryData<string, string> States => new()
+	{
+		{ EstimateState.Draft, "draft" },
+		{ EstimateState.Sent, "sent" },
+		{ EstimateState.Accepted, "accepted" },
+		{ EstimateState.Declined, "declined" }
+	};
+
 	[Theory]
-	[InlineData(EstimateState.Draft, "draft")]
-	[InlineData(EstimateState.Sent, "sent")]
-	[InlineData(EstimateState.Accepted, "accepted")]
-	[InlineData(EstimateState.Declined, "declined")]
+	[MemberData(nameof(States))]
 	public async Task ListAsync_StateFilter_SendsTheState(string state, string expected)
 	{
 		var call = await TestClient.SendAsync((c, ct) => c.Estimates.ListAsync(new EstimateListOptions { State = state }, ct));
@@ -68,11 +79,7 @@ public class EstimateApiTests
 	[Fact]
 	public async Task ListAsync_MapsTheEstimatesAndPaging()
 	{
-		var page = await TestClient.ReadAsync((c, ct) => c.Estimates.ListAsync(null, ct), $$$"""
-			{"estimates":[{{{EstimateJson}}},{{{DraftEstimateJson}}}],"per_page":2000,"total_pages":1,"total_entries":2,
-			"next_page":null,"previous_page":null,"page":1,
-			"links":{"first":"https://api.harvestapp.com/v2/estimates?page=1&per_page=2000","next":null,"previous":null,"last":"https://api.harvestapp.com/v2/estimates?page=1&per_page=2000"}}
-			""");
+		var page = await TestClient.ReadAsync((c, ct) => c.Estimates.ListAsync(null, ct), EstimatesPageJson);
 
 		page.Estimates.Should().HaveCount(2);
 		ShouldBeTheEstimate(page.Estimates[0]);

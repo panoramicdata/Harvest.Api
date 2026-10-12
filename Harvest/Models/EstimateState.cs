@@ -7,14 +7,14 @@ namespace Harvest.Models;
 public static class EstimateState
 {
 	/// <summary>Not yet sent.</summary>
-	public const string Draft = "draft";
+	public static string Draft => "draft";
 
 	/// <summary>Sent to the client.</summary>
-	public const string Sent = "sent";
+	public static string Sent => "sent";
 
 	/// <summary>Accepted by the client.</summary>
-	public const string Accepted = "accepted";
+	public static string Accepted => "accepted";
 
 	/// <summary>Declined by the client.</summary>
-	public const string Declined = "declined";
+	public static string Declined => "declined";
 }
