@@ -15,6 +15,9 @@ public interface IHarvestClient : IDisposable
 	/// <summary>Invoice item categories.</summary>
 	IInvoiceItemCategoryApi InvoiceItemCategories { get; }
 
+	/// <summary>The messages of invoices.</summary>
+	IInvoiceMessageApi InvoiceMessages { get; }
+
 	/// <summary>Invoices.</summary>
 	IInvoiceApi Invoices { get; }
 
