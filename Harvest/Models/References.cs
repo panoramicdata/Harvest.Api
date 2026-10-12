@@ -55,3 +55,30 @@ public class InvoiceReference
 	/// <summary>The invoice number.</summary>
 	public string? Number { get; set; }
 }
+
+/// <summary>The <c>{id}</c> summary of an estimate that Harvest nests in invoices.</summary>
+public class EstimateReference
+{
+	/// <summary>Unique ID for the estimate.</summary>
+	public long Id { get; set; }
+}
+
+/// <summary>The <c>{id}</c> summary of a retainer that Harvest nests in invoices.</summary>
+public class RetainerReference
+{
+	/// <summary>Unique ID for the retainer.</summary>
+	public long Id { get; set; }
+}
+
+/// <summary>
+/// The <c>{id, name}</c> summary of the payment gateway that processed an invoice payment. Both are <see langword="null"/>
+/// for a payment recorded by hand.
+/// </summary>
+public class PaymentGatewayReference
+{
+	/// <summary>Unique ID for the payment gateway, or <see langword="null"/>.</summary>
+	public long? Id { get; set; }
+
+	/// <summary>The payment gateway's name, or <see langword="null"/>.</summary>
+	public string? Name { get; set; }
+}
