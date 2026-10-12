@@ -53,13 +53,25 @@ between them (plus two hidden `multipart/form-data` helpers behind the expense r
 
 ## Live Test Data Management
 
-The live suite (`Harvest.Test`) includes a `TestDataManager` class that:
+The live suite (`Harvest.Test`) creates and deletes (prefixed) data in a real Harvest account, so CI never runs it, and
+`dotnet test` should not be run on the solution: run `Harvest.UnitTest`, or this project deliberately. Its `HarvestTest`
+base class:
 
 - **Configurable Prefixes**: prefixes all test data with a configurable string (default: "TEST_")
-- **Dependency Management**: creates required dependencies (clients → projects → tasks → time entries)
-- **Graceful Fallbacks**: falls back to existing data when creation fails
-- **Cleanup**: tracks and cleans up the data it created
-- **Configuration**: is controlled via the `appsettings.json` `TestSettings` section
+- **Dependency Management**: creates required dependencies (clients → projects → tasks → task assignments)
+- **Cleanup**: tracks everything a test creates and deletes it, newest first, when the test finishes
+- **Configuration**: reads the `TestSettings` section of an optional `appsettings.json`
+
+### Credentials
+
+Store the account ID and a personal access token as user secrets of the `Harvest.Test` project:
+
+```shell
+dotnet user-secrets set AccountId 123456 --project Harvest.Test
+dotnet user-secrets set AccessToken "<personal access token>" --project Harvest.Test
+```
+
+User secrets override `appsettings.json`, which remains optional.
 
 ### Test Settings Configuration
 
