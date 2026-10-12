@@ -127,6 +127,14 @@ System.Threading.Tasks.Task DeleteAsync(long estimateId, long id, CancellationTo
 | PATCH | `/v2/estimate_item_categories/{id}` | `UpdateAsync(long id, EstimateItemCategoryPatchDto, CancellationToken)` |
 | DELETE | `/v2/estimate_item_categories/{id}` | `DeleteAsync(long id, CancellationToken)` |
 
+```csharp
+Task<EstimateItemCategoriesContainer> ListAsync([Query] ListOptions? options, CancellationToken cancellationToken);
+Task<EstimateItemCategory> GetAsync(long id, CancellationToken cancellationToken);
+Task<EstimateItemCategory> CreateAsync([Body] EstimateItemCategoryCreationDto creationDto, CancellationToken cancellationToken);
+Task<EstimateItemCategory> UpdateAsync(long id, [Body] EstimateItemCategoryPatchDto patchDto, CancellationToken cancellationToken);
+System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
+```
+
 ## Implementation Status
 
 | Method | Endpoint | Status | Notes |
@@ -185,7 +193,7 @@ await harvestClient.EstimateMessages.CreateAsync(estimate.Id, new EstimateMessag
     Subject = "Estimate #1001",
     Body = "Here is our estimate.",
     SendMeACopy = true,
-    Recipients = [new EstimateMessageRecipientCreationDto { Name = "Richard Roe", Email = "richard@example.com" }]
+    Recipients = [new MessageRecipientCreationDto { Name = "Richard Roe", Email = "richard@example.com" }]
 }, cancellationToken);
 
 // Mark it accepted without emailing anyone
@@ -254,7 +262,7 @@ public class EstimateMessage
     public string? SentByEmail { get; set; }
     public string? SentFrom { get; set; }
     public string? SentFromEmail { get; set; }
-    public List<EstimateMessageRecipient>? Recipients { get; set; }  // name, email
+    public List<MessageRecipient>? Recipients { get; set; }  // name, email
     public string? Subject { get; set; }
     public string? Body { get; set; }
     public bool SendMeACopy { get; set; }

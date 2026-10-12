@@ -167,7 +167,16 @@ The `HarvestClient` (and `IHarvestClient`) provides access to the following API 
 | `UserProjectAssignments` | List project assignments for users |
 | `Users` | Manage users |
 
+Each resource is documented, with its method signatures, in [documentation/](documentation/README.md).
 Contributors adding resources should follow [docs/IMPLEMENTING.md](docs/IMPLEMENTING.md).
+
+## Coverage
+
+Every operation in the [Harvest API v2 reference](https://help.getharvest.com/api-v2/) is implemented, including the
+gradually rolled-out PTO API and the Harvest ID accounts endpoint: 32 APIs with 149 public methods between them. Unit
+tests pin every request and response, with 100% line and branch coverage of the library. Verification of the newer
+resources against the live Harvest API is still pending; please report any field Harvest sends differently from its
+documentation.
 
 ## Proxy Support
 

@@ -58,7 +58,7 @@ One endpoint, two behaviours, chosen by `EventType`:
 `IncludeLinkToClientInvoice` is deprecated by Harvest: `true` is ignored and `false` clears the invoice's payment options.
 
 ```csharp
-Task<InvoiceMessage> CreateAsync(long invoiceId, InvoiceMessageCreationDto creationDto, CancellationToken cancellationToken);
+Task<InvoiceMessage> CreateAsync(long invoiceId, [Body] InvoiceMessageCreationDto creationDto, CancellationToken cancellationToken);
 ```
 
 ### Delete an Invoice Message
@@ -66,7 +66,7 @@ Task<InvoiceMessage> CreateAsync(long invoiceId, InvoiceMessageCreationDto creat
 **DELETE** `/v2/invoices/{invoiceId}/messages/{id}`
 
 ```csharp
-Task DeleteAsync(long invoiceId, long id, CancellationToken cancellationToken);
+System.Threading.Tasks.Task DeleteAsync(long invoiceId, long id, CancellationToken cancellationToken);
 ```
 
 ## Implementation Status
@@ -88,7 +88,7 @@ await harvestClient.InvoiceMessages.CreateAsync(invoiceId, new InvoiceMessageCre
 	Subject = template.Subject,
 	Body = template.Body,
 	AttachPdf = true,
-	Recipients = [new InvoiceMessageRecipientCreationDto { Name = "Richard Roe", Email = "richard@example.com" }]
+	Recipients = [new MessageRecipientCreationDto { Name = "Richard Roe", Email = "richard@example.com" }]
 }, cancellationToken);
 
 // Mark a draft invoice as sent without e-mailing it
@@ -113,7 +113,7 @@ public class InvoiceMessage
 	public string? SentByEmail { get; set; }
 	public string? SentFrom { get; set; }
 	public string? SentFromEmail { get; set; }
-	public List<InvoiceMessageRecipient>? Recipients { get; set; }
+	public List<MessageRecipient>? Recipients { get; set; }
 	public string? Subject { get; set; }
 	public string? Body { get; set; }
 	public bool IncludeLinkToClientInvoice { get; set; } // deprecated by Harvest

@@ -60,18 +60,23 @@ public class Company
     public string? FullDomain { get; set; }
     public string? Name { get; set; }
     public bool IsActive { get; set; }
-    public DayOfWeek WeekStartDay { get; set; }
+    public DayOfWeek? WeekStartDay { get; set; }
     public bool WantsTimestampTimers { get; set; }
     public string? TimeFormat { get; set; }
+    public string? DateFormat { get; set; }
     public string? PlanType { get; set; }
     public string? Clock { get; set; }
+    public string? CurrencyCodeDisplay { get; set; }
+    public string? CurrencySymbolDisplay { get; set; }
     public string? DecimalSymbol { get; set; }
     public string? ThousandsSeparator { get; set; }
     public string? ColorScheme { get; set; }
+    public int? WeeklyCapacity { get; set; }
     public bool ExpenseFeature { get; set; }
     public bool InvoiceFeature { get; set; }
     public bool EstimateFeature { get; set; }
     public bool ApprovalFeature { get; set; }
+    public bool TeamFeature { get; set; }
 }
 ```
 

@@ -35,7 +35,7 @@ Task<InvoiceItemCategory> GetAsync(long id, CancellationToken cancellationToken)
 **POST** `/v2/invoice_item_categories`
 
 ```csharp
-Task<InvoiceItemCategory> CreateAsync(InvoiceItemCategoryCreationDto creationDto, CancellationToken cancellationToken);
+Task<InvoiceItemCategory> CreateAsync([Body] InvoiceItemCategoryCreationDto creationDto, CancellationToken cancellationToken);
 ```
 
 ### Update an Invoice Item Category
@@ -43,7 +43,7 @@ Task<InvoiceItemCategory> CreateAsync(InvoiceItemCategoryCreationDto creationDto
 **PATCH** `/v2/invoice_item_categories/{id}`
 
 ```csharp
-Task<InvoiceItemCategory> UpdateAsync(long id, InvoiceItemCategoryPatchDto patchDto, CancellationToken cancellationToken);
+Task<InvoiceItemCategory> UpdateAsync(long id, [Body] InvoiceItemCategoryPatchDto patchDto, CancellationToken cancellationToken);
 ```
 
 ### Delete an Invoice Item Category
@@ -53,7 +53,7 @@ Task<InvoiceItemCategory> UpdateAsync(long id, InvoiceItemCategoryPatchDto patch
 Only possible when `UseAsService` and `UseAsExpense` are both `false`.
 
 ```csharp
-Task DeleteAsync(long id, CancellationToken cancellationToken);
+System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
 ```
 
 ## Implementation Status

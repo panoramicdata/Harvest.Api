@@ -35,7 +35,7 @@ Task<TimeEntry> GetAsync(long id, CancellationToken cancellationToken);
 **POST** `/v2/time_entries`
 
 ```csharp
-Task<TimeEntry> CreateAsync(TimeEntryCreationDto creationDto, CancellationToken cancellationToken);
+Task<TimeEntry> CreateAsync([Body] TimeEntryCreationDto creationDto, CancellationToken cancellationToken);
 ```
 
 ### Update a Time Entry
@@ -43,7 +43,7 @@ Task<TimeEntry> CreateAsync(TimeEntryCreationDto creationDto, CancellationToken 
 **PATCH** `/v2/time_entries/{id}`
 
 ```csharp
-Task<TimeEntry> UpdateAsync(long id, TimeEntryPatchDto patchDto, CancellationToken cancellationToken);
+Task<TimeEntry> UpdateAsync(long id, [Body] TimeEntryPatchDto patchDto, CancellationToken cancellationToken);
 ```
 
 ### Delete a Time Entry
@@ -51,7 +51,7 @@ Task<TimeEntry> UpdateAsync(long id, TimeEntryPatchDto patchDto, CancellationTok
 **DELETE** `/v2/time_entries/{id}`
 
 ```csharp
-Task DeleteAsync(long id, CancellationToken cancellationToken);
+System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
 ```
 
 ### Delete a Time Entry's External Reference
@@ -61,7 +61,7 @@ Task DeleteAsync(long id, CancellationToken cancellationToken);
 Removes the external reference, leaving the time entry in place.
 
 ```csharp
-Task DeleteExternalReferenceAsync(long id, CancellationToken cancellationToken);
+System.Threading.Tasks.Task DeleteExternalReferenceAsync(long id, CancellationToken cancellationToken);
 ```
 
 ### Restart a Stopped Time Entry

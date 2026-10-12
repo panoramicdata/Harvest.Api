@@ -40,6 +40,14 @@ Harvest's documentation calls time off policies "policies", but its paths and JS
 | PATCH | `/v2/pto/work_schedules/{id}` | `UpdateAsync(id, PtoWorkSchedulePatchDto, ct)` |
 | DELETE | `/v2/pto/work_schedules/{id}` | `DeactivateAsync(id, ct)` - returns the deactivated schedule |
 
+```csharp
+Task<PtoWorkSchedulesContainer> ListAsync([Query] ListOptions? options, CancellationToken cancellationToken);
+Task<PtoWorkSchedule> GetAsync(long id, CancellationToken cancellationToken);
+Task<PtoWorkSchedule> CreateAsync([Body] PtoWorkScheduleCreationDto creationDto, CancellationToken cancellationToken);
+Task<PtoWorkSchedule> UpdateAsync(long id, [Body] PtoWorkSchedulePatchDto patchDto, CancellationToken cancellationToken);
+Task<PtoWorkSchedule> DeactivateAsync(long id, CancellationToken cancellationToken);
+```
+
 ## Time Off Policies (`PtoTypes`)
 
 | Method | Endpoint | C# |
@@ -50,6 +58,15 @@ Harvest's documentation calls time off policies "policies", but its paths and JS
 | PATCH | `/v2/pto/types/{id}` | `UpdateAsync(id, PtoTypePatchDto, ct)` - `Deactivated = false` reactivates |
 | DELETE | `/v2/pto/types/{id}` | `DeactivateAsync(id, ct)` - returns the deactivated policy (`keep_history` default) |
 | DELETE | `/v2/pto/types/{id}?keep_history=false&confirm_delete_history=1` | `DeleteAsync(id, ct)` - permanent, `204 No Content` |
+
+```csharp
+Task<PtoTypesContainer> ListAsync([Query] ListOptions? options, CancellationToken cancellationToken);
+Task<PtoType> GetAsync(long id, CancellationToken cancellationToken);
+Task<PtoType> CreateAsync([Body] PtoTypeCreationDto creationDto, CancellationToken cancellationToken);
+Task<PtoType> UpdateAsync(long id, [Body] PtoTypePatchDto patchDto, CancellationToken cancellationToken);
+Task<PtoType> DeactivateAsync(long id, CancellationToken cancellationToken);
+System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
+```
 
 Accrual values are strings with constants in `PtoAccrualType` (`fixed`, `accrued`, `unlimited`) and `PtoAccrualSchedule`
 (`monthly`, `biweekly`, `semimonthly`, `hourly`).
@@ -67,6 +84,17 @@ Accrual values are strings with constants in `PtoAccrualType` (`fixed`, `accrued
 | POST | `/v2/pto/requests/{id}/decline` | `DeclineAsync(id, PtoRequestDeclineDto, ct)` - `Reason` optional |
 | POST | `/v2/pto/requests/{id}/request_changes` | `RequestChangesAsync(id, PtoRequestChangesDto, ct)` - `Reason` required |
 
+```csharp
+Task<PtoRequestsContainer> ListAsync([Query] PtoRequestListOptions? options, CancellationToken cancellationToken);
+Task<PtoRequest> GetAsync(long id, CancellationToken cancellationToken);
+Task<PtoRequest> CreateAsync([Body] PtoRequestCreationDto creationDto, CancellationToken cancellationToken);
+Task<PtoRequest> UpdateAsync(long id, [Body] PtoRequestPatchDto patchDto, CancellationToken cancellationToken);
+Task<PtoRequest> CancelAsync(long id, CancellationToken cancellationToken);
+Task<PtoRequest> ApproveAsync(long id, CancellationToken cancellationToken);
+Task<PtoRequest> DeclineAsync(long id, [Body] PtoRequestDeclineDto declineDto, CancellationToken cancellationToken);
+Task<PtoRequest> RequestChangesAsync(long id, [Body] PtoRequestChangesDto requestChangesDto, CancellationToken cancellationToken);
+```
+
 `PtoRequestListOptions` adds `UserId` (`user_id`), `Status` (`status`, see `PtoRequestStatus`), `PtoTypeId`
 (`pto_type_id`), `From` / `To` (`from` / `to`, `YYYY-MM-DD`) to `UpdatedSince`, `Page` and `PerPage`.
 `ConflictResolution` on the request DTOs takes `PtoConflictResolution.Skip` or `.Replace`.
@@ -76,6 +104,10 @@ Accrual values are strings with constants in `PtoAccrualType` (`fixed`, `accrued
 | Method | Endpoint | C# |
 |--------|----------|----|
 | GET | `/v2/pto/balances` | `GetAsync(PtoBalanceOptions? options, ct)` (`user_id`, `year`, `as_of`) |
+
+```csharp
+Task<PtoBalances> GetAsync([Query] PtoBalanceOptions? options, CancellationToken cancellationToken);
+```
 
 Harvest sends the balance amounts as JSON strings (`"accrued_days": "25.0"`); `PtoBalance` reads them as `decimal?`
 whether they arrive as strings or numbers.
@@ -94,6 +126,18 @@ whether they arrive as strings or numbers.
 | PATCH | `/v2/pto/holiday_calendars/{id}/entries/{entry_id}` | `UpdateEntryAsync(holidayCalendarId, id, PtoHolidayCalendarEntryPatchDto, ct)` |
 | DELETE | `/v2/pto/holiday_calendars/{id}/entries/{entry_id}` | `DeleteEntryAsync(holidayCalendarId, id, ct)` - returns the deleted entry |
 
+```csharp
+Task<PtoHolidayCalendarsContainer> ListAsync([Query] ListOptions? options, CancellationToken cancellationToken);
+Task<PtoHolidayCalendar> GetAsync(long id, CancellationToken cancellationToken);
+Task<PtoHolidayCalendar> CreateAsync([Body] PtoHolidayCalendarCreationDto creationDto, CancellationToken cancellationToken);
+Task<PtoHolidayCalendar> UpdateAsync(long id, [Body] PtoHolidayCalendarPatchDto patchDto, CancellationToken cancellationToken);
+Task<PtoHolidayCalendar> DeleteAsync(long id, CancellationToken cancellationToken);
+Task<PtoHolidayCalendarEntriesContainer> ListEntriesAsync(long holidayCalendarId, [Query] ListOptions? options, CancellationToken cancellationToken);
+Task<PtoHolidayCalendarEntry> CreateEntryAsync(long holidayCalendarId, [Body] PtoHolidayCalendarEntryCreationDto creationDto, CancellationToken cancellationToken);
+Task<PtoHolidayCalendarEntry> UpdateEntryAsync(long holidayCalendarId, long id, [Body] PtoHolidayCalendarEntryPatchDto patchDto, CancellationToken cancellationToken);
+Task<PtoHolidayCalendarEntry> DeleteEntryAsync(long holidayCalendarId, long id, CancellationToken cancellationToken);
+```
+
 An entry is created for a single `Date`, or for a range with `DateMode = PtoHolidayCalendarEntryCreationDto.RangeDateMode`
 (`"range"`), `StartDate` and `EndDate`.
 
@@ -103,6 +147,11 @@ An entry is created for a single `Date`, or for a range with `DateMode = PtoHoli
 |--------|----------|----|
 | GET | `/v2/pto/assignments` | `ListAsync(PtoAssignmentListOptions? options, ct)` (`user_id`, `user_ids[]`) |
 | PATCH | `/v2/pto/assignments/{user_id}` | `UpdateAsync(userId, PtoAssignmentPatchDto, ct)` |
+
+```csharp
+Task<PtoAssignmentsContainer> ListAsync([Query] PtoAssignmentListOptions? options, CancellationToken cancellationToken);
+Task<PtoAssignment> UpdateAsync(long userId, [Body] PtoAssignmentPatchDto patchDto, CancellationToken cancellationToken);
+```
 
 Harvest unassigns a holiday calendar or work schedule when it receives an explicit JSON `null`. Because `null`
 properties are omitted (leaving the assignment unchanged), `PtoAssignmentPatchDto` has `UnassignHolidayCalendar` and
@@ -124,6 +173,11 @@ await harvestClient.PtoAssignments.UpdateAsync(userId, new PtoAssignmentPatchDto
 |--------|----------|----|
 | GET | `/v2/pto/allocations` | `ListAsync(PtoAllocationListOptions? options, ct)` (`year`, `user_ids[]`, `pto_type_ids[]`, `page`, `per_page`) |
 | PATCH | `/v2/pto/allocations` | `UpdateAsync(PtoAllocationPatchDto, ct)` - `UserId` and `PtoTypeId` required |
+
+```csharp
+Task<PtoAllocationsContainer> ListAsync([Query] PtoAllocationListOptions? options, CancellationToken cancellationToken);
+Task<PtoAllocationUpdateResult> UpdateAsync([Body] PtoAllocationPatchDto patchDto, CancellationToken cancellationToken);
+```
 
 The update answers either with the saved allocation or, when it resets the allocation to the policy defaults
 (`ResetToDefault = true`, or values equal to the defaults), with a confirmation. Both read into

@@ -33,7 +33,7 @@ Task<InvoicePaymentsContainer> ListAsync(long invoiceId, [Query] ListOptions? op
 in Harvest, and only sends an e-mail if the invoice is fully paid after this payment.
 
 ```csharp
-Task<InvoicePayment> CreateAsync(long invoiceId, InvoicePaymentCreationDto creationDto, CancellationToken cancellationToken);
+Task<InvoicePayment> CreateAsync(long invoiceId, [Body] InvoicePaymentCreationDto creationDto, CancellationToken cancellationToken);
 ```
 
 ### Delete an Invoice Payment
@@ -41,7 +41,7 @@ Task<InvoicePayment> CreateAsync(long invoiceId, InvoicePaymentCreationDto creat
 **DELETE** `/v2/invoices/{invoiceId}/payments/{id}`
 
 ```csharp
-Task DeleteAsync(long invoiceId, long id, CancellationToken cancellationToken);
+System.Threading.Tasks.Task DeleteAsync(long invoiceId, long id, CancellationToken cancellationToken);
 ```
 
 ## Implementation Status

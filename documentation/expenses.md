@@ -48,7 +48,7 @@ Either `Units` or `TotalCost` is required: `Units` for a unit-based expense cate
 
 **Request Body:** `ExpenseCreationDto`
 ```csharp
-public class ExpenseCreationDto
+public class ExpenseCreationDto : CreationDto
 {
     public long? UserId { get; set; }             // Harvest's default: the authenticated user
     public required long ProjectId { get; set; }
@@ -65,7 +65,7 @@ Without a receipt the request is JSON; with a receipt it is `multipart/form-data
 and the file as `receipt`:
 
 ```csharp
-Task<Expense> CreateAsync(ExpenseCreationDto creationDto, CancellationToken cancellationToken);
+Task<Expense> CreateAsync([Body] ExpenseCreationDto creationDto, CancellationToken cancellationToken);
 Task<Expense> CreateAsync(ExpenseCreationDto creationDto, StreamPart receipt, CancellationToken cancellationToken);
 ```
 
@@ -78,7 +78,7 @@ if the expense is locked.
 
 **Request Body:** `ExpensePatchDto`
 ```csharp
-public class ExpensePatchDto
+public class ExpensePatchDto : PatchDto
 {
     public long? ProjectId { get; set; }
     public long? ExpenseCategoryId { get; set; }
@@ -92,7 +92,7 @@ public class ExpensePatchDto
 ```
 
 ```csharp
-Task<Expense> UpdateAsync(long id, ExpensePatchDto patchDto, CancellationToken cancellationToken);
+Task<Expense> UpdateAsync(long id, [Body] ExpensePatchDto patchDto, CancellationToken cancellationToken);
 Task<Expense> UpdateAsync(long id, ExpensePatchDto patchDto, StreamPart receipt, CancellationToken cancellationToken);
 ```
 
@@ -105,7 +105,7 @@ overloads.
 **DELETE** `/v2/expenses/{id}`
 
 ```csharp
-Task DeleteAsync(long id, CancellationToken cancellationToken);
+System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
 ```
 
 ## Implementation Status

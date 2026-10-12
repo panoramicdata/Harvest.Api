@@ -40,7 +40,7 @@ Task<Contact> GetAsync(long id, CancellationToken cancellationToken);
 
 **Request Body:** `ContactCreationDto`
 ```csharp
-public class ContactCreationDto
+public class ContactCreationDto : CreationDto
 {
     public required long ClientId { get; set; }
     public string? Title { get; set; }
@@ -56,7 +56,7 @@ public class ContactCreationDto
 
 **Response:** `Contact`
 ```csharp
-Task<Contact> CreateAsync(ContactCreationDto creationDto, CancellationToken cancellationToken);
+Task<Contact> CreateAsync([Body] ContactCreationDto creationDto, CancellationToken cancellationToken);
 ```
 
 ### Update a Contact
@@ -68,7 +68,7 @@ optional.
 
 **Response:** `Contact`
 ```csharp
-Task<Contact> UpdateAsync(long id, ContactPatchDto patchDto, CancellationToken cancellationToken);
+Task<Contact> UpdateAsync(long id, [Body] ContactPatchDto patchDto, CancellationToken cancellationToken);
 ```
 
 ### Delete a Contact
@@ -76,7 +76,7 @@ Task<Contact> UpdateAsync(long id, ContactPatchDto patchDto, CancellationToken c
 **DELETE** `/v2/contacts/{id}`
 
 ```csharp
-Task DeleteAsync(long id, CancellationToken cancellationToken);
+System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
 ```
 
 ## Implementation Status

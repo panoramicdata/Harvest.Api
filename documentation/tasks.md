@@ -35,6 +35,38 @@ Retrieves a single task by ID.
 Task<Models.Task> GetAsync(long id, CancellationToken cancellationToken);
 ```
 
+### Create a Task
+
+**POST** `/v2/tasks`
+
+Creates a task. `Name` is required; optional fields left `null` take Harvest's defaults.
+
+**Response:** `Task`
+```csharp
+Task<Models.Task> CreateAsync([Body] TaskCreationDto creationDto, CancellationToken cancellationToken);
+```
+
+### Update a Task
+
+**PATCH** `/v2/tasks/{id}`
+
+Updates a task; fields left `null` are unchanged.
+
+**Response:** `Task`
+```csharp
+Task<Models.Task> UpdateAsync(long id, [Body] TaskPatchDto patchDto, CancellationToken cancellationToken);
+```
+
+### Delete a Task
+
+**DELETE** `/v2/tasks/{id}`
+
+Deletes a task. Harvest refuses to delete a task that has time entries; archive it instead (`IsActive = false`).
+
+```csharp
+System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
+```
+
 ## Implementation Status
 
 | Method | Endpoint | Status | Notes |
@@ -66,7 +98,7 @@ var task = await harvestClient.Tasks.GetAsync(12345, cancellationToken);
 public class Task
 {
     public long Id { get; set; }
-    public required string Name { get; set; }
+    public string? Name { get; set; }
     public bool BillableByDefault { get; set; }
     public decimal? DefaultHourlyRate { get; set; }
     public bool IsDefault { get; set; }

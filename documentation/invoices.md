@@ -52,7 +52,7 @@ Harvest documents two variants of the same endpoint, both served by `InvoiceCrea
 A custom `DueDate` is honoured only when `PaymentTerm` is `InvoicePaymentTerm.Custom` (Harvest's default).
 
 ```csharp
-Task<Invoice> CreateAsync(InvoiceCreationDto creationDto, CancellationToken cancellationToken);
+Task<Invoice> CreateAsync([Body] InvoiceCreationDto creationDto, CancellationToken cancellationToken);
 ```
 
 ### Update an Invoice
@@ -70,7 +70,7 @@ Fields left `null` are unchanged. `LineItems` (`InvoiceLineItemPatchDto`) edits 
 Line items not listed are left as they are.
 
 ```csharp
-Task<Invoice> UpdateAsync(long id, InvoicePatchDto patchDto, CancellationToken cancellationToken);
+Task<Invoice> UpdateAsync(long id, [Body] InvoicePatchDto patchDto, CancellationToken cancellationToken);
 ```
 
 ### Delete an Invoice
@@ -78,7 +78,7 @@ Task<Invoice> UpdateAsync(long id, InvoicePatchDto patchDto, CancellationToken c
 **DELETE** `/v2/invoices/{id}`
 
 ```csharp
-Task DeleteAsync(long id, CancellationToken cancellationToken);
+System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
 ```
 
 ## Implementation Status

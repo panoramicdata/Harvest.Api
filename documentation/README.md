@@ -1,77 +1,65 @@
 # Harvest API v2 Documentation
 
-This folder contains documentation for the Harvest API v2 endpoints that are implemented in this .NET client library.
+This folder documents the Harvest API v2 endpoints implemented by this .NET client library: for each resource, the
+routes, the C# method signatures, the options and DTOs, and usage examples.
 
 ## Overview
 
-The Harvest API v2 provides RESTful access to Harvest's time tracking and project management features. This documentation covers all implemented endpoints and identifies gaps where the API provides additional functionality that hasn't been implemented yet.
+The Harvest API v2 provides RESTful access to Harvest's time tracking, project, invoicing and time off features. Every
+resource is a property of `HarvestClient` / `IHarvestClient`; see [Harvest's own documentation](https://help.getharvest.com/api-v2/)
+for the full field descriptions.
 
 ## Implemented APIs
 
-| API | Description | Status |
-|-----|-------------|--------|
-| [Accounts](accounts.md) | Accounts reachable by the token (Harvest ID) | ✅ **Complete** |
-| [Clients](clients.md) | Client management | ✅ **Complete** |
-| [Company](company.md) | Company information | ✅ **Complete** |
-| [Client Contacts](contacts.md) | Client contact management | ✅ **Complete** |
-| [Expense Categories](expense-categories.md) | Expense category management | ✅ **Complete** |
-| [Expenses](expenses.md) | Expense management, with receipts | ✅ **Complete** |
-| [Estimates](estimates.md) | Estimates, line items, estimate messages and item categories | ✅ **Complete** |
-| [Invoices](invoices.md) | Invoices and their line items | ✅ **Complete** |
-| [Invoice Messages](invoice-messages.md) | Sending invoices and changing their state | ✅ **Complete** |
-| [Invoice Payments](invoice-payments.md) | Invoice payments | ✅ **Complete** |
-| [Invoice Item Categories](invoice-item-categories.md) | Invoice line item categories | ✅ **Complete** |
-| [Projects](projects.md) | Project management | ✅ **Complete** |
-| [Project Task Assignments](project-task-assignments.md) | Task assignments per project | ✅ **Complete** |
-| [Reports](reports.md) | Time, expense, uninvoiced and project budget reports | ✅ **Complete** |
-| [Project User Assignments](project-user-assignments.md) | User assignments per project | ✅ **Complete** |
-| [Roles](roles.md) | Role management | ✅ **Complete** |
-| [Tasks](tasks.md) | Task management | ✅ **Complete** |
-| [Teammates](teammates.md) | Teammates of managers | ✅ **Complete** |
-| [Time Entries](time-entries.md) | Time entry management | ✅ **Complete** |
-| [Users](users.md) | User management | ⚠️ **Mostly Complete** |
-| [User Project Assignments](user-project-assignments.md) | User project assignments | ✅ **Complete** |
-| [PTO (Time Off)](pto.md) | Time off requests, policies, balances, holiday calendars, work schedules, assignments, allocations | ✅ **Complete** |
-| [User Billable and Cost Rates](user-rates.md) | Dated billable and cost rates per user | ✅ **Complete** |
+| API | Client properties | Description | Status |
+|-----|-------------------|-------------|--------|
+| [Accounts](accounts.md) | `Accounts` | Accounts reachable by the token (Harvest ID) | ✅ **Complete** |
+| [Clients](clients.md) | `Clients` | Client management | ✅ **Complete** |
+| [Company](company.md) | `Companies` | Company information and settings | ✅ **Complete** |
+| [Contacts](contacts.md) | `Contacts` | Client contact management | ✅ **Complete** |
+| [Estimates](estimates.md) | `Estimates`, `EstimateMessages`, `EstimateItemCategories` | Estimates, line items, estimate messages and item categories | ✅ **Complete** |
+| [Expense Categories](expense-categories.md) | `ExpenseCategories` | Expense category management | ✅ **Complete** |
+| [Expenses](expenses.md) | `Expenses` | Expense management, with receipts | ✅ **Complete** |
+| [Invoice Item Categories](invoice-item-categories.md) | `InvoiceItemCategories` | Invoice line item categories | ✅ **Complete** |
+| [Invoice Messages](invoice-messages.md) | `InvoiceMessages` | Sending invoices and changing their state | ✅ **Complete** |
+| [Invoice Payments](invoice-payments.md) | `InvoicePayments` | Invoice payments | ✅ **Complete** |
+| [Invoices](invoices.md) | `Invoices` | Invoices, their line items, and time and expense import | ✅ **Complete** |
+| [Project Task Assignments](project-task-assignments.md) | `ProjectTaskAssignments` | Task assignments, across projects and per project | ✅ **Complete** |
+| [Project User Assignments](project-user-assignments.md) | `ProjectUserAssignments` | User assignments, across projects and per project | ✅ **Complete** |
+| [Projects](projects.md) | `Projects` | Project management | ✅ **Complete** |
+| [PTO (Time Off)](pto.md) | `PtoAllocations`, `PtoAssignments`, `PtoBalances`, `PtoHolidayCalendars`, `PtoRequests`, `PtoTypes`, `PtoWorkSchedules` | Time off requests, policies, balances, holiday calendars, work schedules, assignments and allocations | ✅ **Complete** |
+| [Reports](reports.md) | `Reports` | Time, expense, uninvoiced and project budget reports | ✅ **Complete** |
+| [Roles](roles.md) | `Roles` | Role management | ✅ **Complete** |
+| [Tasks](tasks.md) | `Tasks` | Task management | ✅ **Complete** |
+| [Teammates](teammates.md) | `Teammates` | Teammates of managers | ✅ **Complete** |
+| [Time Entries](time-entries.md) | `TimeEntries` | Time entries, timers and external references | ✅ **Complete** |
+| [User Billable and Cost Rates](user-rates.md) | `BillableRates`, `CostRates` | Dated billable and cost rates per user | ✅ **Complete** |
+| [User Project Assignments](user-project-assignments.md) | `UserProjectAssignments` | A user's (or your own) project assignments | ✅ **Complete** |
+| [Users](users.md) | `Users` | User management, including the current user | ✅ **Complete** |
 
-## Coverage Analysis
+## Coverage
 
-### ✅ Fully Implemented APIs
+Every operation documented in the Harvest API v2 reference (including the gradually rolled-out PTO API and the
+Harvest ID accounts endpoint) is implemented: 32 resource interfaces on `IHarvestClient` with 149 public methods
+between them (plus two hidden `multipart/form-data` helpers behind the expense receipt overloads).
 
-| API | Read Operations | Write Operations | Status |
-|-----|----------------|------------------|--------|
-| **Time Entries** | ✅ List, Get | ✅ Create, Update, Delete, Stop, Restart, Delete external reference | **100% Complete** |
-| **Projects** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
-| **Tasks** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
-| **Clients** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
-| **Project Task Assignments** | ✅ List (all, per project), Get | ✅ Create, Update, Delete | **100% Complete** |
-| **User Project Assignments** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
-| **Company** | ✅ Get | N/A | **100% Complete** |
-| **Estimates** | ✅ List, Get; messages List; item categories List, Get | ✅ Create, Update (line items), Delete; messages Create (events), Delete; item categories Create, Update, Delete | **100% Complete** |
-| **Company** | ✅ Get | ✅ Update | **100% Complete** |
-| **Project User Assignments** | ✅ List (all, per project), Get | ✅ Create, Update, Delete | **100% Complete** |
-| **Roles** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
-| **Teammates** | ✅ List | ✅ Update | **100% Complete** |
-| **Billable Rates / Cost Rates** | ✅ List, Get | ✅ Create | **100% Complete** |
-| **Accounts** | ✅ List | N/A | **100% Complete** |
+- **Unit tests** (`Harvest.UnitTest`): every method's request (verb, path, query and exact JSON body) is pinned against a
+  stub handler, and every response model is read from the sample in Harvest's documentation. Line and branch coverage
+  of the library is 100%. These tests never touch the network.
+- **Live verification is pending.** `Harvest.Test` runs against a real Harvest account and so far covers only clients,
+  company, projects, task assignments, tasks, time entries, user project assignments and users. The newer resources
+  (estimates, expenses, invoices, reports, roles, rates, PTO and the rest) have not yet been exercised against the live
+  API; field lists follow Harvest's documentation, which may differ in detail from what the API sends.
 
-### ⚠️ Partially Implemented APIs
+## Live Test Data Management
 
-| API | Read Operations | Write Operations | Status |
-|-----|----------------|------------------|--------|
-| **Users** | ✅ List, Get, GetMe | ⚠️ Update, Create*, Delete* | **~92% Complete** |
+The live suite (`Harvest.Test`) includes a `TestDataManager` class that:
 
-*Create and Delete operations are implemented but may be restricted in sandbox environments
-
-## Test Data Management
-
-The test suite includes a comprehensive `TestDataManager` class that:
-
-- **Configurable Prefixes**: All test data is prefixed with a configurable string (default: "TEST_")
-- **Dependency Management**: Automatically creates required dependencies (clients → projects → tasks → time entries)
-- **Graceful Fallbacks**: Falls back to existing data when creation fails (common in sandbox environments)
-- **Cleanup**: Automatically tracks and cleans up created test data
-- **Configuration**: Controlled via `appsettings.json` TestSettings section
+- **Configurable Prefixes**: prefixes all test data with a configurable string (default: "TEST_")
+- **Dependency Management**: creates required dependencies (clients → projects → tasks → time entries)
+- **Graceful Fallbacks**: falls back to existing data when creation fails
+- **Cleanup**: tracks and cleans up the data it created
+- **Configuration**: is controlled via the `appsettings.json` `TestSettings` section
 
 ### Test Settings Configuration
 
@@ -85,53 +73,9 @@ The test suite includes a comprehensive `TestDataManager` class that:
 }
 ```
 
-## Implementation Status
+The live suite changes real data in the configured account: never point it at a production account you care about.
 
-**Overall Coverage: ~98%**
+## Contributing
 
-### Missing Functionality (Low Priority)
-
-| Endpoint | Method | Status | Notes |
-|----------|--------|--------|-------|
-| `/v2/users` | `POST` | ⚠️ Implemented | User creation (restricted in sandbox) |
-| `/v2/users/{id}` | `DELETE` | ⚠️ Implemented | User deletion (restricted in sandbox) |
-
-## Test Coverage
-
-- **Total Tests**: 24
-- **Passed**: 24
-- **Failed**: 0
-- **Coverage**: All implemented endpoints have comprehensive unit tests
-- **Test Data Management**: Full CRUD testing with proper setup/teardown
-
-## Implementation Plan
-
-### ✅ Completed Phases
-
-1. **Phase 1**: High Priority - Core CRUD Operations ✅
-   - Projects API: Full CRUD implementation
-   - Tasks API: Full CRUD implementation
-
-2. **Phase 2**: Medium Priority - Assignment Management ✅
-   - Project Task Assignments: Full CRUD implementation
-   - User Project Assignments: Full CRUD implementation
-
-3. **Phase 3**: Low Priority - User Management (Partial) ✅
-   - Users API: Read and Update operations implemented
-   - Clients API: Full CRUD implementation
-
-### Remaining Work (Optional)
-
-- **User Creation/Deletion**: Not implemented due to sandbox environment limitations and low business priority
-
-## Success Criteria Met
-
-- ✅ All high and medium priority APIs fully implemented
-- ✅ Comprehensive unit test coverage (24/24 tests passing)
-- ✅ All endpoints properly documented
-- ✅ Backward compatibility maintained
-- ✅ Proper error handling and validation
-- ✅ CancellationToken support throughout
-- ✅ Configurable test data management with prefixes
-- ✅ Automatic dependency resolution for test data
-- ✅ Graceful handling of sandbox environment limitations
+To add or change a resource, follow [docs/IMPLEMENTING.md](../docs/IMPLEMENTING.md), and keep the resource's page here
+in step with its interface.

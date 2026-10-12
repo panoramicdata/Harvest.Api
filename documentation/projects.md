@@ -35,6 +35,40 @@ Retrieves a single project by ID.
 Task<Project> GetAsync(long id, CancellationToken cancellationToken);
 ```
 
+### Create a Project
+
+**POST** `/v2/projects`
+
+Creates a project. `ClientId`, `Name`, `IsBillable`, `BillBy` and `BudgetBy` are required; optional fields left `null`
+take Harvest's defaults.
+
+**Response:** `Project`
+```csharp
+Task<Project> CreateAsync([Body] ProjectCreationDto creationDto, CancellationToken cancellationToken);
+```
+
+### Update a Project
+
+**PATCH** `/v2/projects/{id}`
+
+Updates a project; fields left `null` are unchanged.
+
+**Response:** `Project`
+```csharp
+Task<Project> UpdateAsync(long id, [Body] ProjectPatchDto patchDto, CancellationToken cancellationToken);
+```
+
+### Delete a Project
+
+**DELETE** `/v2/projects/{id}`
+
+Deletes a project and any time entries or expenses tracked to it (its invoices are kept). Archive it instead
+(`IsActive = false`) to keep them.
+
+```csharp
+System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
+```
+
 ## Implementation Status
 
 | Method | Endpoint | Status | Notes |
@@ -69,26 +103,27 @@ var project = await harvestClient.Projects.GetAsync(12345, cancellationToken);
 public class Project
 {
     public long Id { get; set; }
-    public Client? Client { get; set; }
-    public required string Name { get; set; }
+    public ClientReference? Client { get; set; }
+    public string? Name { get; set; }
     public string? Code { get; set; }
     public bool IsActive { get; set; }
     public bool IsBillable { get; set; }
     public bool IsFixedFee { get; set; }
-    public required string BillBy { get; set; }
+    public string? BillBy { get; set; }
     public decimal? HourlyRate { get; set; }
+    public string? BudgetBy { get; set; }
+    public bool BudgetIsMonthly { get; set; }
     public decimal? Budget { get; set; }
-    public required string BudgetBy { get; set; }
-    public bool NotifyWhenOverBudget { get; set; }
-    public decimal OverBudgetNotificationPercentage { get; set; }
-    public DateTime? OverBudgetNotificationDate { get; set; }
-    public bool ShowBudgetToAll { get; set; }
     public decimal? CostBudget { get; set; }
     public bool? CostBudgetIncludeExpenses { get; set; }
+    public bool NotifyWhenOverBudget { get; set; }
+    public decimal? OverBudgetNotificationPercentage { get; set; }
+    public DateOnly? OverBudgetNotificationDate { get; set; }
+    public bool ShowBudgetToAll { get; set; }
     public decimal? Fee { get; set; }
     public string? Notes { get; set; }
-    public DateTime? StartsOn { get; set; }
-    public DateTime? EndsOn { get; set; }
+    public DateOnly? StartsOn { get; set; }
+    public DateOnly? EndsOn { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }

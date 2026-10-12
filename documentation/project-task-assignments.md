@@ -41,6 +41,47 @@ Task<ProjectTaskAssignmentsContainer> ListAsync(
 );
 ```
 
+### Get a Task Assignment
+
+**GET** `/v2/projects/{projectId}/task_assignments/{id}`
+
+**Response:** `ProjectTaskAssignment`
+```csharp
+Task<ProjectTaskAssignment> GetAsync(long projectId, long id, CancellationToken cancellationToken);
+```
+
+### Create a Task Assignment
+
+**POST** `/v2/projects/{projectId}/task_assignments`
+
+Assigns a task to a project. `TaskId` is required; optional fields left `null` take Harvest's defaults.
+
+**Response:** `ProjectTaskAssignment`
+```csharp
+Task<ProjectTaskAssignment> CreateAsync(long projectId, [Body] ProjectTaskAssignmentCreationDto creationDto, CancellationToken cancellationToken);
+```
+
+### Update a Task Assignment
+
+**PATCH** `/v2/projects/{projectId}/task_assignments/{id}`
+
+Updates a task assignment; fields left `null` are unchanged.
+
+**Response:** `ProjectTaskAssignment`
+```csharp
+Task<ProjectTaskAssignment> UpdateAsync(long projectId, long id, [Body] ProjectTaskAssignmentPatchDto patchDto, CancellationToken cancellationToken);
+```
+
+### Delete a Task Assignment
+
+**DELETE** `/v2/projects/{projectId}/task_assignments/{id}`
+
+Deletes a task assignment. Harvest refuses to delete one that has time entries.
+
+```csharp
+System.Threading.Tasks.Task DeleteAsync(long projectId, long id, CancellationToken cancellationToken);
+```
+
 ## Implementation Status
 
 | Method | Endpoint | Status | Notes |
@@ -73,7 +114,8 @@ var active = await harvestClient.ProjectTaskAssignments.ListAsync(new ListOption
 public class ProjectTaskAssignment
 {
     public long Id { get; set; }
-    public Task? Task { get; set; }
+    public ProjectReference? Project { get; set; }
+    public TaskReference? Task { get; set; }
     public bool IsActive { get; set; }
     public bool Billable { get; set; }
     public decimal? HourlyRate { get; set; }

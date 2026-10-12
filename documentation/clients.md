@@ -43,10 +43,10 @@ Creates a new client.
 
 **Request Body:** `ClientCreationDto`
 ```csharp
-public class ClientCreationDto
+public class ClientCreationDto : CreationDto
 {
     public required string Name { get; set; }
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
     public string? Address { get; set; }
     public string? Currency { get; set; }
 }
@@ -54,7 +54,7 @@ public class ClientCreationDto
 
 **Response:** `Client`
 ```csharp
-Task<Client> CreateAsync(ClientCreationDto creationDto, CancellationToken cancellationToken);
+Task<Client> CreateAsync([Body] ClientCreationDto creationDto, CancellationToken cancellationToken);
 ```
 
 ### Update a Client
@@ -68,7 +68,7 @@ Updates an existing client.
 
 **Request Body:** `ClientPatchDto`
 ```csharp
-public class ClientPatchDto
+public class ClientPatchDto : PatchDto
 {
     public string? Name { get; set; }
     public bool? IsActive { get; set; }
@@ -81,7 +81,7 @@ public class ClientPatchDto
 ```csharp
 Task<Client> UpdateAsync(
     long id,
-    ClientPatchDto patchDto,
+    [Body] ClientPatchDto patchDto,
     CancellationToken cancellationToken
 );
 ```
@@ -97,7 +97,7 @@ Deletes a client.
 
 **Response:** `Task`
 ```csharp
-Task DeleteAsync(long id, CancellationToken cancellationToken);
+System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
 ```
 
 ## Implementation Status
@@ -146,9 +146,10 @@ await harvestClient.Clients.DeleteAsync(clientId, cancellationToken);
 public class Client
 {
     public long Id { get; set; }
-    public required string Name { get; set; }
+    public string? Name { get; set; }
     public bool IsActive { get; set; }
     public string? Address { get; set; }
+    public string? StatementKey { get; set; }
     public string? Currency { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

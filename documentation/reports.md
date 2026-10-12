@@ -68,6 +68,9 @@ Task<ReportResultsContainer<TimeReportResult>> GetTeamTimeReportAsync([Query] Ti
 **Response:** `ReportResultsContainer<ExpenseReportResult>`
 ```csharp
 Task<ReportResultsContainer<ExpenseReportResult>> GetClientExpenseReportAsync([Query] ReportOptions options, CancellationToken cancellationToken);
+Task<ReportResultsContainer<ExpenseReportResult>> GetProjectExpenseReportAsync([Query] ReportOptions options, CancellationToken cancellationToken);
+Task<ReportResultsContainer<ExpenseReportResult>> GetExpenseCategoryExpenseReportAsync([Query] ReportOptions options, CancellationToken cancellationToken);
+Task<ReportResultsContainer<ExpenseReportResult>> GetTeamExpenseReportAsync([Query] ReportOptions options, CancellationToken cancellationToken);
 ```
 
 ### Uninvoiced Report

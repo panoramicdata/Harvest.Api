@@ -39,7 +39,7 @@ Task<ExpenseCategory> GetAsync(long id, CancellationToken cancellationToken);
 
 **Request Body:** `ExpenseCategoryCreationDto`
 ```csharp
-public class ExpenseCategoryCreationDto
+public class ExpenseCategoryCreationDto : CreationDto
 {
     public required string Name { get; set; }
     public string? UnitName { get; set; }
@@ -50,7 +50,7 @@ public class ExpenseCategoryCreationDto
 
 **Response:** `ExpenseCategory`
 ```csharp
-Task<ExpenseCategory> CreateAsync(ExpenseCategoryCreationDto creationDto, CancellationToken cancellationToken);
+Task<ExpenseCategory> CreateAsync([Body] ExpenseCategoryCreationDto creationDto, CancellationToken cancellationToken);
 ```
 
 ### Update an Expense Category
@@ -61,7 +61,7 @@ Fields left `null` are not sent and stay unchanged.
 
 **Request Body:** `ExpenseCategoryPatchDto`
 ```csharp
-public class ExpenseCategoryPatchDto
+public class ExpenseCategoryPatchDto : PatchDto
 {
     public string? Name { get; set; }
     public string? UnitName { get; set; }
@@ -72,7 +72,7 @@ public class ExpenseCategoryPatchDto
 
 **Response:** `ExpenseCategory`
 ```csharp
-Task<ExpenseCategory> UpdateAsync(long id, ExpenseCategoryPatchDto patchDto, CancellationToken cancellationToken);
+Task<ExpenseCategory> UpdateAsync(long id, [Body] ExpenseCategoryPatchDto patchDto, CancellationToken cancellationToken);
 ```
 
 ### Delete an Expense Category
@@ -80,7 +80,7 @@ Task<ExpenseCategory> UpdateAsync(long id, ExpenseCategoryPatchDto patchDto, Can
 **DELETE** `/v2/expense_categories/{id}`
 
 ```csharp
-Task DeleteAsync(long id, CancellationToken cancellationToken);
+System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
 ```
 
 ## Implementation Status
