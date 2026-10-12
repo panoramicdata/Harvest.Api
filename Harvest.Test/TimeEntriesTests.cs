@@ -49,8 +49,8 @@ public class TimeEntriesTests(ITestOutputHelper testOutputHelper) : HarvestTest(
 	private async Task<TimeEntry?> CreateTimeEntryAsync()
 	{
 		var currentUser = await HarvestClient.Users.GetMeAsync(CancellationToken);
-		var client = await CreateTestClientAsync("TimeEntry");
-		var project = await CreateTestProjectAsync(client.Id, "TimeEntry");
+		var client = await CreateTestClientAsync("TimeEntry", address: null);
+		var project = await CreateTestProjectAsync(client.Id, "TimeEntry", notes: null);
 		var task = await CreateTestTaskAsync("TimeEntry", defaultHourlyRate: 75.00m);
 		_ = await CreateTestTaskAssignmentAsync(project.Id, task.Id, hourlyRate: 75.00m);
 

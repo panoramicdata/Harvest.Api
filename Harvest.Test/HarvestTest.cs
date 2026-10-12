@@ -85,7 +85,7 @@ public abstract class HarvestTest : IAsyncLifetime
 	}
 
 	/// <summary>Creates a prefixed client and tracks it for deletion.</summary>
-	protected async Task<Client> CreateTestClientAsync(string purpose, string? address = null)
+	protected async Task<Client> CreateTestClientAsync(string purpose, string? address)
 	{
 		var client = await HarvestClient.Clients.CreateAsync(new ClientCreationDto
 		{
@@ -99,7 +99,7 @@ public abstract class HarvestTest : IAsyncLifetime
 	}
 
 	/// <summary>Creates a prefixed, billable project under a client and tracks it for deletion.</summary>
-	protected async Task<Project> CreateTestProjectAsync(long clientId, string purpose, string? notes = null)
+	protected async Task<Project> CreateTestProjectAsync(long clientId, string purpose, string? notes)
 	{
 		var project = await HarvestClient.Projects.CreateAsync(new ProjectCreationDto
 		{

@@ -47,8 +47,8 @@ public class ProjectTaskAssignmentTests(ITestOutputHelper testOutputHelper) : Ha
 	public System.Threading.Tasks.Task CreateUpdateDeleteProjectTaskAssignment()
 		=> RunCrudScenarioAsync(async () =>
 		{
-			var client = await CreateTestClientAsync("TaskAssignment");
-			var project = await CreateTestProjectAsync(client.Id, "TaskAssignment");
+			var client = await CreateTestClientAsync("TaskAssignment", address: null);
+			var project = await CreateTestProjectAsync(client.Id, "TaskAssignment", notes: null);
 			var task = await CreateTestTaskAsync("TaskAssignment", defaultHourlyRate: 100.00m);
 
 			var createdAssignment = await CreateTestTaskAssignmentAsync(project.Id, task.Id, hourlyRate: 150.00m);

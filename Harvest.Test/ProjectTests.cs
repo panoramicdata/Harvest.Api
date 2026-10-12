@@ -31,7 +31,7 @@ public class ProjectTests(ITestOutputHelper testOutputHelper) : HarvestTest(test
 	public System.Threading.Tasks.Task CreateUpdateDeleteProject()
 		=> RunCrudScenarioAsync(async () =>
 		{
-			var client = await CreateTestClientAsync("Project");
+			var client = await CreateTestClientAsync("Project", address: null);
 			var createdProject = await CreateTestProjectAsync(client.Id, "CRUD", notes: $"{Prefix}Created via CRUD test");
 			createdProject.Id.Should().BePositive();
 			createdProject.Name.Should().StartWith($"{Prefix}CRUD Test Project");
