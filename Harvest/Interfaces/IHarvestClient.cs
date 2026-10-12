@@ -29,4 +29,7 @@ public interface IHarvestClient : IDisposable
 
 	/// <summary>The project assignments of users.</summary>
 	IUserProjectAssignmentApi UserProjectAssignments { get; }
+
+	/// <summary>PTO work schedules (403 for accounts without the gradually rolled-out PTO API).</summary>
+	IPtoWorkScheduleApi PtoWorkSchedules { get; }
 }
