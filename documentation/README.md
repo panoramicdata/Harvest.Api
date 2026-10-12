@@ -18,6 +18,7 @@ The Harvest API v2 provides RESTful access to Harvest's time tracking and projec
 | [Time Entries](time-entries.md) | Time entry management | ✅ **Complete** |
 | [Users](users.md) | User management | ⚠️ **Mostly Complete** |
 | [User Project Assignments](user-project-assignments.md) | User project assignments | ✅ **Complete** |
+| [PTO (Time Off)](pto.md) | Time off requests, policies, balances, holiday calendars, work schedules, assignments, allocations | ✅ **Complete** |
 
 ## Coverage Analysis
 
