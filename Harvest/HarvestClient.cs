@@ -25,10 +25,18 @@ namespace Harvest;
 /// </remarks>
 public sealed class HarvestClient : IHarvestClient
 {
-	/// <summary>The address every request is sent to.</summary>
+	/// <summary>The address every request is sent to, except those of <see cref="Accounts"/>.</summary>
 	public static Uri BaseAddress { get; } = new("https://api.harvestapp.com");
 
+	/// <summary>
+	/// The Harvest ID address that <see cref="Accounts"/> sends its requests to, without the <c>Harvest-Account-Id</c> header.
+	/// </summary>
+	public static Uri IdBaseAddress { get; } = new("https://id.getharvest.com");
+
 	private readonly HttpClient _httpClient;
+
+	// Shares _httpClient's pipeline (retries and transport) but has its own base address and headers.
+	private readonly HttpClient _idHttpClient;
 
 	/// <summary>Creates a client that sends requests over the network, through <see cref="HarvestClientOptions.ProxyUrl"/> if set.</summary>
 	/// <param name="options">The client options.</param>
@@ -51,33 +59,41 @@ public sealed class HarvestClient : IHarvestClient
 	{
 		ArgumentNullException.ThrowIfNull(innerHandler);
 		Validated(options);
-		_httpClient = CreateHttpClient(options, new RetryHandler(options) { InnerHandler = innerHandler });
+		var pipeline = new RetryHandler(options) { InnerHandler = innerHandler };
+		_httpClient = CreateHttpClient(options, pipeline, forAccount: true);
+		_idHttpClient = CreateHttpClient(options, pipeline, forAccount: false);
+		Accounts = RestService.For<IAccountApi>(_idHttpClient, Settings);
+		BillableRates = For<IBillableRateApi>();
 		Clients = For<IClientApi>();
 		Companies = For<ICompanyApi>();
 		Contacts = For<IContactApi>();
-		ExpenseCategories = For<IExpenseCategoryApi>();
-		Expenses = For<IExpenseApi>();
+		CostRates = For<ICostRateApi>();
 		EstimateItemCategories = For<IEstimateItemCategoryApi>();
 		EstimateMessages = For<IEstimateMessageApi>();
 		Estimates = For<IEstimateApi>();
+		ExpenseCategories = For<IExpenseCategoryApi>();
+		Expenses = For<IExpenseApi>();
 		InvoiceItemCategories = For<IInvoiceItemCategoryApi>();
 		InvoiceMessages = For<IInvoiceMessageApi>();
 		InvoicePayments = For<IInvoicePaymentApi>();
 		Invoices = For<IInvoiceApi>();
-		Projects = For<IProjectApi>();
 		ProjectTaskAssignments = For<IProjectTaskAssignmentApi>();
-		Reports = For<IReportApi>();
-		Tasks = For<ITaskApi>();
-		TimeEntries = For<ITimeEntryApi>();
-		Users = For<IUserApi>();
-		UserProjectAssignments = For<IUserProjectAssignmentApi>();
-		PtoWorkSchedules = For<IPtoWorkScheduleApi>();
-		PtoTypes = For<IPtoTypeApi>();
-		PtoRequests = For<IPtoRequestApi>();
+		ProjectUserAssignments = For<IProjectUserAssignmentApi>();
+		Projects = For<IProjectApi>();
+		PtoAllocations = For<IPtoAllocationApi>();
+		PtoAssignments = For<IPtoAssignmentApi>();
 		PtoBalances = For<IPtoBalanceApi>();
 		PtoHolidayCalendars = For<IPtoHolidayCalendarApi>();
-		PtoAssignments = For<IPtoAssignmentApi>();
-		PtoAllocations = For<IPtoAllocationApi>();
+		PtoRequests = For<IPtoRequestApi>();
+		PtoTypes = For<IPtoTypeApi>();
+		PtoWorkSchedules = For<IPtoWorkScheduleApi>();
+		Reports = For<IReportApi>();
+		Roles = For<IRoleApi>();
+		Tasks = For<ITaskApi>();
+		Teammates = For<ITeammateApi>();
+		TimeEntries = For<ITimeEntryApi>();
+		UserProjectAssignments = For<IUserProjectAssignmentApi>();
+		Users = For<IUserApi>();
 	}
 
 	/// <summary>
@@ -109,6 +125,12 @@ public sealed class HarvestClient : IHarvestClient
 	};
 
 	/// <inheritdoc />
+	public IAccountApi Accounts { get; }
+
+	/// <inheritdoc />
+	public IBillableRateApi BillableRates { get; }
+
+	/// <inheritdoc />
 	public IClientApi Clients { get; }
 
 	/// <inheritdoc />
@@ -118,10 +140,7 @@ public sealed class HarvestClient : IHarvestClient
 	public IContactApi Contacts { get; }
 
 	/// <inheritdoc />
-	public IExpenseCategoryApi ExpenseCategories { get; }
-
-	/// <inheritdoc />
-	public IExpenseApi Expenses { get; }
+	public ICostRateApi CostRates { get; }
 
 	/// <inheritdoc />
 	public IEstimateItemCategoryApi EstimateItemCategories { get; }
@@ -131,6 +150,12 @@ public sealed class HarvestClient : IHarvestClient
 
 	/// <inheritdoc />
 	public IEstimateApi Estimates { get; }
+
+	/// <inheritdoc />
+	public IExpenseCategoryApi ExpenseCategories { get; }
+
+	/// <inheritdoc />
+	public IExpenseApi Expenses { get; }
 
 	/// <inheritdoc />
 	public IInvoiceItemCategoryApi InvoiceItemCategories { get; }
@@ -145,34 +170,19 @@ public sealed class HarvestClient : IHarvestClient
 	public IInvoiceApi Invoices { get; }
 
 	/// <inheritdoc />
-	public IProjectApi Projects { get; }
-
-	/// <inheritdoc />
 	public IProjectTaskAssignmentApi ProjectTaskAssignments { get; }
 
 	/// <inheritdoc />
-	public IReportApi Reports { get; }
+	public IProjectUserAssignmentApi ProjectUserAssignments { get; }
 
 	/// <inheritdoc />
-	public ITaskApi Tasks { get; }
+	public IProjectApi Projects { get; }
 
 	/// <inheritdoc />
-	public ITimeEntryApi TimeEntries { get; }
+	public IPtoAllocationApi PtoAllocations { get; }
 
 	/// <inheritdoc />
-	public IUserApi Users { get; }
-
-	/// <inheritdoc />
-	public IUserProjectAssignmentApi UserProjectAssignments { get; }
-
-	/// <inheritdoc />
-	public IPtoWorkScheduleApi PtoWorkSchedules { get; }
-
-	/// <inheritdoc />
-	public IPtoTypeApi PtoTypes { get; }
-
-	/// <inheritdoc />
-	public IPtoRequestApi PtoRequests { get; }
+	public IPtoAssignmentApi PtoAssignments { get; }
 
 	/// <inheritdoc />
 	public IPtoBalanceApi PtoBalances { get; }
@@ -181,13 +191,41 @@ public sealed class HarvestClient : IHarvestClient
 	public IPtoHolidayCalendarApi PtoHolidayCalendars { get; }
 
 	/// <inheritdoc />
-	public IPtoAssignmentApi PtoAssignments { get; }
+	public IPtoRequestApi PtoRequests { get; }
 
 	/// <inheritdoc />
-	public IPtoAllocationApi PtoAllocations { get; }
+	public IPtoTypeApi PtoTypes { get; }
 
 	/// <inheritdoc />
-	public void Dispose() => _httpClient.Dispose();
+	public IPtoWorkScheduleApi PtoWorkSchedules { get; }
+
+	/// <inheritdoc />
+	public IReportApi Reports { get; }
+
+	/// <inheritdoc />
+	public IRoleApi Roles { get; }
+
+	/// <inheritdoc />
+	public ITaskApi Tasks { get; }
+
+	/// <inheritdoc />
+	public ITeammateApi Teammates { get; }
+
+	/// <inheritdoc />
+	public ITimeEntryApi TimeEntries { get; }
+
+	/// <inheritdoc />
+	public IUserProjectAssignmentApi UserProjectAssignments { get; }
+
+	/// <inheritdoc />
+	public IUserApi Users { get; }
+
+	/// <inheritdoc />
+	public void Dispose()
+	{
+		_idHttpClient.Dispose();
+		_httpClient.Dispose();
+	}
 
 	private T For<T>() => RestService.For<T>(_httpClient, Settings);
 
@@ -212,16 +250,22 @@ public sealed class HarvestClient : IHarvestClient
 			UseDefaultCredentials = false,
 		};
 
-	private static HttpClient CreateHttpClient(HarvestClientOptions options, HttpMessageHandler pipeline)
+	// The account client (api.harvestapp.com) owns the shared pipeline and sends Harvest-Account-Id; the Harvest ID client
+	// (id.getharvest.com) does neither.
+	private static HttpClient CreateHttpClient(HarvestClientOptions options, HttpMessageHandler pipeline, bool forAccount)
 	{
-		var httpClient = new HttpClient(pipeline, disposeHandler: true)
+		var httpClient = new HttpClient(pipeline, disposeHandler: forAccount)
 		{
-			BaseAddress = BaseAddress,
+			BaseAddress = forAccount ? BaseAddress : IdBaseAddress,
 			Timeout = options.Timeout
 		};
 		var headers = httpClient.DefaultRequestHeaders;
 		headers.Authorization = new AuthenticationHeaderValue("Bearer", options.AccessToken);
-		headers.Add("Harvest-Account-Id", options.AccountId.ToString(CultureInfo.InvariantCulture));
+		if (forAccount)
+		{
+			headers.Add("Harvest-Account-Id", options.AccountId.ToString(CultureInfo.InvariantCulture));
+		}
+
 		// Harvest asks for "AppName (contact)", which is not a strict RFC 9110 product list, so it is not validated.
 		_ = headers.TryAddWithoutValidation("User-Agent", options.UserAgent ?? DefaultUserAgent);
 		headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

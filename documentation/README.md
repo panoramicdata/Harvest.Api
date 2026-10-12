@@ -10,6 +10,7 @@ The Harvest API v2 provides RESTful access to Harvest's time tracking and projec
 
 | API | Description | Status |
 |-----|-------------|--------|
+| [Accounts](accounts.md) | Accounts reachable by the token (Harvest ID) | ✅ **Complete** |
 | [Clients](clients.md) | Client management | ✅ **Complete** |
 | [Company](company.md) | Company information | ✅ **Complete** |
 | [Client Contacts](contacts.md) | Client contact management | ✅ **Complete** |
@@ -23,11 +24,15 @@ The Harvest API v2 provides RESTful access to Harvest's time tracking and projec
 | [Projects](projects.md) | Project management | ✅ **Complete** |
 | [Project Task Assignments](project-task-assignments.md) | Task assignments per project | ✅ **Complete** |
 | [Reports](reports.md) | Time, expense, uninvoiced and project budget reports | ✅ **Complete** |
+| [Project User Assignments](project-user-assignments.md) | User assignments per project | ✅ **Complete** |
+| [Roles](roles.md) | Role management | ✅ **Complete** |
 | [Tasks](tasks.md) | Task management | ✅ **Complete** |
+| [Teammates](teammates.md) | Teammates of managers | ✅ **Complete** |
 | [Time Entries](time-entries.md) | Time entry management | ✅ **Complete** |
 | [Users](users.md) | User management | ⚠️ **Mostly Complete** |
 | [User Project Assignments](user-project-assignments.md) | User project assignments | ✅ **Complete** |
 | [PTO (Time Off)](pto.md) | Time off requests, policies, balances, holiday calendars, work schedules, assignments, allocations | ✅ **Complete** |
+| [User Billable and Cost Rates](user-rates.md) | Dated billable and cost rates per user | ✅ **Complete** |
 
 ## Coverage Analysis
 
@@ -35,14 +40,20 @@ The Harvest API v2 provides RESTful access to Harvest's time tracking and projec
 
 | API | Read Operations | Write Operations | Status |
 |-----|----------------|------------------|--------|
-| **Time Entries** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
+| **Time Entries** | ✅ List, Get | ✅ Create, Update, Delete, Stop, Restart, Delete external reference | **100% Complete** |
 | **Projects** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
 | **Tasks** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
 | **Clients** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
-| **Project Task Assignments** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
+| **Project Task Assignments** | ✅ List (all, per project), Get | ✅ Create, Update, Delete | **100% Complete** |
 | **User Project Assignments** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
 | **Company** | ✅ Get | N/A | **100% Complete** |
 | **Estimates** | ✅ List, Get; messages List; item categories List, Get | ✅ Create, Update (line items), Delete; messages Create (events), Delete; item categories Create, Update, Delete | **100% Complete** |
+| **Company** | ✅ Get | ✅ Update | **100% Complete** |
+| **Project User Assignments** | ✅ List (all, per project), Get | ✅ Create, Update, Delete | **100% Complete** |
+| **Roles** | ✅ List, Get | ✅ Create, Update, Delete | **100% Complete** |
+| **Teammates** | ✅ List | ✅ Update | **100% Complete** |
+| **Billable Rates / Cost Rates** | ✅ List, Get | ✅ Create | **100% Complete** |
+| **Accounts** | ✅ List | N/A | **100% Complete** |
 
 ### ⚠️ Partially Implemented APIs
 

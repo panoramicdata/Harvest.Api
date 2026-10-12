@@ -69,7 +69,6 @@ public class HarvestClientTests
 	{
 		using var client = new HarvestClient(TestClient.Options());
 
-		client.Clients.Should().NotBeNull();
 	}
 
 	[Fact]
@@ -115,7 +114,7 @@ public class HarvestClientTests
 			.Select(p => $"{p.PropertyType.Name} {p.Name}");
 
 		ApiProperties(typeof(IHarvestClient)).Should().BeEquivalentTo(ApiProperties(typeof(HarvestClient)));
-		ApiProperties(typeof(IHarvestClient)).Should().HaveCount(26);
+		ApiProperties(typeof(IHarvestClient)).Should().HaveCount(32);
 	}
 
 	[Fact]
@@ -124,28 +123,38 @@ public class HarvestClientTests
 		using var client = TestClient.Create(new StubHandler());
 
 		client.Should().BeAssignableTo<IHarvestClient>();
+		client.Accounts.Should().NotBeNull();
+		client.BillableRates.Should().NotBeNull();
 		client.Clients.Should().NotBeNull();
 		client.Companies.Should().NotBeNull();
 		client.Contacts.Should().NotBeNull();
-		client.ExpenseCategories.Should().NotBeNull();
-		client.Expenses.Should().NotBeNull();
+		client.CostRates.Should().NotBeNull();
 		client.EstimateItemCategories.Should().NotBeNull();
 		client.EstimateMessages.Should().NotBeNull();
 		client.Estimates.Should().NotBeNull();
-		client.Projects.Should().NotBeNull();
+		client.ExpenseCategories.Should().NotBeNull();
+		client.Expenses.Should().NotBeNull();
+		client.InvoiceItemCategories.Should().NotBeNull();
+		client.InvoiceMessages.Should().NotBeNull();
+		client.InvoicePayments.Should().NotBeNull();
+		client.Invoices.Should().NotBeNull();
 		client.ProjectTaskAssignments.Should().NotBeNull();
-		client.Reports.Should().NotBeNull();
-		client.Tasks.Should().NotBeNull();
-		client.TimeEntries.Should().NotBeNull();
-		client.Users.Should().NotBeNull();
-		client.UserProjectAssignments.Should().NotBeNull();
-		client.PtoWorkSchedules.Should().NotBeNull();
-		client.PtoTypes.Should().NotBeNull();
-		client.PtoRequests.Should().NotBeNull();
+		client.ProjectUserAssignments.Should().NotBeNull();
+		client.Projects.Should().NotBeNull();
+		client.PtoAllocations.Should().NotBeNull();
+		client.PtoAssignments.Should().NotBeNull();
 		client.PtoBalances.Should().NotBeNull();
 		client.PtoHolidayCalendars.Should().NotBeNull();
-		client.PtoAssignments.Should().NotBeNull();
-		client.PtoAllocations.Should().NotBeNull();
+		client.PtoRequests.Should().NotBeNull();
+		client.PtoTypes.Should().NotBeNull();
+		client.PtoWorkSchedules.Should().NotBeNull();
+		client.Reports.Should().NotBeNull();
+		client.Roles.Should().NotBeNull();
+		client.Tasks.Should().NotBeNull();
+		client.Teammates.Should().NotBeNull();
+		client.TimeEntries.Should().NotBeNull();
+		client.UserProjectAssignments.Should().NotBeNull();
+		client.Users.Should().NotBeNull();
 	}
 
 	[Fact]

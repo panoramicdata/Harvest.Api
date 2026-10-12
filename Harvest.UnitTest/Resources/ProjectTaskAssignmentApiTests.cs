@@ -10,12 +10,73 @@ public class ProjectTaskAssignmentApiTests
 		"task":{"id":8083369,"name":"Research"}}
 		""";
 
+	private static readonly ListOptions EveryOption = new()
+	{
+		IsActive = true,
+		UpdatedSince = new DateTimeOffset(2017, 6, 26, 21, 52, 18, TimeSpan.Zero),
+		Cursor = "abc",
+		Page = 2,
+		PerPage = 100
+	};
+
+	private const string EveryOptionQuery = "?is_active=true&updated_since=2017-06-26T21%3A52%3A18Z&cursor=abc&page=2&per_page=100";
+
 	[Fact]
 	public async Task ListAsync_SendsGetWithOptions()
 	{
 		var call = await TestClient.SendAsync((c, ct) => c.ProjectTaskAssignments.ListAsync(14308069, new ListOptions { IsActive = true, PerPage = 5 }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/projects/14308069/task_assignments", "?is_active=true&per_page=5");
+	}
+
+	[Fact]
+	public async Task ListAsync_ForProject_NullOptions_SendsNoQuery()
+	{
+		var call = await TestClient.SendAsync((c, ct) => c.ProjectTaskAssignments.ListAsync(14308069, null, ct));
+
+		call.ShouldBe(HttpMethod.Get, "/v2/projects/14308069/task_assignments");
+	}
+
+	[Fact]
+	public async Task ListAsync_ForProject_SendsEveryOption()
+	{
+		var call = await TestClient.SendAsync((c, ct) => c.ProjectTaskAssignments.ListAsync(14308069, EveryOption, ct));
+
+		call.ShouldBe(HttpMethod.Get, "/v2/projects/14308069/task_assignments", EveryOptionQuery);
+	}
+
+	[Fact]
+	public async Task ListAsync_AllProjects_NullOptions_SendsNoQuery()
+	{
+		var call = await TestClient.SendAsync((c, ct) => c.ProjectTaskAssignments.ListAsync(null, ct));
+
+		call.ShouldBe(HttpMethod.Get, "/v2/task_assignments");
+	}
+
+	[Fact]
+	public async Task ListAsync_AllProjects_SendsEveryOption()
+	{
+		var call = await TestClient.SendAsync((c, ct) => c.ProjectTaskAssignments.ListAsync(EveryOption, ct));
+
+		call.ShouldBe(HttpMethod.Get, "/v2/task_assignments", EveryOptionQuery);
+	}
+
+	[Fact]
+	public async Task ListAsync_AllProjects_ReadsTheTaskAssignmentsKey()
+	{
+		var page = await TestClient.ReadAsync((c, ct) => c.ProjectTaskAssignments.ListAsync(null, ct), $$$"""
+			{"task_assignments":[{{{AssignmentJson}}},
+			{"id":160726647,"billable":false,"is_active":true,"created_at":"2017-08-22T17:36:54Z","updated_at":"2017-08-22T17:36:54Z",
+			"hourly_rate":100.0,"budget":null,"project":{"id":14808188,"name":"Task Force","code":"TF"},"task":{"id":8083369,"name":"Research"}}],
+			"per_page":2000,"total_pages":1,"total_entries":2,"next_page":null,"previous_page":null,"page":1,
+			"links":{"first":"https://api.harvestapp.com/v2/task_assignments?page=1&per_page=2000","next":null,"previous":null,
+			"last":"https://api.harvestapp.com/v2/task_assignments?page=1&per_page=2000"}}
+			""");
+
+		page.TaskAssignments.Should().HaveCount(2);
+		ShouldBeTheAssignment(page.TaskAssignments[0]);
+		page.TaskAssignments[1].Project!.Name.Should().Be("Task Force");
+		page.TotalEntries.Should().Be(2);
 	}
 
 	[Fact]

@@ -134,32 +134,38 @@ The `HarvestClient` (and `IHarvestClient`) provides access to the following API 
 
 | Property | Description |
 |----------|-------------|
+| `Accounts` | List the accounts the access token can reach (Harvest ID) |
+| `BillableRates` | List and create users' billable rates |
 | `Clients` | Manage clients |
-| `Companies` | Access company information |
+| `Companies` | Get and update company settings |
 | `Contacts` | Manage client contacts |
-| `ExpenseCategories` | Manage expense categories |
-| `Expenses` | Manage expenses and their receipts |
+| `CostRates` | List and create users' cost rates |
 | `EstimateItemCategories` | Manage estimate item categories |
 | `EstimateMessages` | Send estimate messages and mark estimates sent, accepted, declined or re-opened |
 | `Estimates` | Manage estimates and their line items |
+| `ExpenseCategories` | Manage expense categories |
+| `Expenses` | Manage expenses and their receipts |
 | `InvoiceItemCategories` | Manage invoice item categories |
 | `InvoiceMessages` | Send invoices and mark them sent, closed, re-opened or draft |
 | `InvoicePayments` | Record and delete invoice payments |
 | `Invoices` | Manage invoices and their line items |
-| `Projects` | Manage projects |
 | `ProjectTaskAssignments` | Manage task assignments for projects |
-| `Reports` | Time, expense, uninvoiced and project budget reports (100 requests per 15 minutes) |
-| `Tasks` | Manage tasks |
-| `TimeEntries` | Create, update, and delete time entries |
-| `Users` | Manage users |
-| `UserProjectAssignments` | List project assignments for users |
-| `PtoWorkSchedules` | PTO work schedules (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
-| `PtoTypes` | PTO time off policies (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
-| `PtoRequests` | PTO time off requests: create, approve, decline, cancel (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
+| `ProjectUserAssignments` | Manage user assignments for projects |
+| `Projects` | Manage projects |
+| `PtoAllocations` | PTO per-user allocations (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
+| `PtoAssignments` | PTO holiday calendar and work schedule assignments (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
 | `PtoBalances` | PTO time off balances (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
 | `PtoHolidayCalendars` | PTO holiday calendars and entries (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
-| `PtoAssignments` | PTO holiday calendar and work schedule assignments (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
-| `PtoAllocations` | PTO per-user allocations (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
+| `PtoRequests` | PTO time off requests: create, approve, decline, cancel (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
+| `PtoTypes` | PTO time off policies (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
+| `PtoWorkSchedules` | PTO work schedules (see [PTO](documentation/pto.md); 403 for accounts without the PTO API) |
+| `Reports` | Time, expense, uninvoiced and project budget reports (100 requests per 15 minutes) |
+| `Roles` | Manage roles |
+| `Tasks` | Manage tasks |
+| `Teammates` | List and replace managers' teammates |
+| `TimeEntries` | Create, update, delete, stop and restart time entries |
+| `UserProjectAssignments` | List project assignments for users |
+| `Users` | Manage users |
 
 Contributors adding resources should follow [docs/IMPLEMENTING.md](docs/IMPLEMENTING.md).
 

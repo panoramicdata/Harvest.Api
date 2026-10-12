@@ -38,4 +38,25 @@ public interface ITimeEntryApi
 	/// <returns>A task that completes when the time entry is deleted.</returns>
 	[Delete("/v2/time_entries/{id}")]
 	System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
+
+	/// <summary>Deletes a time entry's external reference, leaving the time entry itself in place.</summary>
+	/// <param name="id">The time entry ID.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>A task that completes when the external reference is deleted.</returns>
+	[Delete("/v2/time_entries/{id}/external_reference")]
+	System.Threading.Tasks.Task DeleteExternalReferenceAsync(long id, CancellationToken cancellationToken);
+
+	/// <summary>Restarts a stopped time entry's timer. Only possible while the time entry is not running.</summary>
+	/// <param name="id">The time entry ID.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The running time entry.</returns>
+	[Patch("/v2/time_entries/{id}/restart")]
+	Task<TimeEntry> RestartAsync(long id, CancellationToken cancellationToken);
+
+	/// <summary>Stops a running time entry's timer. Only possible while the time entry is running.</summary>
+	/// <param name="id">The time entry ID.</param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The stopped time entry.</returns>
+	[Patch("/v2/time_entries/{id}/stop")]
+	Task<TimeEntry> StopAsync(long id, CancellationToken cancellationToken);
 }
