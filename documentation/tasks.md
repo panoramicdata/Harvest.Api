@@ -12,13 +12,13 @@ Retrieves a list of all tasks for the authenticated account.
 
 **Parameters:**
 - `options` (ListOptions?): Filtering and paging options; pass `null` to send no query parameters
-  - `UpdatedSince` (DateTime?, sent as `updated_since`): Only return tasks that have been updated since the given date
+  - `UpdatedSince` (DateTimeOffset?, sent as `updated_since` in ISO 8601 UTC): Only return tasks that have been updated since the given date
   - `Page` (int?, sent as `page`): The page number to use in pagination (default: 1)
-  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 100, range: 1-2000)
+  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 2000, range: 1-2000)
 
 **Response:** `TasksContainer`
 ```csharp
-Task<TasksContainer> ListAllAsync([Query] ListOptions? options, CancellationToken cancellationToken);
+Task<TasksContainer> ListAsync([Query] ListOptions? options, CancellationToken cancellationToken);
 ```
 
 ### Get a Task
@@ -53,7 +53,7 @@ All task management operations are now implemented in the Harvest API client.
 
 ```csharp
 // List all tasks
-var tasks = await harvestClient.Tasks.ListAllAsync(null, cancellationToken);
+var tasks = await harvestClient.Tasks.ListAsync(null, cancellationToken);
 
 // Get a specific task
 var task = await harvestClient.Tasks.GetAsync(12345, cancellationToken);

@@ -12,13 +12,13 @@ Retrieves a list of all clients for the authenticated account.
 
 **Parameters:**
 - `options` (ListOptions?): Filtering and paging options; pass `null` to send no query parameters
-  - `UpdatedSince` (DateTime?, sent as `updated_since`): Only return clients that have been updated since the given date
+  - `UpdatedSince` (DateTimeOffset?, sent as `updated_since` in ISO 8601 UTC): Only return clients that have been updated since the given date
   - `Page` (int?, sent as `page`): The page number to use in pagination (default: 1)
-  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 100, range: 1-2000)
+  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 2000, range: 1-2000)
 
 **Response:** `ClientsContainer`
 ```csharp
-Task<ClientsContainer> ListAllAsync([Query] ListOptions? options, CancellationToken cancellationToken);
+Task<ClientsContainer> ListAsync([Query] ListOptions? options, CancellationToken cancellationToken);
 ```
 
 ### Get a Client
@@ -114,10 +114,10 @@ Task DeleteAsync(long id, CancellationToken cancellationToken);
 
 ```csharp
 // List all clients
-var clients = await harvestClient.Clients.ListAllAsync(null, cancellationToken);
+var clients = await harvestClient.Clients.ListAsync(null, cancellationToken);
 
 // List the second page of clients, 50 at a time
-var page2 = await harvestClient.Clients.ListAllAsync(new ListOptions { Page = 2, PerPage = 50 }, cancellationToken);
+var page2 = await harvestClient.Clients.ListAsync(new ListOptions { Page = 2, PerPage = 50 }, cancellationToken);
 
 // Get a specific client
 var client = await harvestClient.Clients.GetAsync(12345, cancellationToken);

@@ -1,6 +1,6 @@
 # Time Entries API
 
-The Time Entries API provides comprehensive time tracking functionality in Harvest.
+The Time Entries API provides time tracking in Harvest.
 
 ## Endpoints
 
@@ -8,36 +8,24 @@ The Time Entries API provides comprehensive time tracking functionality in Harve
 
 **GET** `/v2/time_entries`
 
-Retrieves a list of time entries with extensive filtering options.
-
 **Parameters:**
 - `options` (TimeEntryListOptions?): Filtering and paging options; pass `null` to send no query parameters
-  - `UserId` (long?, sent as `user_id`): Only return time entries belonging to the user with the given ID
-  - `ClientId` (long?, sent as `client_id`): Only return time entries belonging to the client with the given ID
-  - `ProjectId` (long?, sent as `project_id`): Only return time entries belonging to the project with the given ID
-  - `IsBilled` (bool?, sent as `is_billed`): Pass `true` to only return time entries that have been invoiced, `false` for those that have not
-  - `IsRunning` (bool?, sent as `is_running`): Pass `true` to only return running time entries, `false` for stopped ones
-  - `UpdatedSince` (DateTime?, sent as `updated_since`): Only return time entries that have been updated since the given date
-  - `From` (string?, sent as `from`): Only return time entries with a `spent_date` on or after the given date (`YYYY-MM-DD`)
-  - `To` (string?, sent as `to`): Only return time entries with a `spent_date` on or before the given date (`YYYY-MM-DD`)
-  - `Page` (int?, sent as `page`): The page number to use in pagination (default: 1)
-  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 100, range: 1-2000)
+  - `UserId`, `ClientId`, `ProjectId`, `TaskId` (long?, sent as `user_id`, `client_id`, `project_id`, `task_id`)
+  - `ExternalReferenceId` (string?, sent as `external_reference_id`)
+  - `IsBilled`, `IsRunning` (bool?, sent as `is_billed`, `is_running`)
+  - `ApprovalStatus` (string?, sent as `approval_status`): one of the `ApprovalStatus` constants
+  - `From`, `To` (DateOnly?, sent as `from`, `to` in `YYYY-MM-DD`)
+  - `UpdatedSince` (DateTimeOffset?, sent as `updated_since` in ISO 8601 UTC)
+  - `Cursor`, `Page`, `PerPage` (paging; cursor paging is preferred, see `ListOptions`)
 
-**Response:** `TimeEntriesContainer`
 ```csharp
-Task<TimeEntriesContainer> ListAllAsync([Query] TimeEntryListOptions? options, CancellationToken cancellationToken);
+Task<TimeEntriesContainer> ListAsync([Query] TimeEntryListOptions? options, CancellationToken cancellationToken);
 ```
 
 ### Get a Time Entry
 
 **GET** `/v2/time_entries/{id}`
 
-Retrieves a single time entry by ID.
-
-**Parameters:**
-- `id` (long): The ID of the time entry to retrieve
-
-**Response:** `TimeEntry`
 ```csharp
 Task<TimeEntry> GetAsync(long id, CancellationToken cancellationToken);
 ```
@@ -46,11 +34,6 @@ Task<TimeEntry> GetAsync(long id, CancellationToken cancellationToken);
 
 **POST** `/v2/time_entries`
 
-Creates a new time entry.
-
-**Request Body:** `TimeEntryCreationDto`
-
-**Response:** `TimeEntry`
 ```csharp
 Task<TimeEntry> CreateAsync(TimeEntryCreationDto creationDto, CancellationToken cancellationToken);
 ```
@@ -59,142 +42,63 @@ Task<TimeEntry> CreateAsync(TimeEntryCreationDto creationDto, CancellationToken 
 
 **PATCH** `/v2/time_entries/{id}`
 
-Updates an existing time entry.
-
-**Request Body:** `TimeEntryPatchDto`
-
-**Response:** `TimeEntry`
 ```csharp
-Task<TimeEntry> PatchAsync(long id, TimeEntryPatchDto patchDto, CancellationToken cancellationToken);
+Task<TimeEntry> UpdateAsync(long id, TimeEntryPatchDto patchDto, CancellationToken cancellationToken);
 ```
 
 ### Delete a Time Entry
 
 **DELETE** `/v2/time_entries/{id}`
 
-Deletes a time entry.
-
-**Parameters:**
-- `id` (long): The ID of the time entry to delete
-
-**Response:** None
 ```csharp
 Task DeleteAsync(long id, CancellationToken cancellationToken);
 ```
 
 ## Implementation Status
 
-| Method | Endpoint | Status | Notes |
-|--------|----------|--------|-------|
-| GET | `/v2/time_entries` | ✅ Implemented | Full support with comprehensive filtering |
-| GET | `/v2/time_entries/{id}` | ✅ Implemented | Individual time entry retrieval |
-| POST | `/v2/time_entries` | ✅ Implemented | Time entry creation |
-| PATCH | `/v2/time_entries/{id}` | ✅ Implemented | Time entry update |
-| DELETE | `/v2/time_entries/{id}` | ✅ Implemented | Time entry deletion |
+| Method | Endpoint | Status |
+|--------|----------|--------|
+| GET | `/v2/time_entries` | ✅ Implemented |
+| GET | `/v2/time_entries/{id}` | ✅ Implemented |
+| POST | `/v2/time_entries` | ✅ Implemented |
+| PATCH | `/v2/time_entries/{id}` | ✅ Implemented |
+| DELETE | `/v2/time_entries/{id}` | ✅ Implemented |
 
 ## Usage Examples
 
 ```csharp
-// List time entries for a specific user and date range
-var entries = await harvestClient.TimeEntries.ListAllAsync(new TimeEntryListOptions
+// List time entries for a user in January
+var entries = await harvestClient.TimeEntries.ListAsync(new TimeEntryListOptions
 {
     UserId = 12345,
-    From = "2024-01-01",
-    To = "2024-01-31"
+    From = new DateOnly(2024, 1, 1),
+    To = new DateOnly(2024, 1, 31)
 }, cancellationToken);
 
-// Create a new time entry
+// Create a time entry by duration
 var newEntry = await harvestClient.TimeEntries.CreateAsync(new TimeEntryCreationDto
 {
     ProjectId = 12345,
     TaskId = 67890,
-    SpentDate = "2024-01-15",
+    SpentDate = new DateOnly(2024, 1, 15),
     Hours = 4.5m,
     Notes = "Working on feature implementation"
 }, cancellationToken);
 
 // Update a time entry
-await harvestClient.TimeEntries.PatchAsync(entryId, new TimeEntryPatchDto
-{
-    Notes = "Updated notes"
-}, cancellationToken);
+await harvestClient.TimeEntries.UpdateAsync(newEntry.Id, new TimeEntryPatchDto { Notes = "Updated notes" }, cancellationToken);
 
 // Delete a time entry
-await harvestClient.TimeEntries.DeleteAsync(entryId, cancellationToken);
+await harvestClient.TimeEntries.DeleteAsync(newEntry.Id, cancellationToken);
 ```
 
 ## Data Models
 
-### TimeEntry
-```csharp
-public class TimeEntry
-{
-    public long Id { get; set; }
-    public DateTime SpentDate { get; set; }
-    public User? User { get; set; }
-    public UserAssignment? UserAssignment { get; set; }
-    public Client? Client { get; set; }
-    public Project? Project { get; set; }
-    public Task? Task { get; set; }
-    public ProjectTaskAssignment? TaskAssignment { get; set; }
-    public ExternalReference? ExternalsReference { get; set; }
-    public Invoice? Invoice { get; set; }
-    public decimal Hours { get; set; }
-    public string? Notes { get; set; }
-    public bool IsLocked { get; set; }
-    public string? LockedReason { get; set; }
-    public bool IsClosed { get; set; }
-    public bool IsBilled { get; set; }
-    public DateTime? SpentAt { get; set; }
-    public string? StartedTime { get; set; }
-    public TimeSpan? StartedTimeSpan { get; }
-    public string? EndedTime { get; set; }
-    public TimeSpan? EndedTimeSpan { get; }
-    public bool IsRunning { get; set; }
-    public bool Billable { get; set; }
-    public bool Budgeted { get; set; }
-    public decimal? BillableRate { get; set; }
-    public decimal? CostRate { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
-}
-```
+`TimeEntry` follows the documented attribute list: nested `User`, `Client`, `Project` and `Task` are `{id, name}`
+references; `ExternalReference` has string `Id`, `GroupId`, `AccountId`, `Permalink`, `Service` and `ServiceIconUrl`;
+`HoursWithoutTimer`, `RoundedHours`, `ApprovalStatus` and `TimerStartedAt` are included. `StartedTime`/`EndedTime` are
+the strings Harvest sends (`8:00am`, or `08:00` on a 24-hour clock); `StartedTimeSpan`/`EndedTimeSpan` parse them
+tolerantly, returning `null` for anything unrecognised, and are never serialized.
 
-### TimeEntryCreationDto
-```csharp
-public class TimeEntryCreationDto : CreationDto
-{
-    public long? UserId { get; set; }
-    public long ProjectId { get; set; }
-    public long TaskId { get; set; }
-    public string? SpentDate { get; set; }
-    public string? StartedTime { get; set; }
-    public string? EndedTime { get; set; }
-    public decimal? Hours { get; set; }
-    public string? Notes { get; set; }
-    public ExternalReferenceCreationDto? ExternalReference { get; set; }
-}
-```
-
-### TimeEntryPatchDto
-```csharp
-public class TimeEntryPatchDto : PatchDto
-{
-    public long? ProjectId { get; set; }
-    public long? TaskId { get; set; }
-    public string? SpentDate { get; set; }
-    public string? StartedTime { get; set; }
-    public string? EndedTime { get; set; }
-    public decimal? Hours { get; set; }
-    public string? Notes { get; set; }
-    public ExternalReference? ExternalReference { get; set; }
-}
-```
-
-### TimeEntriesContainer
-```csharp
-public class TimeEntriesContainer : ListContainerBase
-{
-    public List<TimeEntry> TimeEntries { get; set; } = [];
-}
-```
+`TimeEntryCreationDto` and `TimeEntryPatchDto` take `SpentDate` as a `DateOnly` and an `ExternalReferenceCreationDto`
+(`Id`, `GroupId`, `AccountId`, `Permalink`).

@@ -12,13 +12,13 @@ Retrieves a list of all users for the authenticated account.
 
 **Parameters:**
 - `options` (ListOptions?): Filtering and paging options; pass `null` to send no query parameters
-  - `UpdatedSince` (DateTime?, sent as `updated_since`): Only return users that have been updated since the given date
+  - `UpdatedSince` (DateTimeOffset?, sent as `updated_since` in ISO 8601 UTC): Only return users that have been updated since the given date
   - `Page` (int?, sent as `page`): The page number to use in pagination (default: 1)
-  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 100, range: 1-2000)
+  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 2000, range: 1-2000)
 
 **Response:** `UsersContainer`
 ```csharp
-Task<UsersContainer> ListAllAsync([Query] ListOptions? options, CancellationToken cancellationToken);
+Task<UsersContainer> ListAsync([Query] ListOptions? options, CancellationToken cancellationToken);
 ```
 
 ### Get a User
@@ -67,7 +67,7 @@ User creation and deletion operations are implemented but may not be available i
 
 ```csharp
 // List all users
-var users = await harvestClient.Users.ListAllAsync(null, cancellationToken);
+var users = await harvestClient.Users.ListAsync(null, cancellationToken);
 
 // Get current user
 var me = await harvestClient.Users.GetMeAsync(cancellationToken);
