@@ -58,6 +58,7 @@ public sealed class HarvestClient : IHarvestClient
 		CostRates = For<ICostRateApi>();
 		Projects = For<IProjectApi>();
 		ProjectTaskAssignments = For<IProjectTaskAssignmentApi>();
+		ProjectUserAssignments = For<IProjectUserAssignmentApi>();
 		Roles = For<IRoleApi>();
 		Tasks = For<ITaskApi>();
 		Teammates = For<ITeammateApi>();
@@ -111,6 +112,9 @@ public sealed class HarvestClient : IHarvestClient
 
 	/// <inheritdoc />
 	public IProjectTaskAssignmentApi ProjectTaskAssignments { get; }
+
+	/// <inheritdoc />
+	public IProjectUserAssignmentApi ProjectUserAssignments { get; }
 
 	/// <inheritdoc />
 	public IRoleApi Roles { get; }

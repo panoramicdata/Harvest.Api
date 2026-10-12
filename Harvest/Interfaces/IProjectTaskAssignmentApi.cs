@@ -3,9 +3,20 @@ namespace Harvest.Interfaces;
 /// <summary>The task assignments of a project (<see href="https://help.getharvest.com/api-v2/projects-api/projects/task-assignments/"/>).</summary>
 public interface IProjectTaskAssignmentApi
 {
-	/// <summary>Lists one page of a project's task assignments.</summary>
+	/// <summary>Lists one page of the task assignments of every project, most recently created first.</summary>
+	/// <param name="options">
+	/// Filtering (<c>is_active</c>, <c>updated_since</c>) and paging, or <see langword="null"/> for none.
+	/// </param>
+	/// <param name="cancellationToken">The cancellation token.</param>
+	/// <returns>The page of task assignments.</returns>
+	[Get("/v2/task_assignments")]
+	Task<ProjectTaskAssignmentsContainer> ListAsync([Query] ListOptions? options, CancellationToken cancellationToken);
+
+	/// <summary>Lists one page of a project's task assignments, most recently created first.</summary>
 	/// <param name="projectId">The project ID.</param>
-	/// <param name="options">Filtering and paging, or <see langword="null"/> for none.</param>
+	/// <param name="options">
+	/// Filtering (<c>is_active</c>, <c>updated_since</c>) and paging, or <see langword="null"/> for none.
+	/// </param>
 	/// <param name="cancellationToken">The cancellation token.</param>
 	/// <returns>The page of task assignments.</returns>
 	[Get("/v2/projects/{projectId}/task_assignments")]
