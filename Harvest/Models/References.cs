@@ -70,6 +70,8 @@ public class ExpenseCategoryReference
 
 	/// <summary>The unit name of the expense category, or <see langword="null"/> if it is not unit-based.</summary>
 	public string? UnitName { get; set; }
+}
+
 /// <summary>The <c>{id}</c> summary of an estimate that Harvest nests in invoices.</summary>
 public class EstimateReference
 {
