@@ -44,4 +44,10 @@ public interface IHarvestClient : IDisposable
 
 	/// <summary>PTO holiday calendars and their entries (403 for accounts without the gradually rolled-out PTO API).</summary>
 	IPtoHolidayCalendarApi PtoHolidayCalendars { get; }
+
+	/// <summary>PTO user assignments of holiday calendars and work schedules (403 for accounts without the gradually rolled-out PTO API).</summary>
+	IPtoAssignmentApi PtoAssignments { get; }
+
+	/// <summary>PTO user allocations (403 for accounts without the gradually rolled-out PTO API).</summary>
+	IPtoAllocationApi PtoAllocations { get; }
 }

@@ -65,6 +65,8 @@ public sealed class HarvestClient : IHarvestClient
 		PtoRequests = For<IPtoRequestApi>();
 		PtoBalances = For<IPtoBalanceApi>();
 		PtoHolidayCalendars = For<IPtoHolidayCalendarApi>();
+		PtoAssignments = For<IPtoAssignmentApi>();
+		PtoAllocations = For<IPtoAllocationApi>();
 	}
 
 	/// <summary>
@@ -133,6 +135,12 @@ public sealed class HarvestClient : IHarvestClient
 
 	/// <inheritdoc />
 	public IPtoHolidayCalendarApi PtoHolidayCalendars { get; }
+
+	/// <inheritdoc />
+	public IPtoAssignmentApi PtoAssignments { get; }
+
+	/// <inheritdoc />
+	public IPtoAllocationApi PtoAllocations { get; }
 
 	/// <inheritdoc />
 	public void Dispose() => _httpClient.Dispose();
