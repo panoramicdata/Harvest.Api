@@ -55,3 +55,19 @@ public class InvoiceReference
 	/// <summary>The invoice number.</summary>
 	public string? Number { get; set; }
 }
+
+/// <summary>The <c>{id, name, unit_price, unit_name}</c> summary of an expense category that Harvest nests in expenses.</summary>
+public class ExpenseCategoryReference
+{
+	/// <summary>Unique ID for the expense category.</summary>
+	public long Id { get; set; }
+
+	/// <summary>The expense category's name.</summary>
+	public string? Name { get; set; }
+
+	/// <summary>The unit price of the expense category, or <see langword="null"/> if it is not unit-based.</summary>
+	public decimal? UnitPrice { get; set; }
+
+	/// <summary>The unit name of the expense category, or <see langword="null"/> if it is not unit-based.</summary>
+	public string? UnitName { get; set; }
+}

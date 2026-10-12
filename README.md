@@ -136,6 +136,9 @@ The `HarvestClient` (and `IHarvestClient`) provides access to the following API 
 |----------|-------------|
 | `Clients` | Manage clients |
 | `Companies` | Access company information |
+| `Contacts` | Manage client contacts |
+| `ExpenseCategories` | Manage expense categories |
+| `Expenses` | Manage expenses and their receipts |
 | `Projects` | Manage projects |
 | `ProjectTaskAssignments` | Manage task assignments for projects |
 | `Reports` | Time, expense, uninvoiced and project budget reports (100 requests per 15 minutes) |
