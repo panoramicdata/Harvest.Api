@@ -18,6 +18,9 @@ public interface IHarvestClient : IDisposable
 	/// <summary>Expense categories.</summary>
 	IExpenseCategoryApi ExpenseCategories { get; }
 
+	/// <summary>Expenses, with their receipts.</summary>
+	IExpenseApi Expenses { get; }
+
 	/// <summary>Projects.</summary>
 	IProjectApi Projects { get; }
 

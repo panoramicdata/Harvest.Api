@@ -1,8 +1,8 @@
 namespace Harvest.Models;
 
 /// <summary>
-/// The values of a time entry's <c>approval_status</c>. They are strings rather than an enum so that a value Harvest adds
-/// later is still read.
+/// The values of a time entry's or an expense's <c>approval_status</c>. They are strings rather than an enum so that a
+/// value Harvest adds later is still read.
 /// </summary>
 public static class ApprovalStatus
 {
