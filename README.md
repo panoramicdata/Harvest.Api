@@ -136,6 +136,10 @@ The `HarvestClient` (and `IHarvestClient`) provides access to the following API 
 |----------|-------------|
 | `Clients` | Manage clients |
 | `Companies` | Access company information |
+| `InvoiceItemCategories` | Manage invoice item categories |
+| `InvoiceMessages` | Send invoices and mark them sent, closed, re-opened or draft |
+| `InvoicePayments` | Record and delete invoice payments |
+| `Invoices` | Manage invoices and their line items |
 | `Projects` | Manage projects |
 | `ProjectTaskAssignments` | Manage task assignments for projects |
 | `Tasks` | Manage tasks |

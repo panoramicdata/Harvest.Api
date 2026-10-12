@@ -12,6 +12,10 @@ The Harvest API v2 provides RESTful access to Harvest's time tracking and projec
 |-----|-------------|--------|
 | [Clients](clients.md) | Client management | ✅ **Complete** |
 | [Company](company.md) | Company information | ✅ **Complete** |
+| [Invoices](invoices.md) | Invoices and their line items | ✅ **Complete** |
+| [Invoice Messages](invoice-messages.md) | Sending invoices and changing their state | ✅ **Complete** |
+| [Invoice Payments](invoice-payments.md) | Invoice payments | ✅ **Complete** |
+| [Invoice Item Categories](invoice-item-categories.md) | Invoice line item categories | ✅ **Complete** |
 | [Projects](projects.md) | Project management | ✅ **Complete** |
 | [Project Task Assignments](project-task-assignments.md) | Task assignments per project | ✅ **Complete** |
 | [Tasks](tasks.md) | Task management | ✅ **Complete** |
