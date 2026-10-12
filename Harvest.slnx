@@ -2,10 +2,15 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
+    <File Path="coverage.config" />
     <File Path="nuget-key.txt" />
     <File Path="README.md" />
     <File Path="version.json" />
   </Folder>
+  <Folder Name="/docs/">
+    <File Path="docs/IMPLEMENTING.md" />
+  </Folder>
   <Project Path="Harvest.Test/Harvest.Test.csproj" />
+  <Project Path="Harvest.UnitTest/Harvest.UnitTest.csproj" />
   <Project Path="Harvest/Harvest.csproj" />
 </Solution>
