@@ -54,6 +54,7 @@ public sealed class HarvestClient : IHarvestClient
 		_httpClient = CreateHttpClient(options, new RetryHandler(options) { InnerHandler = innerHandler });
 		Clients = For<IClientApi>();
 		Companies = For<ICompanyApi>();
+		ExpenseCategories = For<IExpenseCategoryApi>();
 		Projects = For<IProjectApi>();
 		ProjectTaskAssignments = For<IProjectTaskAssignmentApi>();
 		Tasks = For<ITaskApi>();
@@ -95,6 +96,9 @@ public sealed class HarvestClient : IHarvestClient
 
 	/// <inheritdoc />
 	public ICompanyApi Companies { get; }
+
+	/// <inheritdoc />
+	public IExpenseCategoryApi ExpenseCategories { get; }
 
 	/// <inheritdoc />
 	public IProjectApi Projects { get; }

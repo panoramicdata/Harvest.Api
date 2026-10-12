@@ -12,6 +12,7 @@ The Harvest API v2 provides RESTful access to Harvest's time tracking and projec
 |-----|-------------|--------|
 | [Clients](clients.md) | Client management | ✅ **Complete** |
 | [Company](company.md) | Company information | ✅ **Complete** |
+| [Expense Categories](expense-categories.md) | Expense category management | ✅ **Complete** |
 | [Projects](projects.md) | Project management | ✅ **Complete** |
 | [Project Task Assignments](project-task-assignments.md) | Task assignments per project | ✅ **Complete** |
 | [Tasks](tasks.md) | Task management | ✅ **Complete** |

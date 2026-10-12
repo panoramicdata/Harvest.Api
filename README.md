@@ -136,6 +136,7 @@ The `HarvestClient` (and `IHarvestClient`) provides access to the following API 
 |----------|-------------|
 | `Clients` | Manage clients |
 | `Companies` | Access company information |
+| `ExpenseCategories` | Manage expense categories |
 | `Projects` | Manage projects |
 | `ProjectTaskAssignments` | Manage task assignments for projects |
 | `Tasks` | Manage tasks |
