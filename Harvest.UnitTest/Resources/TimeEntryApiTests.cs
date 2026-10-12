@@ -171,6 +171,69 @@ public class TimeEntryApiTests
 	}
 
 	[Fact]
+	public async Task DeleteExternalReferenceAsync_SendsDeleteToTheExternalReference()
+	{
+		var call = await TestClient.SendAsync((c, ct) => c.TimeEntries.DeleteExternalReferenceAsync(636718192, ct), "");
+
+		call.ShouldBe(HttpMethod.Delete, "/v2/time_entries/636718192/external_reference");
+	}
+
+	[Fact]
+	public async Task RestartAsync_SendsPatchWithNoBodyAndMapsTheRunningEntry()
+	{
+		var stub = new StubHandler().Enqueue(HttpStatusCode.OK, """
+			{"id":662204379,"spent_date":"2017-03-21","user":{"id":1795925,"name":"Jane Smith"},"client":{"id":5735776,"name":"123 Industries"},
+			"project":{"id":14808188,"name":"Task Force"},"task":{"id":8083366,"name":"Programming"},
+			"user_assignment":{"id":130403296,"is_project_manager":true,"is_active":true,"budget":null,"created_at":"2017-08-22T17:36:54Z","updated_at":"2017-08-22T17:36:54Z","hourly_rate":100},
+			"task_assignment":{"id":160726645,"billable":true,"is_active":true,"created_at":"2017-08-22T17:36:54Z","updated_at":"2017-08-22T17:36:54Z","hourly_rate":100,"budget":null},
+			"hours":0,"hours_without_timer":0,"rounded_hours":0,"notes":null,"created_at":"2017-08-22T17:40:24Z","updated_at":"2017-08-22T17:40:24Z",
+			"is_locked":false,"locked_reason":null,"is_closed":false,"approval_status":"unsubmitted","is_billed":false,"timer_started_at":"2017-08-22T17:40:24Z",
+			"started_time":"11:40am","ended_time":null,"is_running":true,"invoice":null,"external_reference":null,"billable":true,"budgeted":false,
+			"billable_rate":100,"cost_rate":75}
+			""");
+		using var client = TestClient.Create(stub);
+
+		var entry = await client.TimeEntries.RestartAsync(662202797, TestClient.Ct);
+
+		stub.Calls.Should().ContainSingle().Subject.ShouldBe(HttpMethod.Patch, "/v2/time_entries/662202797/restart");
+		entry.Id.Should().Be(662204379);
+		entry.IsRunning.Should().BeTrue();
+		entry.TimerStartedAt.Should().Be(new DateTime(2017, 8, 22, 17, 40, 24, DateTimeKind.Utc));
+		entry.StartedTime.Should().Be("11:40am");
+		entry.EndedTime.Should().BeNull();
+		entry.Hours.Should().Be(0m);
+		entry.ApprovalStatus.Should().Be(ApprovalStatus.Unsubmitted);
+		entry.ExternalReference.Should().BeNull();
+		entry.Invoice.Should().BeNull();
+		entry.CostRate.Should().Be(75m);
+	}
+
+	[Fact]
+	public async Task StopAsync_SendsPatchWithNoBodyAndMapsTheStoppedEntry()
+	{
+		var stub = new StubHandler().Enqueue(HttpStatusCode.OK, """
+			{"id":662202797,"spent_date":"2017-03-21","user":{"id":1795925,"name":"Jane Smith"},"client":{"id":5735776,"name":"123 Industries"},
+			"project":{"id":14808188,"name":"Task Force"},"task":{"id":8083366,"name":"Programming"},
+			"hours":0.02,"hours_without_timer":0.02,"rounded_hours":0.25,"notes":null,"created_at":"2017-08-22T17:37:13Z","updated_at":"2017-08-22T17:38:31Z",
+			"is_locked":false,"locked_reason":null,"is_closed":false,"approval_status":"unsubmitted","is_billed":false,"timer_started_at":null,
+			"started_time":"11:37am","ended_time":"11:38am","is_running":false,"invoice":null,"external_reference":null,"billable":true,"budgeted":false,
+			"billable_rate":100,"cost_rate":75}
+			""");
+		using var client = TestClient.Create(stub);
+
+		var entry = await client.TimeEntries.StopAsync(662202797, TestClient.Ct);
+
+		stub.Calls.Should().ContainSingle().Subject.ShouldBe(HttpMethod.Patch, "/v2/time_entries/662202797/stop");
+		entry.Id.Should().Be(662202797);
+		entry.IsRunning.Should().BeFalse();
+		entry.TimerStartedAt.Should().BeNull();
+		entry.Hours.Should().Be(0.02m);
+		entry.RoundedHours.Should().Be(0.25m);
+		entry.EndedTime.Should().Be("11:38am");
+		entry.EndedTimeSpan.Should().Be(new TimeSpan(11, 38, 0));
+	}
+
+	[Fact]
 	public void TimeEntry_SerializesWithoutTheComputedTimeSpans()
 	{
 		// The computed properties are [JsonIgnore]: serializing a time entry (to cache it, say) must never throw on them.

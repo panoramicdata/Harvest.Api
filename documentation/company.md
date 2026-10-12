@@ -17,11 +17,27 @@ Retrieves information about the company associated with the authenticated accoun
 Task<Company> GetAsync(CancellationToken cancellationToken);
 ```
 
+### Update the Company
+
+**PATCH** `/v2/company`
+
+Updates the company's settings; `null` fields are left unchanged.
+
+**Body:** `CompanyPatchDto` (Harvest documents only these two settings as changeable)
+- `WantsTimestampTimers` (bool?): Whether time is tracked via duration (`false`) or start and end times (`true`)
+- `WeeklyCapacity` (int?): The weekly capacity in seconds
+
+**Response:** `Company`
+```csharp
+Task<Company> UpdateAsync([Body] CompanyPatchDto patchDto, CancellationToken cancellationToken);
+```
+
 ## Implementation Status
 
 | Method | Endpoint | Status | Notes |
 |--------|----------|--------|-------|
 | GET | `/v2/company` | ✅ Implemented | Full company information retrieval |
+| PATCH | `/v2/company` | ✅ Implemented | `wants_timestamp_timers` and `weekly_capacity` |
 
 ## Usage Examples
 
@@ -29,6 +45,9 @@ Task<Company> GetAsync(CancellationToken cancellationToken);
 // Get company information
 var company = await harvestClient.Companies.GetAsync(cancellationToken);
 Console.WriteLine($"Company: {company.Name}");
+
+// Switch to start and end times with a 30-hour week
+await harvestClient.Companies.UpdateAsync(new CompanyPatchDto { WantsTimestampTimers = true, WeeklyCapacity = 108000 }, cancellationToken);
 ```
 
 ## Data Models

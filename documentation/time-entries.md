@@ -54,6 +54,36 @@ Task<TimeEntry> UpdateAsync(long id, TimeEntryPatchDto patchDto, CancellationTok
 Task DeleteAsync(long id, CancellationToken cancellationToken);
 ```
 
+### Delete a Time Entry's External Reference
+
+**DELETE** `/v2/time_entries/{id}/external_reference`
+
+Removes the external reference, leaving the time entry in place.
+
+```csharp
+Task DeleteExternalReferenceAsync(long id, CancellationToken cancellationToken);
+```
+
+### Restart a Stopped Time Entry
+
+**PATCH** `/v2/time_entries/{id}/restart` (no body)
+
+Only possible while the time entry is not running. Returns the running time entry.
+
+```csharp
+Task<TimeEntry> RestartAsync(long id, CancellationToken cancellationToken);
+```
+
+### Stop a Running Time Entry
+
+**PATCH** `/v2/time_entries/{id}/stop` (no body)
+
+Only possible while the time entry is running. Returns the stopped time entry.
+
+```csharp
+Task<TimeEntry> StopAsync(long id, CancellationToken cancellationToken);
+```
+
 ## Implementation Status
 
 | Method | Endpoint | Status |
@@ -63,6 +93,9 @@ Task DeleteAsync(long id, CancellationToken cancellationToken);
 | POST | `/v2/time_entries` | ✅ Implemented |
 | PATCH | `/v2/time_entries/{id}` | ✅ Implemented |
 | DELETE | `/v2/time_entries/{id}` | ✅ Implemented |
+| DELETE | `/v2/time_entries/{id}/external_reference` | ✅ Implemented |
+| PATCH | `/v2/time_entries/{id}/restart` | ✅ Implemented |
+| PATCH | `/v2/time_entries/{id}/stop` | ✅ Implemented |
 
 ## Usage Examples
 
@@ -87,6 +120,10 @@ var newEntry = await harvestClient.TimeEntries.CreateAsync(new TimeEntryCreation
 
 // Update a time entry
 await harvestClient.TimeEntries.UpdateAsync(newEntry.Id, new TimeEntryPatchDto { Notes = "Updated notes" }, cancellationToken);
+
+// Stop a running timer, then restart it
+var stopped = await harvestClient.TimeEntries.StopAsync(newEntry.Id, cancellationToken);
+var running = await harvestClient.TimeEntries.RestartAsync(newEntry.Id, cancellationToken);
 
 // Delete a time entry
 await harvestClient.TimeEntries.DeleteAsync(newEntry.Id, cancellationToken);
