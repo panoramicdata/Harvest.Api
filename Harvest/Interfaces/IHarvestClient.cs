@@ -15,6 +15,9 @@ public interface IHarvestClient : IDisposable
 	/// <summary>Estimate item categories.</summary>
 	IEstimateItemCategoryApi EstimateItemCategories { get; }
 
+	/// <summary>Estimates.</summary>
+	IEstimateApi Estimates { get; }
+
 	/// <summary>Projects.</summary>
 	IProjectApi Projects { get; }
 
