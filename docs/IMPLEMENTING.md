@@ -22,12 +22,18 @@ Always confirm field lists, parameters and required flags against the resource's
   | Create | `CreateAsync` | `Task<X> CreateAsync([Body] XCreationDto creationDto, CancellationToken cancellationToken)` |
   | Update (PATCH) | `UpdateAsync` | `Task<X> UpdateAsync(long id, [Body] XPatchDto patchDto, CancellationToken cancellationToken)` |
   | Delete | `DeleteAsync` | `System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken)` |
-  | Other actions | verb + `Async` | e.g. `RestartAsync`, `StopAsync`, `SendMessageAsync` |
+  | Other actions | verb + `Async` | e.g. `RestartAsync`, `StopAsync`, `ApproveAsync` |
 
   Decision (3.0): list methods are `ListAsync`, not `ListAllAsync` - they return one page, and the old name implied
   otherwise. `ListAllAsync` and `TimeEntries.PatchAsync` were renamed in this release; do not reintroduce them. A list
   scoped to the current user is `ListMineAsync`.
 - Parent IDs come first, named for what they are: `ListAsync(long projectId, ...)`, `GetAsync(long projectId, long id, ...)`.
+- A `DELETE` that does not delete is named for what it does and returns the object Harvest sends back
+  (`PtoRequests.CancelAsync`, `PtoTypes.DeactivateAsync`). A child collection documented on its parent's page goes on the
+  parent's interface with the child in the name (`PtoHolidayCalendars.ListEntriesAsync`, `CreateEntryAsync`).
+- A `multipart/form-data` upload (expense receipts) is a public default-interface overload taking the DTO and a
+  `StreamPart`, which calls a hidden (`[EditorBrowsable(Never)]`) `[Multipart]` method whose fields are formatted with
+  `HarvestFormValue`.
 - `CancellationToken cancellationToken` is **required and last** on every method (a unit test enforces this).
 - Return `System.Threading.Tasks.Task` for no body; `Harvest.Models.Task` makes plain `Task` ambiguous inside the library.
 - Mark bodies `[Body]` and options `[Query]`.
@@ -41,13 +47,17 @@ Always confirm field lists, parameters and required flags against the resource's
 - Each property: `init`-only, nullable, `[AliasAs("wire_name")]`, and an XML summary naming the wire parameter.
 - Types: IDs `long?`; flags `bool?` (sent as lowercase `true`/`false`); dates `DateOnly?` (sent `YYYY-MM-DD`); date-times
   `DateTimeOffset?` (sent ISO 8601 UTC). `HarvestUrlParameterFormatter` does this formatting; do not pre-format strings.
-- Known filters still to add as resources are built:
-  - project user assignments: `user_id` (on `GET /v2/user_assignments`), `is_active`, `updated_since`.
-  - estimates: `client_id`, `from`, `to`, `state`.
-  - expenses: `user_id`, `client_id`, `project_id`, `is_billed`, `approval_status`, `from`, `to`.
-  - reports: `from`, `to` are required and go in the reports' own options type.
+- A filter that takes several values (`user_ids[]`) is an `IReadOnlyCollection<long>?` with `[AliasAs("user_ids[]")]` and
+  `[Query(CollectionFormat.Multi)]`, which sends one parameter per value (see `PtoAllocationListOptions`).
+- Endpoints that are not paged take a standalone options class that does not derive from `ListOptions`
+  (`PtoAssignmentListOptions`, `PtoBalanceOptions`, `InvoiceMessageTemplateOptions`), or none when they have no
+  parameters (`Accounts.ListAsync`).
+- The reports take their own `ReportOptions` family: `From` and `To` are C# `required` and sent as `YYYYMMDD` with
+  `[Query(Format = ...)]`, as the Reports API documents, and paging is by page number only.
 - Paging: each list returns a `<Resources>Container : ListContainerBase` (paging fields plus `Links`). Callers page with
-  `Links.NextCursor` (as `Cursor`) or `NextPage` (as `Page`); see the README.
+  `Links.NextCursor` (as `Cursor`) or `NextPage` (as `Page`); see the README. A response that Harvest does not page keeps
+  the `Container` name (or `Response` when it carries more than the list, as `AccountsResponse`) but does not derive from
+  `ListContainerBase` (`PtoAssignmentsContainer`).
 
 ## 3. Models (responses)
 
@@ -65,18 +75,25 @@ Always confirm field lists, parameters and required flags against the resource's
   - a field documented as a string that may arrive as a number uses `[JsonConverter(typeof(FlexibleStringConverter))]`.
 - Types: money and hours `decimal`; dates `DateOnly`; date-times `DateTime` (UTC); seconds `int`.
 - Nested summaries use the shared reference types in `References.cs`: `UserReference`, `ClientReference`,
-  `ProjectReference`, `TaskReference`, `InvoiceReference`. Add a new `<Thing>Reference` there rather than reusing a full
-  model for a `{id, name}` object. (A full model named `Invoice` is free for the invoices resource.)
+  `ProjectReference`, `TaskReference`, `InvoiceReference`, `ExpenseCategoryReference`, `EstimateReference`,
+  `RetainerReference`, `PaymentGatewayReference`, `PtoTypeReference`, `PtoHolidayCalendarReference` and
+  `PtoWorkScheduleReference`. Add a new `<Thing>Reference` there rather than reusing a full model for a `{id, name}`
+  object, and reuse an existing type when two resources nest the same shape (estimate and invoice messages share
+  `MessageRecipient` and `MessageRecipientCreationDto`).
 - Computed helpers must be `[JsonIgnore]` and must never throw (see `TimeEntry.StartedTimeSpan`).
 
 ## 4. DTOs (request bodies)
 
 - `<Resource>CreationDto : CreationDto` for POST and `<Resource>PatchDto : PatchDto` for PATCH, in
   `Harvest/Models/<Resource>Dtos.cs` (or one file each when large).
+- The body of another action is `<Resource><Action>Dto` and derives from neither base (`PtoRequestDeclineDto` for
+  `PtoRequests.DeclineAsync`).
 - Creation DTO: documented-required fields are C# `required` (non-nullable); every optional field is nullable so it is
   omitted and Harvest applies its default. Never give an optional field a C# default (`= true`) - that overrides
   Harvest's default. State Harvest's default in the XML summary.
-- Patch DTO: every field nullable.
+- Patch DTO: every field nullable, unless Harvest documents the field as required on the PATCH itself (`TeammatePatchDto`
+  replaces the whole list, `PtoAllocationPatchDto` names the allocation by user and policy). Where Harvest needs an
+  explicit JSON `null`, add a flag rather than relying on a `null` property (`PtoAssignmentPatchDto.UnassignWorkSchedule`).
 - No `[AliasAs]` on body properties (it does not affect JSON); naming follows the snake_case policy.
 - Nested request objects get their own DTO (`ExternalReferenceCreationDto`), never the response model.
 
