@@ -1,12 +1,11 @@
-using Harvest.Dtos;
-
 namespace Harvest.Models;
 
 /// <summary>
-/// The body of <c>POST /v2/time_entries</c>. Give <see cref="Hours"/> on an account that tracks time by duration, or
-/// <see cref="StartedTime"/> and <see cref="EndedTime"/> on one that tracks start and end times.
+/// The body of <c>POST /v2/time_entries</c>. Give <see cref="TimeEntryDtoBase.Hours"/> on an account that tracks time by
+/// duration, or <see cref="TimeEntryDtoBase.StartedTime"/> and <see cref="TimeEntryDtoBase.EndedTime"/> on one that
+/// tracks start and end times.
 /// </summary>
-public class TimeEntryCreationDto : CreationDto
+public class TimeEntryCreationDto : TimeEntryDtoBase
 {
 	/// <summary>The ID of the user to associate with the time entry. Defaults to the currently authenticated user's ID.</summary>
 	public long? UserId { get; set; }
@@ -19,19 +18,4 @@ public class TimeEntryCreationDto : CreationDto
 
 	/// <summary>The date of the time entry.</summary>
 	public required DateOnly SpentDate { get; set; }
-
-	/// <summary>The time the entry started, for example <c>8:00am</c>. Defaults to the current time.</summary>
-	public string? StartedTime { get; set; }
-
-	/// <summary>The time the entry ended, for example <c>9:30am</c>. If omitted, a timer is started.</summary>
-	public string? EndedTime { get; set; }
-
-	/// <summary>The current amount of time tracked. If omitted, a timer is started.</summary>
-	public decimal? Hours { get; set; }
-
-	/// <summary>Any notes to be associated with the time entry.</summary>
-	public string? Notes { get; set; }
-
-	/// <summary>An external reference to associate with the time entry.</summary>
-	public ExternalReferenceCreationDto? ExternalReference { get; set; }
 }

@@ -2,7 +2,6 @@ using Harvest.Handlers;
 using Harvest.Interfaces;
 using Harvest.Serialization;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -58,7 +57,7 @@ public sealed class HarvestClient : IHarvestClient
 	public HarvestClient(HarvestClientOptions options, HttpMessageHandler innerHandler)
 	{
 		ArgumentNullException.ThrowIfNull(innerHandler);
-		Validated(options);
+		_ = Validated(options);
 		var pipeline = new RetryHandler(options) { InnerHandler = innerHandler };
 		_httpClient = CreateHttpClient(options, pipeline, forAccount: true);
 		_idHttpClient = CreateHttpClient(options, pipeline, forAccount: false);
@@ -121,7 +120,10 @@ public sealed class HarvestClient : IHarvestClient
 		UrlParameterFormatter = new HarvestUrlParameterFormatter(),
 		// Unbuffered, Refit sends a serialized body as a read-once push stream, which RetryHandler could not resend.
 		Buffered = true,
-		ExceptionFactory = HarvestErrorMapper.CreateAsync
+		ExceptionFactory = response => new ValueTask<Exception?>(HarvestErrorMapper.CreateAsync(response)),
+		// Refit would wrap every exception thrown while sending in its ApiRequestException; surface them as themselves
+		// (TimeoutException, HttpRequestException, OperationCanceledException...), as before.
+		TransportExceptionFactory = static (_, exception, _) => exception
 	};
 
 	/// <inheritdoc />

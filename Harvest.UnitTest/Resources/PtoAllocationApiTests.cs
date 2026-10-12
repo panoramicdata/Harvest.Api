@@ -109,7 +109,7 @@ public class PtoAllocationApiTests
 		}, ct), AllocationJson);
 
 		call.ShouldBe(HttpMethod.Patch, "/v2/pto/allocations", body: """
-			{"user_id":1782959,"pto_type_id":101,"year":2026,"accrual_type":"accrued","accrual_schedule":"biweekly","accrual_first_payday":"2026-01-09","accrual_leave_hours":1.5,"accrual_worked_hours":30,"accrual_max_hours_per_year":60,"days_per_year":28,"carryover_days":2,"requires_approval":false,"reset_to_default":false}
+			{"user_id":1782959,"pto_type_id":101,"year":2026,"days_per_year":28,"carryover_days":2,"requires_approval":false,"reset_to_default":false,"accrual_type":"accrued","accrual_schedule":"biweekly","accrual_first_payday":"2026-01-09","accrual_leave_hours":1.5,"accrual_worked_hours":30,"accrual_max_hours_per_year":60}
 			""");
 	}
 

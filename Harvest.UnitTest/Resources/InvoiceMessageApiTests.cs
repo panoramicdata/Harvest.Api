@@ -139,11 +139,16 @@ public class InvoiceMessageApiTests
 			""");
 	}
 
+	public static TheoryData<string, string> EventTypes => new()
+	{
+		{ InvoiceMessageEventType.Send, "send" },
+		{ InvoiceMessageEventType.Close, "close" },
+		{ InvoiceMessageEventType.ReOpen, "re-open" },
+		{ InvoiceMessageEventType.Draft, "draft" }
+	};
+
 	[Theory]
-	[InlineData(InvoiceMessageEventType.Send, "send")]
-	[InlineData(InvoiceMessageEventType.Close, "close")]
-	[InlineData(InvoiceMessageEventType.ReOpen, "re-open")]
-	[InlineData(InvoiceMessageEventType.Draft, "draft")]
+	[MemberData(nameof(EventTypes))]
 	public async Task CreateAsync_EventType_SendsOnlyTheEventType(string eventType, string wireValue)
 	{
 		var call = await TestClient.SendAsync((c, ct) => c.InvoiceMessages.CreateAsync(13150403,
@@ -185,7 +190,7 @@ public class InvoiceMessageApiTests
 		message.AttachPdf.Should().BeTrue();
 		message.EventType.Should().BeNull();
 		message.Recipients.Should().HaveCount(2);
-		message.Recipients![0].Name.Should().Be("Richard Roe");
+		message.Recipients[0].Name.Should().Be("Richard Roe");
 		message.Recipients[0].Email.Should().Be("richardroe@example.com");
 		message.Recipients[1].Name.Should().Be("Bob Powell");
 		message.Recipients[1].Email.Should().Be("bob@example.com");

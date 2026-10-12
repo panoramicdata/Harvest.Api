@@ -7,14 +7,14 @@ namespace Harvest.Models;
 public static class InvoiceRecipientStatus
 {
 	/// <summary>Not a default recipient (Harvest's default).</summary>
-	public const string None = "none";
+	public static string None => "none";
 
 	/// <summary>A default recipient.</summary>
-	public const string Recipient = "recipient";
+	public static string Recipient => "recipient";
 
 	/// <summary>Copied by default.</summary>
-	public const string Cc = "cc";
+	public static string Cc => "cc";
 
 	/// <summary>Blind-copied by default.</summary>
-	public const string Bcc = "bcc";
+	public static string Bcc => "bcc";
 }

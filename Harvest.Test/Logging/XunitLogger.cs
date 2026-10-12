@@ -7,7 +7,7 @@ public class XunitLogger(ITestOutputHelper output, string category, LogLevel min
 	private static readonly string[] _newLineChars = [Environment.NewLine];
 
 	public void Log<TState>(
-		LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+		LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
 	{
 		if (!IsEnabled(logLevel))
 		{
@@ -60,7 +60,7 @@ public class XunitLogger(ITestOutputHelper output, string category, LogLevel min
 	public bool IsEnabled(LogLevel logLevel)
 		=> logLevel >= minLogLevel;
 
-	public IDisposable BeginScope<TState>(TState state)
+	public IDisposable BeginScope<TState>(TState state) where TState : notnull
 		=> new NullScope();
 
 	private sealed class NullScope : IDisposable
@@ -74,11 +74,11 @@ public class XunitLogger(ITestOutputHelper output, string category, LogLevel min
 
 public class XunitLogger<T>(ITestOutputHelper output) : ILogger<T>, IDisposable
 {
-	public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter) => output.WriteLine(state.ToString());
+	public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter) => output.WriteLine(state?.ToString() ?? string.Empty);
 
 	public bool IsEnabled(LogLevel logLevel) => true;
 
-	public IDisposable BeginScope<TState>(TState state) => this;
+	public IDisposable BeginScope<TState>(TState state) where TState : notnull => this;
 
 	public void Dispose() => GC.SuppressFinalize(this);
 }

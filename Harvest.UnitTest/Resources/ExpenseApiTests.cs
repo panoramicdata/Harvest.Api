@@ -42,7 +42,7 @@ public class ExpenseApiTests
 	// Refit's default multipart boundary; the delimiter line is "--" followed by it.
 	private const string Boundary = "----MyGreatBoundary";
 
-	private static readonly byte[] ReceiptBytes = Encoding.ASCII.GetBytes("GIF89a");
+	private static readonly byte[] _receiptBytes = Encoding.ASCII.GetBytes("GIF89a");
 
 	[Fact]
 	public async Task ListAsync_NoOptions_SendsNoQuery()
@@ -221,7 +221,7 @@ public class ExpenseApiTests
 
 		await FluentActions.Awaiting(() => client.Expenses.CreateAsync(null!, Receipt(), TestClient.Ct))
 			.Should().ThrowAsync<ArgumentNullException>().WithParameterName("creationDto");
-		await FluentActions.Awaiting(() => client.Expenses.CreateAsync(dto, (StreamPart)null!, TestClient.Ct))
+		await FluentActions.Awaiting(() => client.Expenses.CreateAsync(dto, null!, TestClient.Ct))
 			.Should().ThrowAsync<ArgumentNullException>().WithParameterName("receipt");
 	}
 
@@ -301,7 +301,7 @@ public class ExpenseApiTests
 
 		await FluentActions.Awaiting(() => client.Expenses.UpdateAsync(1, null!, Receipt(), TestClient.Ct))
 			.Should().ThrowAsync<ArgumentNullException>().WithParameterName("patchDto");
-		await FluentActions.Awaiting(() => client.Expenses.UpdateAsync(1, new ExpensePatchDto(), (StreamPart)null!, TestClient.Ct))
+		await FluentActions.Awaiting(() => client.Expenses.UpdateAsync(1, new ExpensePatchDto(), null!, TestClient.Ct))
 			.Should().ThrowAsync<ArgumentNullException>().WithParameterName("receipt");
 	}
 
@@ -313,7 +313,7 @@ public class ExpenseApiTests
 		call.ShouldBe(HttpMethod.Delete, "/v2/expenses/15297032");
 	}
 
-	private static StreamPart Receipt() => new(new MemoryStream(ReceiptBytes), "lunch_receipt.gif", "image/gif");
+	private static StreamPart Receipt() => new(new MemoryStream(_receiptBytes), "lunch_receipt.gif", "image/gif");
 
 	/// <summary>The exact multipart body Refit sends: each text field in order, then the receipt file.</summary>
 	private static string Form(params (string Name, string Value)[] fields)

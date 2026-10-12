@@ -4,8 +4,8 @@ namespace Harvest.UnitTest.Resources;
 
 public class ReportApiTests
 {
-	private static readonly DateOnly From = new(2017, 1, 1);
-	private static readonly DateOnly To = new(2017, 12, 31);
+	private static readonly DateOnly _from = new(2017, 1, 1);
+	private static readonly DateOnly _to = new(2017, 12, 31);
 
 	// The example responses on https://help.getharvest.com/api-v2/reports-api/reports/time-reports/.
 	private const string ClientTimeJson = """
@@ -90,7 +90,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetClientTimeReportAsync_RequiredOnly_SendsTheTimeframeAsYyyyMmDd()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetClientTimeReportAsync(new TimeReportOptions { From = From, To = To }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetClientTimeReportAsync(new TimeReportOptions { From = _from, To = _to }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/time/clients", "?from=20170101&to=20171231");
 	}
@@ -99,7 +99,7 @@ public class ReportApiTests
 	public async Task GetClientTimeReportAsync_AllOptions_SendsEveryParameter()
 	{
 		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetClientTimeReportAsync(
-			new TimeReportOptions { From = From, To = To, IncludeFixedFee = true, Page = 2, PerPage = 100 }, ct));
+			new TimeReportOptions { From = _from, To = _to, IncludeFixedFee = true, Page = 2, PerPage = 100 }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/time/clients", "?include_fixed_fee=true&from=20170101&to=20171231&page=2&per_page=100");
 	}
@@ -107,7 +107,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetProjectTimeReportAsync_RequiredOnly_SendsTheTimeframe()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetProjectTimeReportAsync(new TimeReportWithForecastOptions { From = From, To = To }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetProjectTimeReportAsync(new TimeReportWithForecastOptions { From = _from, To = _to }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/time/projects", "?from=20170101&to=20171231");
 	}
@@ -116,7 +116,7 @@ public class ReportApiTests
 	public async Task GetProjectTimeReportAsync_AllOptions_SendsEveryParameter()
 	{
 		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetProjectTimeReportAsync(
-			new TimeReportWithForecastOptions { From = From, To = To, IncludeFixedFee = false, IncludeForecast = true, Page = 3, PerPage = 50 }, ct));
+			new TimeReportWithForecastOptions { From = _from, To = _to, IncludeFixedFee = false, IncludeForecast = true, Page = 3, PerPage = 50 }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/time/projects",
 			"?include_forecast=true&include_fixed_fee=false&from=20170101&to=20171231&page=3&per_page=50");
@@ -125,7 +125,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetTaskTimeReportAsync_RequiredOnly_SendsTheTimeframe()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetTaskTimeReportAsync(new TimeReportOptions { From = From, To = To }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetTaskTimeReportAsync(new TimeReportOptions { From = _from, To = _to }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/time/tasks", "?from=20170101&to=20171231");
 	}
@@ -134,7 +134,7 @@ public class ReportApiTests
 	public async Task GetTaskTimeReportAsync_AllOptions_SendsEveryParameter()
 	{
 		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetTaskTimeReportAsync(
-			new TimeReportOptions { From = From, To = To, IncludeFixedFee = true, Page = 1, PerPage = 2000 }, ct));
+			new TimeReportOptions { From = _from, To = _to, IncludeFixedFee = true, Page = 1, PerPage = 2000 }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/time/tasks", "?include_fixed_fee=true&from=20170101&to=20171231&page=1&per_page=2000");
 	}
@@ -142,7 +142,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetTeamTimeReportAsync_RequiredOnly_SendsTheTimeframe()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetTeamTimeReportAsync(new TimeReportWithForecastOptions { From = From, To = To }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetTeamTimeReportAsync(new TimeReportWithForecastOptions { From = _from, To = _to }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/time/team", "?from=20170101&to=20171231");
 	}
@@ -151,7 +151,7 @@ public class ReportApiTests
 	public async Task GetTeamTimeReportAsync_AllOptions_SendsEveryParameter()
 	{
 		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetTeamTimeReportAsync(
-			new TimeReportWithForecastOptions { From = From, To = To, IncludeFixedFee = true, IncludeForecast = false, Page = 2, PerPage = 10 }, ct));
+			new TimeReportWithForecastOptions { From = _from, To = _to, IncludeFixedFee = true, IncludeForecast = false, Page = 2, PerPage = 10 }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/time/team",
 			"?include_forecast=false&include_fixed_fee=true&from=20170101&to=20171231&page=2&per_page=10");
@@ -160,7 +160,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetClientExpenseReportAsync_RequiredOnly_SendsTheTimeframe()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetClientExpenseReportAsync(new ReportOptions { From = From, To = To }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetClientExpenseReportAsync(new ReportOptions { From = _from, To = _to }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/expenses/clients", "?from=20170101&to=20171231");
 	}
@@ -168,7 +168,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetClientExpenseReportAsync_AllOptions_SendsEveryParameter()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetClientExpenseReportAsync(new ReportOptions { From = From, To = To, Page = 2, PerPage = 25 }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetClientExpenseReportAsync(new ReportOptions { From = _from, To = _to, Page = 2, PerPage = 25 }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/expenses/clients", "?from=20170101&to=20171231&page=2&per_page=25");
 	}
@@ -176,7 +176,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetProjectExpenseReportAsync_AllOptions_SendsEveryParameter()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetProjectExpenseReportAsync(new ReportOptions { From = From, To = To, Page = 4, PerPage = 5 }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetProjectExpenseReportAsync(new ReportOptions { From = _from, To = _to, Page = 4, PerPage = 5 }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/expenses/projects", "?from=20170101&to=20171231&page=4&per_page=5");
 	}
@@ -184,7 +184,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetProjectExpenseReportAsync_RequiredOnly_SendsTheTimeframe()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetProjectExpenseReportAsync(new ReportOptions { From = From, To = To }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetProjectExpenseReportAsync(new ReportOptions { From = _from, To = _to }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/expenses/projects", "?from=20170101&to=20171231");
 	}
@@ -192,7 +192,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetExpenseCategoryExpenseReportAsync_RequiredOnly_SendsTheTimeframe()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetExpenseCategoryExpenseReportAsync(new ReportOptions { From = From, To = To }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetExpenseCategoryExpenseReportAsync(new ReportOptions { From = _from, To = _to }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/expenses/categories", "?from=20170101&to=20171231");
 	}
@@ -200,7 +200,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetExpenseCategoryExpenseReportAsync_AllOptions_SendsEveryParameter()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetExpenseCategoryExpenseReportAsync(new ReportOptions { From = From, To = To, Page = 2, PerPage = 1 }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetExpenseCategoryExpenseReportAsync(new ReportOptions { From = _from, To = _to, Page = 2, PerPage = 1 }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/expenses/categories", "?from=20170101&to=20171231&page=2&per_page=1");
 	}
@@ -208,7 +208,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetTeamExpenseReportAsync_RequiredOnly_SendsTheTimeframe()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetTeamExpenseReportAsync(new ReportOptions { From = From, To = To }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetTeamExpenseReportAsync(new ReportOptions { From = _from, To = _to }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/expenses/team", "?from=20170101&to=20171231");
 	}
@@ -216,7 +216,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetTeamExpenseReportAsync_AllOptions_SendsEveryParameter()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetTeamExpenseReportAsync(new ReportOptions { From = From, To = To, Page = 9, PerPage = 99 }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetTeamExpenseReportAsync(new ReportOptions { From = _from, To = _to, Page = 9, PerPage = 99 }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/expenses/team", "?from=20170101&to=20171231&page=9&per_page=99");
 	}
@@ -224,7 +224,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetUninvoicedReportAsync_RequiredOnly_SendsTheTimeframe()
 	{
-		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetUninvoicedReportAsync(new UninvoicedReportOptions { From = From, To = To }, ct));
+		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetUninvoicedReportAsync(new UninvoicedReportOptions { From = _from, To = _to }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/uninvoiced", "?from=20170101&to=20171231");
 	}
@@ -233,7 +233,7 @@ public class ReportApiTests
 	public async Task GetUninvoicedReportAsync_AllOptions_SendsEveryParameter()
 	{
 		var call = await TestClient.SendAsync((c, ct) => c.Reports.GetUninvoicedReportAsync(
-			new UninvoicedReportOptions { From = From, To = To, IncludeFixedFee = false, Page = 2, PerPage = 500 }, ct));
+			new UninvoicedReportOptions { From = _from, To = _to, IncludeFixedFee = false, Page = 2, PerPage = 500 }, ct));
 
 		call.ShouldBe(HttpMethod.Get, "/v2/reports/uninvoiced", "?include_fixed_fee=false&from=20170101&to=20171231&page=2&per_page=500");
 	}
@@ -269,7 +269,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetClientTimeReportAsync_MapsTheResultsAndPaging()
 	{
-		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetClientTimeReportAsync(new TimeReportOptions { From = From, To = To }, ct), ClientTimeJson);
+		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetClientTimeReportAsync(new TimeReportOptions { From = _from, To = _to }, ct), ClientTimeJson);
 
 		page.Results.Should().HaveCount(2);
 		var result = page.Results[0];
@@ -308,7 +308,7 @@ public class ReportApiTests
 	public async Task GetProjectTimeReportAsync_MapsTheResultsWithScheduledHours()
 	{
 		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetProjectTimeReportAsync(
-			new TimeReportWithForecastOptions { From = From, To = To, IncludeForecast = true }, ct), ProjectTimeJson);
+			new TimeReportWithForecastOptions { From = _from, To = _to, IncludeForecast = true }, ct), ProjectTimeJson);
 
 		page.Results.Should().HaveCount(3);
 		var result = page.Results[0];
@@ -329,7 +329,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetTaskTimeReportAsync_MapsTheResults()
 	{
-		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetTaskTimeReportAsync(new TimeReportOptions { From = From, To = To }, ct), TaskTimeJson);
+		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetTaskTimeReportAsync(new TimeReportOptions { From = _from, To = _to }, ct), TaskTimeJson);
 
 		page.Results.Should().HaveCount(5);
 		var result = page.Results[1];
@@ -349,7 +349,7 @@ public class ReportApiTests
 	public async Task GetTeamTimeReportAsync_MapsTheResults()
 	{
 		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetTeamTimeReportAsync(
-			new TimeReportWithForecastOptions { From = From, To = To, IncludeForecast = true }, ct), TeamTimeJson);
+			new TimeReportWithForecastOptions { From = _from, To = _to, IncludeForecast = true }, ct), TeamTimeJson);
 
 		page.Results.Should().HaveCount(3);
 		var result = page.Results[0];
@@ -369,7 +369,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetClientExpenseReportAsync_MapsTheResults()
 	{
-		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetClientExpenseReportAsync(new ReportOptions { From = From, To = To }, ct), ClientExpenseJson);
+		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetClientExpenseReportAsync(new ReportOptions { From = _from, To = _to }, ct), ClientExpenseJson);
 
 		page.Results.Should().HaveCount(2);
 		var result = page.Results[1];
@@ -391,7 +391,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetProjectExpenseReportAsync_MapsTheResults()
 	{
-		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetProjectExpenseReportAsync(new ReportOptions { From = From, To = To }, ct), ProjectExpenseJson);
+		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetProjectExpenseReportAsync(new ReportOptions { From = _from, To = _to }, ct), ProjectExpenseJson);
 
 		page.Results.Should().HaveCount(2);
 		var result = page.Results[0];
@@ -407,7 +407,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetExpenseCategoryExpenseReportAsync_MapsTheResults()
 	{
-		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetExpenseCategoryExpenseReportAsync(new ReportOptions { From = From, To = To }, ct), CategoryExpenseJson);
+		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetExpenseCategoryExpenseReportAsync(new ReportOptions { From = _from, To = _to }, ct), CategoryExpenseJson);
 
 		page.Results.Should().HaveCount(3);
 		var result = page.Results[0];
@@ -422,7 +422,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetTeamExpenseReportAsync_MapsTheResults()
 	{
-		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetTeamExpenseReportAsync(new ReportOptions { From = From, To = To }, ct), TeamExpenseJson);
+		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetTeamExpenseReportAsync(new ReportOptions { From = _from, To = _to }, ct), TeamExpenseJson);
 
 		page.Results.Should().HaveCount(3);
 		var result = page.Results[0];
@@ -437,7 +437,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task GetUninvoicedReportAsync_MapsTheResults()
 	{
-		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetUninvoicedReportAsync(new UninvoicedReportOptions { From = From, To = To }, ct), UninvoicedJson);
+		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetUninvoicedReportAsync(new UninvoicedReportOptions { From = _from, To = _to }, ct), UninvoicedJson);
 
 		page.Results.Should().HaveCount(3);
 		var result = page.Results[1];
@@ -494,7 +494,7 @@ public class ReportApiTests
 	public async Task GetClientTimeReportAsync_ToleratesHiddenBillableFields()
 	{
 		// Currency and billable amount are only visible to users with the View billable rates and amounts permission.
-		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetClientTimeReportAsync(new TimeReportOptions { From = From, To = To }, ct),
+		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetClientTimeReportAsync(new TimeReportOptions { From = _from, To = _to }, ct),
 			"""{"results":[{"client_id":1,"client_name":"C","total_hours":1.25,"billable_hours":1}]}""");
 
 		var result = page.Results.Should().ContainSingle().Subject;
@@ -506,7 +506,7 @@ public class ReportApiTests
 	[Fact]
 	public async Task EmptyReport_HasNoResults()
 	{
-		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetUninvoicedReportAsync(new UninvoicedReportOptions { From = From, To = To }, ct), "{}");
+		var page = await TestClient.ReadAsync((c, ct) => c.Reports.GetUninvoicedReportAsync(new UninvoicedReportOptions { From = _from, To = _to }, ct), "{}");
 
 		page.Results.Should().BeEmpty();
 	}

@@ -137,7 +137,7 @@ public class InvoiceApiTests
 		}, ct), InvoiceJson);
 
 		call.ShouldBe(HttpMethod.Post, "/v2/invoices", body: """
-			{"client_id":5735774,"subject":"ABC Project Quote","due_date":"2017-07-27","line_items":[{"kind":"Service","description":"ABC Project","unit_price":5000.0}]}
+			{"client_id":5735774,"due_date":"2017-07-27","subject":"ABC Project Quote","line_items":[{"kind":"Service","description":"ABC Project","unit_price":5000.0}]}
 			""");
 	}
 
@@ -177,7 +177,7 @@ public class InvoiceApiTests
 		}, ct), InvoiceJson);
 
 		call.ShouldBe(HttpMethod.Post, "/v2/invoices", body: """
-			{"client_id":1,"retainer_id":2,"estimate_id":3,"number":"1002","purchase_order":"PO-9","tax":10.0,"tax2":2.5,"discount":5,"subject":"s","notes":"n","currency":"EUR","issue_date":"2025-01-02","due_date":"2025-02-03","payment_term":"custom","payment_options":["ach","credit_card","paypal"],"line_items":[{"project_id":4,"kind":"Product","description":"d","quantity":2.5,"unit_price":10,"taxed":true,"taxed2":false}]}
+			{"client_id":1,"retainer_id":2,"estimate_id":3,"due_date":"2025-02-03","payment_term":"custom","payment_options":["ach","credit_card","paypal"],"number":"1002","purchase_order":"PO-9","tax":10.0,"tax2":2.5,"discount":5,"subject":"s","notes":"n","currency":"EUR","issue_date":"2025-01-02","line_items":[{"project_id":4,"kind":"Product","description":"d","quantity":2.5,"unit_price":10,"taxed":true,"taxed2":false}]}
 			""");
 	}
 
@@ -203,7 +203,7 @@ public class InvoiceApiTests
 		}, ct), InvoiceJson);
 
 		call.ShouldBe(HttpMethod.Post, "/v2/invoices", body: """
-			{"client_id":5735774,"subject":"ABC Project Quote","payment_term":"upon receipt","line_items_import":{"project_ids":[14307913],"time":{"summary_type":"task","from":"2017-03-01","to":"2017-03-31"},"expenses":{"summary_type":"category"}}}
+			{"client_id":5735774,"line_items_import":{"project_ids":[14307913],"time":{"summary_type":"task","from":"2017-03-01","to":"2017-03-31"},"expenses":{"summary_type":"category"}},"payment_term":"upon receipt","subject":"ABC Project Quote"}
 			""");
 	}
 
@@ -290,7 +290,7 @@ public class InvoiceApiTests
 		}, ct), InvoiceJson);
 
 		call.ShouldBe(HttpMethod.Patch, "/v2/invoices/9", body: """
-			{"client_id":1,"retainer_id":2,"estimate_id":3,"number":"n1","purchase_order":"po","tax":1,"tax2":2,"discount":3,"subject":"s","notes":"n","currency":"GBP","issue_date":"2025-03-04","due_date":"2025-04-05","payment_term":"net 30","payment_options":["paypal"],"line_items":[{"id":5,"project_id":6,"kind":"Service","description":"d","quantity":7,"unit_price":8,"taxed":false,"taxed2":true,"_destroy":false}]}
+			{"client_id":1,"retainer_id":2,"estimate_id":3,"due_date":"2025-04-05","payment_term":"net 30","payment_options":["paypal"],"number":"n1","purchase_order":"po","tax":1,"tax2":2,"discount":3,"subject":"s","notes":"n","currency":"GBP","issue_date":"2025-03-04","line_items":[{"project_id":6,"id":5,"kind":"Service","description":"d","quantity":7,"unit_price":8,"taxed":false,"taxed2":true,"_destroy":false}]}
 			""");
 	}
 

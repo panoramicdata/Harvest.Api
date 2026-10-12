@@ -99,7 +99,7 @@ public class ContactApiTests
 		}, TestClient.Ct);
 
 		stub.Calls.Should().ContainSingle().Subject.ShouldBe(HttpMethod.Post, "/v2/contacts", body: """
-			{"client_id":5735776,"title":"CFO","first_name":"George","last_name":"Frank","email":"georgefrank@example.com","phone_office":"1","phone_mobile":"2","fax":"3","invoice_recipient_status":"cc"}
+			{"client_id":5735776,"first_name":"George","title":"CFO","last_name":"Frank","email":"georgefrank@example.com","phone_office":"1","phone_mobile":"2","fax":"3","invoice_recipient_status":"cc"}
 			""");
 		ShouldBeGeorge(contact);
 	}
@@ -121,7 +121,7 @@ public class ContactApiTests
 		}, ct), GeorgeJson);
 
 		call.ShouldBe(HttpMethod.Patch, "/v2/contacts/4706510", body: """
-			{"client_id":1,"title":"Owner","first_name":"G","last_name":"F","email":"g@example.com","phone_office":"4","phone_mobile":"5","fax":"6","invoice_recipient_status":"bcc"}
+			{"client_id":1,"first_name":"G","title":"Owner","last_name":"F","email":"g@example.com","phone_office":"4","phone_mobile":"5","fax":"6","invoice_recipient_status":"bcc"}
 			""");
 	}
 
@@ -143,10 +143,8 @@ public class ContactApiTests
 
 	[Fact]
 	public void InvoiceRecipientStatus_HasTheDocumentedValues()
-	{
-		new[] { InvoiceRecipientStatus.None, InvoiceRecipientStatus.Recipient, InvoiceRecipientStatus.Cc, InvoiceRecipientStatus.Bcc }
+		=> new[] { InvoiceRecipientStatus.None, InvoiceRecipientStatus.Recipient, InvoiceRecipientStatus.Cc, InvoiceRecipientStatus.Bcc }
 			.Should().Equal("none", "recipient", "cc", "bcc");
-	}
 
 	private static void ShouldBeJane(Contact contact)
 	{

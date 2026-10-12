@@ -29,9 +29,9 @@ public interface IEstimateApi
 
 	/// <summary>
 	/// Updates an estimate; fields left <see langword="null"/> are unchanged. Line items are added (no
-	/// <see cref="EstimateLineItemPatchDto.Id"/>), updated (with an <see cref="EstimateLineItemPatchDto.Id"/>) or deleted
-	/// (<see cref="EstimateLineItemPatchDto.Destroy"/>; see <see cref="EstimateLineItemPatchDto.Destroying"/>) through
-	/// <see cref="EstimatePatchDto.LineItems"/>; line items not listed are left unchanged.
+	/// <see cref="LineItemPatchDto.Id"/>), updated (with an <see cref="LineItemPatchDto.Id"/>) or deleted
+	/// (<see cref="LineItemPatchDto.Destroy"/>; see <see cref="EstimateLineItemPatchDto.Destroying"/>) through
+	/// <see cref="BillingDocumentDto{TLineItem}.LineItems"/>; line items not listed are left unchanged.
 	/// </summary>
 	/// <param name="id">The estimate ID.</param>
 	/// <param name="patchDto">The fields and line item changes.</param>

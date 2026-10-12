@@ -103,11 +103,16 @@ public class EstimateMessageApiTests
 		call.ShouldBe(HttpMethod.Post, "/v2/estimates/5/messages", body: "{}");
 	}
 
+	public static TheoryData<string, string> SendableEventTypes => new()
+	{
+		{ EstimateMessageEventType.Send, "send" },
+		{ EstimateMessageEventType.Accept, "accept" },
+		{ EstimateMessageEventType.Decline, "decline" },
+		{ EstimateMessageEventType.ReOpen, "re-open" }
+	};
+
 	[Theory]
-	[InlineData(EstimateMessageEventType.Send, "send")]
-	[InlineData(EstimateMessageEventType.Accept, "accept")]
-	[InlineData(EstimateMessageEventType.Decline, "decline")]
-	[InlineData(EstimateMessageEventType.ReOpen, "re-open")]
+	[MemberData(nameof(SendableEventTypes))]
 	public async Task CreateAsync_EventOnly_SendsEventTypeAndMapsTheEventMessage(string eventType, string expected)
 	{
 		var stub = new StubHandler().Enqueue(HttpStatusCode.Created, EventMessageJson(expected));
@@ -125,9 +130,14 @@ public class EstimateMessageApiTests
 		message.Body.Should().BeNull();
 	}
 
+	public static TheoryData<string, string> ReadOnlyEventTypes => new()
+	{
+		{ EstimateMessageEventType.View, "view" },
+		{ EstimateMessageEventType.Invoice, "invoice" }
+	};
+
 	[Theory]
-	[InlineData(EstimateMessageEventType.View, "view")]
-	[InlineData(EstimateMessageEventType.Invoice, "invoice")]
+	[MemberData(nameof(ReadOnlyEventTypes))]
 	public async Task ListAsync_ReadOnlyEventTypes_AreRead(string eventType, string wire)
 	{
 		eventType.Should().Be(wire);
@@ -168,7 +178,7 @@ public class EstimateMessageApiTests
 		message.CreatedAt.Should().Be(new DateTime(2017, 8, 25, 21, 23, 40, DateTimeKind.Utc));
 		message.UpdatedAt.Should().Be(new DateTime(2017, 8, 25, 21, 23, 41, DateTimeKind.Utc));
 		message.Recipients.Should().HaveCount(2);
-		message.Recipients![0].Name.Should().Be("Richard Roe");
+		message.Recipients[0].Name.Should().Be("Richard Roe");
 		message.Recipients[0].Email.Should().Be("richard@example.com");
 		message.Recipients[1].Name.Should().Be("Bob Powell");
 		message.EventType.Should().BeNull();

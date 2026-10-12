@@ -21,7 +21,7 @@ public interface IInvoiceApi
 	Task<Invoice> GetAsync(long id, CancellationToken cancellationToken);
 
 	/// <summary>
-	/// Creates an invoice: a free-form invoice from <see cref="InvoiceCreationDto.LineItems"/>, or one based on tracked time
+	/// Creates an invoice: a free-form invoice from <see cref="BillingDocumentDto{TLineItem}.LineItems"/>, or one based on tracked time
 	/// and expenses from <see cref="InvoiceCreationDto.LineItemsImport"/>.
 	/// </summary>
 	/// <param name="creationDto">The new invoice.</param>
@@ -32,7 +32,7 @@ public interface IInvoiceApi
 
 	/// <summary>
 	/// Updates an invoice; fields left <see langword="null"/> are unchanged. Also adds, updates and deletes line items through
-	/// <see cref="InvoicePatchDto.LineItems"/>.
+	/// <see cref="BillingDocumentDto{TLineItem}.LineItems"/>.
 	/// </summary>
 	/// <param name="id">The invoice ID.</param>
 	/// <param name="patchDto">The fields to change.</param>

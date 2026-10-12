@@ -4,7 +4,7 @@ namespace Harvest.Serialization;
 internal static class HarvestTime
 {
 	// 12-hour times ("8:00am", "12:30pm") follow the company's 12h clock setting; 24-hour times ("13:00") the 24h one.
-	private static readonly string[] Formats = ["h:mmtt", "hh:mmtt", "h:mm tt", "hh:mm tt", "H:mm", "HH:mm"];
+	private static readonly string[] _formats = ["h:mmtt", "hh:mmtt", "h:mm tt", "hh:mm tt", "H:mm", "HH:mm"];
 
 	/// <summary>
 	/// Parses <paramref name="value"/> as a time of day, tolerating either clock and either case of <c>am</c>/<c>pm</c>.
@@ -13,7 +13,7 @@ internal static class HarvestTime
 	/// <returns>The time since midnight, or <see langword="null"/> when the value is missing or not a recognised time.</returns>
 	public static TimeSpan? Parse(string? value)
 		=> !string.IsNullOrWhiteSpace(value)
-			&& DateTime.TryParseExact(value.Trim(), Formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed)
+			&& DateTime.TryParseExact(value.Trim(), _formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed)
 				? parsed.TimeOfDay
 				: null;
 }

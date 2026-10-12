@@ -4,8 +4,8 @@ namespace Harvest.Models;
 public static class AccountProduct
 {
 	/// <summary>A Harvest account.</summary>
-	public const string Harvest = "harvest";
+	public static string Harvest => "harvest";
 
 	/// <summary>A Forecast account.</summary>
-	public const string Forecast = "forecast";
+	public static string Forecast => "forecast";
 }

@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace Harvest.Handlers;
@@ -19,7 +18,7 @@ namespace Harvest.Handlers;
 internal sealed partial class RetryHandler(ILogger logger, int maxRetries, TimeSpan retryBaseDelay, TimeSpan maxRetryDelay)
 	: DelegatingHandler
 {
-	private static readonly HashSet<HttpMethod> IdempotentMethods =
+	private static readonly HashSet<HttpMethod> _idempotentMethods =
 		[HttpMethod.Get, HttpMethod.Head, HttpMethod.Put, HttpMethod.Delete, HttpMethod.Options, HttpMethod.Trace];
 
 	private readonly ILogger _logger = logger;
@@ -85,7 +84,7 @@ internal sealed partial class RetryHandler(ILogger logger, int maxRetries, TimeS
 	/// </summary>
 	internal static bool IsRetryable(HttpMethod method, HttpStatusCode status)
 		=> status is HttpStatusCode.TooManyRequests or HttpStatusCode.ServiceUnavailable
-			|| ((int)status >= 500 && IdempotentMethods.Contains(method));
+			|| ((int)status >= 500 && _idempotentMethods.Contains(method));
 
 	private TimeSpan? RetryAfter(HttpResponseMessage response)
 	{

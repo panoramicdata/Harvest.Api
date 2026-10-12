@@ -1,116 +1,194 @@
 using Harvest.Test.Logging;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System.IO;
-using System.Reflection;
+using System.Net;
 
 namespace Harvest.Test;
 
-public class HarvestTest : IDisposable
+/// <summary>
+/// The base of the live tests. Credentials come from user secrets (<c>AccountId</c> and <c>AccessToken</c>) or, failing
+/// that, an optional <c>appsettings.json</c>. Everything a test creates through the helpers here is tracked and deleted,
+/// newest first, when the test finishes.
+/// </summary>
+public abstract class HarvestTest : IAsyncLifetime
 {
+	private readonly List<TrackedResource> _trackedResources = [];
+
 	protected ILogger Logger { get; }
 
 	protected HarvestClient HarvestClient { get; }
 
 	protected Configuration Configuration { get; }
 
-	protected TestDataManager TestDataManager { get; }
+	/// <summary>The prefix that marks test data, so it can be recognised and cleaned up by hand if need be.</summary>
+	protected string Prefix => Configuration.TestSettings.TestDataPrefix;
 
 	protected static CancellationToken CancellationToken => TestContext.Current.CancellationToken;
 
-	protected HarvestTest(ITestOutputHelper iTestOutputHelper)
+	protected HarvestTest(ITestOutputHelper testOutputHelper)
 	{
 		Logger = new LoggerFactory()
-			//.AddDebug(LogLevel.Trace)
-			.AddXunit(iTestOutputHelper, LogLevel.Trace)
+			.AddXunit(testOutputHelper, LogLevel.Trace)
 			.CreateLogger<HarvestTest>();
 
-		Configuration = LoadConfiguration("appsettings.json");
+		Configuration = LoadConfiguration();
 		HarvestClient = new HarvestClient(new HarvestClientOptions
 		{
 			AccountId = Configuration.AccountId,
 			AccessToken = Configuration.AccessToken
 		});
-
-		TestDataManager = new TestDataManager(HarvestClient, Configuration.TestSettings);
 	}
 
-	private static Configuration LoadConfiguration(string jsonFilePath)
-	{
-		var location = typeof(HarvestTest).GetTypeInfo().Assembly.Location;
-		var dirPath = Path.Combine(Path.GetDirectoryName(location), "../../..");
+	private static Configuration LoadConfiguration()
+		=> new ConfigurationBuilder()
+			.SetBasePath(Path.Combine(AppContext.BaseDirectory, "../../.."))
+			.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+			.AddUserSecrets<HarvestTest>(optional: true)
+			.Build()
+			.Get<Configuration>() ?? new Configuration();
 
-		Configuration configuration;
-		var configurationRoot = new ConfigurationBuilder()
-			.SetBasePath(dirPath)
-			.AddJsonFile(jsonFilePath, false, false)
-			.Build();
-		var services = new ServiceCollection();
-		_ = services
-			.AddOptions()
-			.Configure<Configuration>(configurationRoot);
-		using (var sp = services.BuildServiceProvider())
-		{
-			var options = sp.GetService<IOptions<Configuration>>();
-			configuration = options.Value;
-		}
-
-		return configuration;
-	}
+	/// <summary>A unique, prefixed name for a test object, for example <c>TEST_CRUD Test Client 20260101120000</c>.</summary>
+	protected string TestName(string purpose, string kind)
+		=> $"{Prefix}{purpose} Test {kind} {DateTime.UtcNow:yyyyMMddHHmmss}";
 
 	/// <summary>
-	/// Creates a uniquely named, prefixed client for a CRUD test; the caller deletes it.
+	/// Runs a create-read-update-delete scenario, unless test data creation is disabled. An account that does not permit
+	/// the operations (403 or 422) is logged rather than failed: the API methods were still shown to be callable.
 	/// </summary>
-	protected async Task<Client> CreateTestClientAsync(string purpose)
+	protected async Task RunCrudScenarioAsync(Func<Task> scenario)
 	{
-		var client = await HarvestClient.Clients.CreateAsync(new ClientCreationDto
+		if (!Configuration.TestSettings.CreateTestData)
 		{
-			Name = $"{Configuration.TestSettings.TestDataPrefix}{purpose} Test Client {DateTime.UtcNow:yyyyMMddHHmmss}",
-			IsActive = true,
-			Currency = "USD"
-		}, CancellationToken);
-		Logger.LogInformation("Created test client: {ClientId} - {ClientName}", client.Id, client.Name);
-		return client;
-	}
-
-	/// <summary>
-	/// Creates a uniquely named, prefixed project under a client for a CRUD test; the caller deletes it.
-	/// </summary>
-	protected async Task<Project> CreateTestProjectAsync(long clientId, string purpose)
-	{
-		var project = await HarvestClient.Projects.CreateAsync(new ProjectCreationDto
-		{
-			Name = $"{Configuration.TestSettings.TestDataPrefix}{purpose} Test Project {DateTime.UtcNow:yyyyMMddHHmmss}",
-			ClientId = clientId,
-			BillBy = "Project",
-			BudgetBy = "project",
-			IsBillable = true
-		}, CancellationToken);
-		Logger.LogInformation("Created test project: {ProjectId} - {ProjectName}", project.Id, project.Name);
-		return project;
-	}
-
-	/// <summary>
-	/// Deletes a test object if it was created and not already deleted, ignoring API errors.
-	/// </summary>
-	protected async System.Threading.Tasks.Task TryCleanUpAsync(long? id, Func<long, System.Threading.Tasks.Task> deleteAsync, string description)
-	{
-		if (!id.HasValue)
-		{
+			Log.TestDataCreationDisabled(Logger);
 			return;
 		}
 
 		try
 		{
-			await deleteAsync(id.Value);
-			Logger.LogInformation("Cleaned up test {Description}: {Id}", description, id.Value);
+			await scenario();
 		}
-		catch (Refit.ApiException)
+		catch (Refit.ApiException ex) when (ex.StatusCode is HttpStatusCode.UnprocessableEntity or HttpStatusCode.Forbidden)
 		{
-			// Already deleted or doesn't exist
+			Log.CrudNotPermitted(Logger, ex.StatusCode, ex.Message);
 		}
 	}
 
-	public void Dispose() => TestDataManager?.Dispose();
+	/// <summary>The first item of a list, or <see langword="null"/> (logged) when the account has none to test with.</summary>
+	protected T? FirstOrLog<T>(IReadOnlyList<T> items, string description) where T : class
+	{
+		if (items.Count == 0)
+		{
+			Log.NothingToTest(Logger, description);
+			return null;
+		}
+
+		return items[0];
+	}
+
+	/// <summary>Creates a prefixed client and tracks it for deletion.</summary>
+	protected async Task<Client> CreateTestClientAsync(string purpose, string? address)
+	{
+		var client = await HarvestClient.Clients.CreateAsync(new ClientCreationDto
+		{
+			Name = TestName(purpose, "Client"),
+			IsActive = true,
+			Address = address,
+			Currency = "USD"
+		}, CancellationToken);
+		Track("client", client.Id, client.Name, id => HarvestClient.Clients.DeleteAsync(id, CancellationToken));
+		return client;
+	}
+
+	/// <summary>Creates a prefixed, billable project under a client and tracks it for deletion.</summary>
+	protected async Task<Project> CreateTestProjectAsync(long clientId, string purpose, string? notes)
+	{
+		var project = await HarvestClient.Projects.CreateAsync(new ProjectCreationDto
+		{
+			Name = TestName(purpose, "Project"),
+			ClientId = clientId,
+			BillBy = "Project",
+			BudgetBy = "project",
+			IsBillable = true,
+			Notes = notes
+		}, CancellationToken);
+		Track("project", project.Id, project.Name, id => HarvestClient.Projects.DeleteAsync(id, CancellationToken));
+		return project;
+	}
+
+	/// <summary>Creates a prefixed, billable task and tracks it for deletion.</summary>
+	protected async Task<Models.Task> CreateTestTaskAsync(string purpose, decimal defaultHourlyRate)
+	{
+		var task = await HarvestClient.Tasks.CreateAsync(new TaskCreationDto
+		{
+			Name = TestName(purpose, "Task"),
+			BillableByDefault = true,
+			DefaultHourlyRate = defaultHourlyRate,
+			IsDefault = false,
+			IsActive = true
+		}, CancellationToken);
+		Track("task", task.Id, task.Name, id => HarvestClient.Tasks.DeleteAsync(id, CancellationToken));
+		return task;
+	}
+
+	/// <summary>Assigns a task to a project as billable and tracks the assignment for deletion.</summary>
+	protected async Task<ProjectTaskAssignment> CreateTestTaskAssignmentAsync(long projectId, long taskId, decimal hourlyRate)
+	{
+		var assignment = await HarvestClient.ProjectTaskAssignments.CreateAsync(projectId, new ProjectTaskAssignmentCreationDto
+		{
+			TaskId = taskId,
+			IsActive = true,
+			Billable = true,
+			HourlyRate = hourlyRate
+		}, CancellationToken);
+		Track("task assignment", assignment.Id, null, id => HarvestClient.ProjectTaskAssignments.DeleteAsync(projectId, id, CancellationToken));
+		return assignment;
+	}
+
+	/// <summary>Records an object a test created itself, so that it is deleted if the test does not get that far.</summary>
+	protected void Track(string kind, long id, string? name, Func<long, Task> deleteAsync)
+	{
+		_trackedResources.Add(new TrackedResource(kind, id, deleteAsync));
+		Log.Created(Logger, kind, id, name);
+	}
+
+	/// <summary>Deletes a tracked object as a step of the test itself; unlike clean-up, a failure fails the test.</summary>
+	protected async Task DeleteTrackedAsync(string kind, long id)
+	{
+		var resource = _trackedResources.Single(tracked => tracked.Kind == kind && tracked.Id == id);
+		await resource.DeleteAsync(id);
+		_ = _trackedResources.Remove(resource);
+		Log.Deleted(Logger, kind, id);
+	}
+
+	public ValueTask InitializeAsync() => ValueTask.CompletedTask;
+
+	public async ValueTask DisposeAsync()
+	{
+		if (Configuration.TestSettings.CleanupTestData)
+		{
+			// Newest first: an assignment goes before its project, and a project before its client.
+			for (var index = _trackedResources.Count - 1; index >= 0; index--)
+			{
+				await TryCleanUpAsync(_trackedResources[index]);
+			}
+		}
+
+		_trackedResources.Clear();
+		HarvestClient.Dispose();
+		GC.SuppressFinalize(this);
+	}
+
+	private async Task TryCleanUpAsync(TrackedResource resource)
+	{
+		try
+		{
+			await resource.DeleteAsync(resource.Id);
+			Log.CleanedUp(Logger, resource.Kind, resource.Id);
+		}
+		catch (Refit.ApiException)
+		{
+			// Already deleted, or never fully created
+		}
+	}
+
+	private sealed record TrackedResource(string Kind, long Id, Func<long, Task> DeleteAsync);
 }

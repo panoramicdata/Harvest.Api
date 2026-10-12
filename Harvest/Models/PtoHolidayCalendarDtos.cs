@@ -29,7 +29,7 @@ public class PtoHolidayCalendarPatchDto : PatchDto
 public class PtoHolidayCalendarEntryCreationDto : CreationDto
 {
 	/// <summary>The <see cref="DateMode"/> value that adds a range of closed dates.</summary>
-	public const string RangeDateMode = "range";
+	public static string RangeDateMode => "range";
 
 	/// <summary>Holiday title.</summary>
 	public required string Name { get; set; }

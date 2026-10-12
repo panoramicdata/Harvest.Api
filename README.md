@@ -3,7 +3,10 @@
 A .NET wrapper for the [Harvest](https://www.getharvest.com/) time tracking API.
 
 [![NuGet](https://img.shields.io/nuget/v/Harvest.svg)](https://www.nuget.org/packages/Harvest/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI](https://github.com/panoramicdata/Harvest.Api/actions/workflows/ci.yml/badge.svg)](https://github.com/panoramicdata/Harvest.Api/actions/workflows/ci.yml)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ea854a1765eb4636ba08430633b1b66c)](https://app.codacy.com/gh/panoramicdata/Harvest.Api/dashboard)
+[![Codacy Coverage](https://app.codacy.com/project/badge/Coverage/ea854a1765eb4636ba08430633b1b66c)](https://app.codacy.com/gh/panoramicdata/Harvest.Api/dashboard)
 
 ## Installation
 

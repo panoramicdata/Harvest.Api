@@ -4,7 +4,7 @@ namespace Harvest.Models;
 /// A time off policy, which Harvest's paths and JSON call a PTO type
 /// (<see href="https://help.getharvest.com/api-v2/pto-api/pto/time-off-policies/"/>).
 /// </summary>
-public class PtoType
+public class PtoType : PtoAccrualSettings
 {
 	/// <summary>Unique ID for the time off policy.</summary>
 	public long Id { get; set; }
@@ -17,30 +17,6 @@ public class PtoType
 
 	/// <summary>Icon slug assigned to the policy.</summary>
 	public string? Icon { get; set; }
-
-	/// <summary>
-	/// Accrual mode for the policy: <c>fixed</c> (front-loaded allowance), <c>accrued</c> (earned over time) or
-	/// <c>unlimited</c> (see <see cref="PtoAccrualType"/>).
-	/// </summary>
-	public string? AccrualType { get; set; }
-
-	/// <summary>
-	/// Frequency for policy accruals: <c>monthly</c>, <c>biweekly</c>, <c>semimonthly</c> or <c>hourly</c> (see
-	/// <see cref="PtoAccrualSchedule"/>). Required and meaningful when <see cref="AccrualType"/> is <c>accrued</c>.
-	/// </summary>
-	public string? AccrualSchedule { get; set; }
-
-	/// <summary>Anchor date for biweekly accruals.</summary>
-	public DateOnly? AccrualFirstPayday { get; set; }
-
-	/// <summary>Leave hours earned per worked hour base (for hourly accruals).</summary>
-	public decimal? AccrualLeaveHours { get; set; }
-
-	/// <summary>Worked hours base (for hourly accruals).</summary>
-	public decimal? AccrualWorkedHours { get; set; }
-
-	/// <summary>Maximum accrued hours cap per year (for hourly accruals).</summary>
-	public decimal? AccrualMaxHoursPerYear { get; set; }
 
 	/// <summary>Default days per year credited to teammates.</summary>
 	public decimal? DefaultDaysPerYear { get; set; }

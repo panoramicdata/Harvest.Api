@@ -93,7 +93,7 @@ public class ProjectApiTests
 		}, ct), ProjectJson);
 
 		call.ShouldBe(HttpMethod.Post, "/v2/projects", body: """
-			{"client_id":1,"name":"Store","code":"ST","is_active":true,"is_billable":false,"is_fixed_fee":true,"bill_by":"none","hourly_rate":100,"budget_by":"project_cost","budget_is_monthly":true,"budget":10.5,"cost_budget":2000,"cost_budget_include_expenses":true,"notify_when_over_budget":true,"over_budget_notification_percentage":80,"show_budget_to_all":false,"fee":5000,"notes":"n","starts_on":"2025-01-02","ends_on":"2025-12-31"}
+			{"client_id":1,"name":"Store","is_billable":false,"bill_by":"none","budget_by":"project_cost","code":"ST","is_active":true,"is_fixed_fee":true,"hourly_rate":100,"budget_is_monthly":true,"budget":10.5,"cost_budget":2000,"cost_budget_include_expenses":true,"notify_when_over_budget":true,"over_budget_notification_percentage":80,"show_budget_to_all":false,"fee":5000,"notes":"n","starts_on":"2025-01-02","ends_on":"2025-12-31"}
 			""");
 	}
 
@@ -125,7 +125,7 @@ public class ProjectApiTests
 		}, ct), ProjectJson);
 
 		call.ShouldBe(HttpMethod.Patch, "/v2/projects/9", body: """
-			{"client_id":1,"name":"Store","code":"ST","is_active":false,"is_billable":true,"is_fixed_fee":false,"bill_by":"Tasks","hourly_rate":1,"budget_by":"task","budget_is_monthly":false,"budget":2,"cost_budget":3,"cost_budget_include_expenses":false,"notify_when_over_budget":false,"over_budget_notification_percentage":4,"show_budget_to_all":true,"fee":5,"notes":"x","starts_on":"2025-03-04","ends_on":"2025-05-06"}
+			{"client_id":1,"name":"Store","is_billable":true,"bill_by":"Tasks","budget_by":"task","code":"ST","is_active":false,"is_fixed_fee":false,"hourly_rate":1,"budget_is_monthly":false,"budget":2,"cost_budget":3,"cost_budget_include_expenses":false,"notify_when_over_budget":false,"over_budget_notification_percentage":4,"show_budget_to_all":true,"fee":5,"notes":"x","starts_on":"2025-03-04","ends_on":"2025-05-06"}
 			""");
 	}
 

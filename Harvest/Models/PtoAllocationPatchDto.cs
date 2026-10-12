@@ -1,11 +1,9 @@
-using Harvest.Dtos;
-
 namespace Harvest.Models;
 
 /// <summary>
 /// The body of <c>PATCH /v2/pto/allocations</c>. The user and policy identify the allocation, so they are required.
 /// </summary>
-public class PtoAllocationPatchDto : PatchDto
+public class PtoAllocationPatchDto : PtoAccrualSettings
 {
 	/// <summary>The target user ID.</summary>
 	public required long UserId { get; set; }
@@ -15,27 +13,6 @@ public class PtoAllocationPatchDto : PatchDto
 
 	/// <summary>The allocation year; Harvest's default is the current year.</summary>
 	public int? Year { get; set; }
-
-	/// <summary>Override accrual mode: <c>fixed</c>, <c>accrued</c> or <c>unlimited</c> (see <see cref="PtoAccrualType"/>).</summary>
-	public string? AccrualType { get; set; }
-
-	/// <summary>
-	/// Override accrual interval: <c>monthly</c>, <c>biweekly</c>, <c>semimonthly</c> or <c>hourly</c> (see
-	/// <see cref="PtoAccrualSchedule"/>).
-	/// </summary>
-	public string? AccrualSchedule { get; set; }
-
-	/// <summary>Anchor date when <see cref="AccrualSchedule"/> is overridden to <c>biweekly</c>.</summary>
-	public DateOnly? AccrualFirstPayday { get; set; }
-
-	/// <summary>Leave hours earned per period when <see cref="AccrualSchedule"/> is overridden to <c>hourly</c>.</summary>
-	public decimal? AccrualLeaveHours { get; set; }
-
-	/// <summary>Base worked hours required to earn leave when <see cref="AccrualSchedule"/> is overridden to <c>hourly</c>.</summary>
-	public decimal? AccrualWorkedHours { get; set; }
-
-	/// <summary>Annual cap on accrued leave hours when <see cref="AccrualSchedule"/> is overridden to <c>hourly</c>.</summary>
-	public decimal? AccrualMaxHoursPerYear { get; set; }
 
 	/// <summary>Override annual allowance days.</summary>
 	public decimal? DaysPerYear { get; set; }

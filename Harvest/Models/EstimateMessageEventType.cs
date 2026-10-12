@@ -9,20 +9,20 @@ namespace Harvest.Models;
 public static class EstimateMessageEventType
 {
 	/// <summary>Marks a draft estimate as sent.</summary>
-	public const string Send = "send";
+	public static string Send => "send";
 
 	/// <summary>Marks an open estimate as accepted.</summary>
-	public const string Accept = "accept";
+	public static string Accept => "accept";
 
 	/// <summary>Marks an open estimate as declined.</summary>
-	public const string Decline = "decline";
+	public static string Decline => "decline";
 
 	/// <summary>Re-opens a closed estimate.</summary>
-	public const string ReOpen = "re-open";
+	public static string ReOpen => "re-open";
 
 	/// <summary>The client viewed the estimate (read only).</summary>
-	public const string View = "view";
+	public static string View => "view";
 
 	/// <summary>The estimate was invoiced (read only).</summary>
-	public const string Invoice = "invoice";
+	public static string Invoice => "invoice";
 }
