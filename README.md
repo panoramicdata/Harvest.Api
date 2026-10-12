@@ -138,6 +138,7 @@ The `HarvestClient` (and `IHarvestClient`) provides access to the following API 
 | `Companies` | Access company information |
 | `Projects` | Manage projects |
 | `ProjectTaskAssignments` | Manage task assignments for projects |
+| `Reports` | Time, expense, uninvoiced and project budget reports (100 requests per 15 minutes) |
 | `Tasks` | Manage tasks |
 | `TimeEntries` | Create, update, and delete time entries |
 | `Users` | Manage users |

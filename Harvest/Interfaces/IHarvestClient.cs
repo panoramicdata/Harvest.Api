@@ -18,6 +18,9 @@ public interface IHarvestClient : IDisposable
 	/// <summary>The task assignments of projects.</summary>
 	IProjectTaskAssignmentApi ProjectTaskAssignments { get; }
 
+	/// <summary>Time, expense, uninvoiced and project budget reports (rate limited to 100 requests per 15 minutes).</summary>
+	IReportApi Reports { get; }
+
 	/// <summary>Tasks.</summary>
 	ITaskApi Tasks { get; }
 
