@@ -18,6 +18,9 @@ public interface IHarvestClient : IDisposable
 	/// <summary>The task assignments of projects.</summary>
 	IProjectTaskAssignmentApi ProjectTaskAssignments { get; }
 
+	/// <summary>Roles.</summary>
+	IRoleApi Roles { get; }
+
 	/// <summary>Tasks.</summary>
 	ITaskApi Tasks { get; }
 
