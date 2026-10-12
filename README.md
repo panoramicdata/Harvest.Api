@@ -134,12 +134,18 @@ The `HarvestClient` (and `IHarvestClient`) provides access to the following API 
 
 | Property | Description |
 |----------|-------------|
+| `Accounts` | List the accounts the access token can reach (Harvest ID) |
+| `BillableRates` | List and create users' billable rates |
 | `Clients` | Manage clients |
-| `Companies` | Access company information |
+| `Companies` | Get and update company settings |
+| `CostRates` | List and create users' cost rates |
 | `Projects` | Manage projects |
 | `ProjectTaskAssignments` | Manage task assignments for projects |
+| `ProjectUserAssignments` | Manage user assignments for projects |
+| `Roles` | Manage roles |
 | `Tasks` | Manage tasks |
-| `TimeEntries` | Create, update, and delete time entries |
+| `Teammates` | List and replace managers' teammates |
+| `TimeEntries` | Create, update, delete, stop and restart time entries |
 | `Users` | Manage users |
 | `UserProjectAssignments` | List project assignments for users |
 

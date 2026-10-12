@@ -6,6 +6,12 @@ namespace Harvest.Interfaces;
 /// </summary>
 public interface IHarvestClient : IDisposable
 {
+	/// <summary>
+	/// The accounts the access token can reach, from Harvest ID (<see cref="HarvestClient.IdBaseAddress"/>); these requests
+	/// do not send the <c>Harvest-Account-Id</c> header.
+	/// </summary>
+	IAccountApi Accounts { get; }
+
 	/// <summary>The billable rates of users.</summary>
 	IBillableRateApi BillableRates { get; }
 

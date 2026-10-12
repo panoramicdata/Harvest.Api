@@ -115,7 +115,7 @@ public class HarvestClientTests
 			.Select(p => $"{p.PropertyType.Name} {p.Name}");
 
 		ApiProperties(typeof(IHarvestClient)).Should().BeEquivalentTo(ApiProperties(typeof(HarvestClient)));
-		ApiProperties(typeof(IHarvestClient)).Should().HaveCount(13);
+		ApiProperties(typeof(IHarvestClient)).Should().HaveCount(14);
 	}
 
 	[Fact]
@@ -124,6 +124,7 @@ public class HarvestClientTests
 		using var client = TestClient.Create(new StubHandler());
 
 		client.Should().BeAssignableTo<IHarvestClient>();
+		client.Accounts.Should().NotBeNull();
 		client.BillableRates.Should().NotBeNull();
 		client.Clients.Should().NotBeNull();
 		client.Companies.Should().NotBeNull();

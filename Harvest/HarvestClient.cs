@@ -25,10 +25,18 @@ namespace Harvest;
 /// </remarks>
 public sealed class HarvestClient : IHarvestClient
 {
-	/// <summary>The address every request is sent to.</summary>
+	/// <summary>The address every request is sent to, except those of <see cref="Accounts"/>.</summary>
 	public static Uri BaseAddress { get; } = new("https://api.harvestapp.com");
 
+	/// <summary>
+	/// The Harvest ID address that <see cref="Accounts"/> sends its requests to, without the <c>Harvest-Account-Id</c> header.
+	/// </summary>
+	public static Uri IdBaseAddress { get; } = new("https://id.getharvest.com");
+
 	private readonly HttpClient _httpClient;
+
+	// Shares _httpClient's pipeline (retries and transport) but has its own base address and headers.
+	private readonly HttpClient _idHttpClient;
 
 	/// <summary>Creates a client that sends requests over the network, through <see cref="HarvestClientOptions.ProxyUrl"/> if set.</summary>
 	/// <param name="options">The client options.</param>
@@ -51,7 +59,10 @@ public sealed class HarvestClient : IHarvestClient
 	{
 		ArgumentNullException.ThrowIfNull(innerHandler);
 		Validated(options);
-		_httpClient = CreateHttpClient(options, new RetryHandler(options) { InnerHandler = innerHandler });
+		var pipeline = new RetryHandler(options) { InnerHandler = innerHandler };
+		_httpClient = CreateHttpClient(options, pipeline, forAccount: true);
+		_idHttpClient = CreateHttpClient(options, pipeline, forAccount: false);
+		Accounts = RestService.For<IAccountApi>(_idHttpClient, Settings);
 		BillableRates = For<IBillableRateApi>();
 		Clients = For<IClientApi>();
 		Companies = For<ICompanyApi>();
@@ -96,6 +107,9 @@ public sealed class HarvestClient : IHarvestClient
 	};
 
 	/// <inheritdoc />
+	public IAccountApi Accounts { get; }
+
+	/// <inheritdoc />
 	public IBillableRateApi BillableRates { get; }
 
 	/// <inheritdoc />
@@ -135,7 +149,11 @@ public sealed class HarvestClient : IHarvestClient
 	public IUserProjectAssignmentApi UserProjectAssignments { get; }
 
 	/// <inheritdoc />
-	public void Dispose() => _httpClient.Dispose();
+	public void Dispose()
+	{
+		_idHttpClient.Dispose();
+		_httpClient.Dispose();
+	}
 
 	private T For<T>() => RestService.For<T>(_httpClient, Settings);
 
@@ -160,16 +178,22 @@ public sealed class HarvestClient : IHarvestClient
 			UseDefaultCredentials = false,
 		};
 
-	private static HttpClient CreateHttpClient(HarvestClientOptions options, HttpMessageHandler pipeline)
+	// The account client (api.harvestapp.com) owns the shared pipeline and sends Harvest-Account-Id; the Harvest ID client
+	// (id.getharvest.com) does neither.
+	private static HttpClient CreateHttpClient(HarvestClientOptions options, HttpMessageHandler pipeline, bool forAccount)
 	{
-		var httpClient = new HttpClient(pipeline, disposeHandler: true)
+		var httpClient = new HttpClient(pipeline, disposeHandler: forAccount)
 		{
-			BaseAddress = BaseAddress,
+			BaseAddress = forAccount ? BaseAddress : IdBaseAddress,
 			Timeout = options.Timeout
 		};
 		var headers = httpClient.DefaultRequestHeaders;
 		headers.Authorization = new AuthenticationHeaderValue("Bearer", options.AccessToken);
-		headers.Add("Harvest-Account-Id", options.AccountId.ToString(CultureInfo.InvariantCulture));
+		if (forAccount)
+		{
+			headers.Add("Harvest-Account-Id", options.AccountId.ToString(CultureInfo.InvariantCulture));
+		}
+
 		// Harvest asks for "AppName (contact)", which is not a strict RFC 9110 product list, so it is not validated.
 		_ = headers.TryAddWithoutValidation("User-Agent", options.UserAgent ?? DefaultUserAgent);
 		headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
