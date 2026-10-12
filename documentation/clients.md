@@ -11,18 +11,14 @@ The Clients API provides access to client management functionality in Harvest.
 Retrieves a list of all clients for the authenticated account.
 
 **Parameters:**
-- `updated_since` (DateTime?, optional): Only return clients that have been updated since the given date
-- `page` (int?, optional): The page number to use in pagination (default: 1)
-- `per_page` (int?, optional): The number of records to return per page (default: 100, max: 100)
+- `options` (ListOptions?): Filtering and paging options; pass `null` to send no query parameters
+  - `UpdatedSince` (DateTime?, sent as `updated_since`): Only return clients that have been updated since the given date
+  - `Page` (int?, sent as `page`): The page number to use in pagination (default: 1)
+  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 100, range: 1-2000)
 
 **Response:** `ClientsContainer`
 ```csharp
-Task<ClientsContainer> ListAllAsync(
-    DateTime? updatedSince = null,
-    int? page = null,
-    int? perPage = null,
-    CancellationToken cancellationToken = default
-);
+Task<ClientsContainer> ListAllAsync([Query] ListOptions? options, CancellationToken cancellationToken);
 ```
 
 ### Get a Client
@@ -58,7 +54,7 @@ public class ClientCreationDto
 
 **Response:** `Client`
 ```csharp
-Task<Client> CreateAsync(ClientCreationDto clientDto, CancellationToken cancellationToken);
+Task<Client> CreateAsync(ClientCreationDto creationDto, CancellationToken cancellationToken);
 ```
 
 ### Update a Client
@@ -85,7 +81,7 @@ public class ClientPatchDto
 ```csharp
 Task<Client> UpdateAsync(
     long id,
-    ClientPatchDto clientPatchDto,
+    ClientPatchDto patchDto,
     CancellationToken cancellationToken
 );
 ```
@@ -118,26 +114,29 @@ Task DeleteAsync(long id, CancellationToken cancellationToken);
 
 ```csharp
 // List all clients
-var clients = await harvestClient.Clients.ListAllAsync();
+var clients = await harvestClient.Clients.ListAllAsync(null, cancellationToken);
+
+// List the second page of clients, 50 at a time
+var page2 = await harvestClient.Clients.ListAllAsync(new ListOptions { Page = 2, PerPage = 50 }, cancellationToken);
 
 // Get a specific client
-var client = await harvestClient.Clients.GetAsync(12345);
+var client = await harvestClient.Clients.GetAsync(12345, cancellationToken);
 
 // Create a new client
 var newClient = await harvestClient.Clients.CreateAsync(new ClientCreationDto
 {
     Name = "New Client",
     IsActive = true
-}, CancellationToken);
+}, cancellationToken);
 
 // Update a client
 var updatedClient = await harvestClient.Clients.UpdateAsync(clientId, new ClientPatchDto
 {
     Name = "Updated Client Name"
-}, CancellationToken);
+}, cancellationToken);
 
 // Delete a client
-await harvestClient.Clients.DeleteAsync(clientId, CancellationToken);
+await harvestClient.Clients.DeleteAsync(clientId, cancellationToken);
 ```
 
 ## Data Models

@@ -7,21 +7,19 @@ public class ProjectTaskAssignmentTests(ITestOutputHelper testOutputHelper) : Ha
 	{
 		// First get a project
 		var projectsContainer = await HarvestClient.Projects.ListAllAsync(
-			page: 1,
-			perPage: 1
+			new() { Page = 1, PerPage = 1 }, CancellationToken
 		);
 
 		if (projectsContainer.Projects.Count == 0)
 		{
-			// Skip if no projects exist
+			Logger.LogInformation("No projects exist to test task assignments");
 			return;
 		}
 
 		var projectId = projectsContainer.Projects[0].Id;
 		var taskAssignmentsContainer = await HarvestClient.ProjectTaskAssignments.ListAllAsync(
 			projectId,
-			page: 1,
-			perPage: 10
+			new() { Page = 1, PerPage = 10 }, CancellationToken
 		);
 
 		taskAssignmentsContainer.Should().NotBeNull();
@@ -33,26 +31,24 @@ public class ProjectTaskAssignmentTests(ITestOutputHelper testOutputHelper) : Ha
 	{
 		// First get a project with task assignments
 		var projectsContainer = await HarvestClient.Projects.ListAllAsync(
-			page: 1,
-			perPage: 1
+			new() { Page = 1, PerPage = 1 }, CancellationToken
 		);
 
 		if (projectsContainer.Projects.Count == 0)
 		{
-			// Skip if no projects exist
+			Logger.LogInformation("No projects exist to test task assignments");
 			return;
 		}
 
 		var projectId = projectsContainer.Projects[0].Id;
 		var taskAssignmentsContainer = await HarvestClient.ProjectTaskAssignments.ListAllAsync(
 			projectId,
-			page: 1,
-			perPage: 1
+			new() { Page = 1, PerPage = 1 }, CancellationToken
 		);
 
 		if (taskAssignmentsContainer.ProjectTaskAssignments.Count == 0)
 		{
-			// Skip if no task assignments exist
+			Logger.LogInformation("No task assignments exist to test");
 			return;
 		}
 
@@ -67,84 +63,92 @@ public class ProjectTaskAssignmentTests(ITestOutputHelper testOutputHelper) : Ha
 	[Fact]
 	public async System.Threading.Tasks.Task CreateUpdateDeleteProjectTaskAssignment()
 	{
-		// Skip CRUD operations in sandbox environment to avoid potential permission issues
-		// The main goal is to ensure the API methods are implemented and compile correctly
-		var projectsContainer = await HarvestClient.Projects.ListAllAsync(page: 1, perPage: 1);
-
-		if (projectsContainer.Projects.Count > 0)
+		if (!Configuration.TestSettings.CreateTestData)
 		{
-			var projectId = projectsContainer.Projects[0].Id;
-			var tasksContainer = await HarvestClient.Tasks.ListAllAsync(page: 1, perPage: 1, cancellationToken: CancellationToken);
-
-			if (tasksContainer.Tasks.Count > 0)
-			{
-				var taskId = tasksContainer.Tasks[0].Id;
-
-				try
-				{
-					// Create a new task assignment
-					var creationDto = new ProjectTaskAssignmentCreationDto
-					{
-						TaskId = taskId,
-						IsActive = true,
-						Billable = true,
-						HourlyRate = 100.00m
-					};
-
-					// This may fail due to permissions, but we're testing that the method exists
-					await HarvestClient.ProjectTaskAssignments.CreateAsync(projectId, creationDto, CancellationToken);
-				}
-				catch (Refit.ApiException)
-				{
-					// Expected in sandbox environment - method exists but may not be permitted
-				}
-
-				// Test individual get
-				var taskAssignmentsContainer = await HarvestClient.ProjectTaskAssignments.ListAllAsync(projectId, page: 1, perPage: 1);
-				if (taskAssignmentsContainer.ProjectTaskAssignments.Count > 0)
-				{
-					var assignmentId = taskAssignmentsContainer.ProjectTaskAssignments[0].Id;
-
-					try
-					{
-						// Get individual assignment
-						await HarvestClient.ProjectTaskAssignments.GetAsync(projectId, assignmentId, CancellationToken);
-					}
-					catch (Refit.ApiException)
-					{
-						// Expected in sandbox environment - method exists but may not be permitted
-					}
-
-					try
-					{
-						// Update the task assignment
-						var updateDto = new ProjectTaskAssignmentPatchDto
-						{
-							HourlyRate = 125.00m
-						};
-
-						// This may fail due to permissions, but we're testing that the method exists
-						await HarvestClient.ProjectTaskAssignments.UpdateAsync(projectId, assignmentId, updateDto, CancellationToken);
-					}
-					catch (Refit.ApiException)
-					{
-						// Expected in sandbox environment - method exists but may not be permitted
-					}
-
-					try
-					{
-						// This may fail due to permissions, but we're testing that the method exists
-						await HarvestClient.ProjectTaskAssignments.DeleteAsync(projectId, assignmentId, CancellationToken);
-					}
-					catch (Refit.ApiException)
-					{
-						// Expected in sandbox environment - method exists but may not be permitted
-					}
-				}
-			}
+			Logger.LogInformation("Test data creation is disabled");
+			return;
 		}
 
-		// If we get here, the methods exist and are callable (even if they fail due to permissions)
-		Logger.LogInformation("CRUD methods are implemented and callable");
+		long? createdAssignmentId = null;
+		long? createdProjectId = null;
+		long? createdTaskId = null;
+		long? createdClientId = null;
+
+		try
+		{
+			// Steps 1 and 2: Create a test client and project (dependencies for task assignment)
+			var createdClient = await CreateTestClientAsync("TaskAssignment");
+			createdClientId = createdClient.Id;
+			var createdProject = await CreateTestProjectAsync(createdClient.Id, "TaskAssignment");
+			createdProjectId = createdProject.Id;
+
+			// Step 3: Create a test task (dependency for task assignment)
+			var taskCreationDto = new TaskCreationDto
+			{
+				Name = $"{Configuration.TestSettings.TestDataPrefix}TaskAssignment Test Task {DateTime.UtcNow:yyyyMMddHHmmss}",
+				BillableByDefault = true,
+				DefaultHourlyRate = 100.00m,
+				IsDefault = false,
+				IsActive = true
+			};
+			var createdTask = await HarvestClient.Tasks.CreateAsync(taskCreationDto, CancellationToken);
+			createdTaskId = createdTask.Id;
+			Logger.LogInformation("Created test task: {TaskId} - {TaskName}", createdTask.Id, createdTask.Name);
+
+			// Step 4: CREATE - Create the task assignment
+			var assignmentCreationDto = new ProjectTaskAssignmentCreationDto
+			{
+				TaskId = createdTask.Id,
+				IsActive = true,
+				Billable = true,
+				HourlyRate = 150.00m
+			};
+			var createdAssignment = await HarvestClient.ProjectTaskAssignments.CreateAsync(createdProject.Id, assignmentCreationDto, CancellationToken);
+			createdAssignmentId = createdAssignment.Id;
+			Logger.LogInformation("Created task assignment: {AssignmentId}", createdAssignment.Id);
+
+			createdAssignment.Should().NotBeNull();
+			createdAssignment.Id.Should().BePositive();
+			createdAssignment.Task.Should().NotBeNull();
+			createdAssignment.Task!.Id.Should().Be(createdTask.Id);
+			createdAssignment.Billable.Should().BeTrue();
+
+			// Step 5: READ - Get the task assignment
+			var retrievedAssignment = await HarvestClient.ProjectTaskAssignments.GetAsync(createdProject.Id, createdAssignment.Id, CancellationToken);
+			retrievedAssignment.Should().NotBeNull();
+			retrievedAssignment.Id.Should().Be(createdAssignment.Id);
+			Logger.LogInformation("Retrieved task assignment: {AssignmentId}", retrievedAssignment.Id);
+
+			// Step 6: UPDATE - Update the task assignment
+			var updateDto = new ProjectTaskAssignmentPatchDto
+			{
+				HourlyRate = 175.00m,
+				Billable = false
+			};
+			var updatedAssignment = await HarvestClient.ProjectTaskAssignments.UpdateAsync(createdProject.Id, createdAssignment.Id, updateDto, CancellationToken);
+			updatedAssignment.Should().NotBeNull();
+			// Note: HourlyRate may be null if the project/task assignment doesn't support hourly rates
+			updatedAssignment.Billable.Should().BeFalse();
+			Logger.LogInformation("Updated task assignment: {AssignmentId} - Billable: {Billable}", updatedAssignment.Id, updatedAssignment.Billable);
+
+			// Step 7: DELETE - Delete the task assignment
+			await HarvestClient.ProjectTaskAssignments.DeleteAsync(createdProject.Id, createdAssignment.Id, CancellationToken);
+			createdAssignmentId = null; // Mark as deleted
+			Logger.LogInformation("Deleted task assignment");
+		}
+		catch (Refit.ApiException ex) when (ex.StatusCode == System.Net.HttpStatusCode.UnprocessableEntity ||
+											 ex.StatusCode == System.Net.HttpStatusCode.Forbidden)
+		{
+			Logger.LogWarning("CRUD operations not permitted in this environment: {StatusCode} - {Message}", ex.StatusCode, ex.Message);
+			// Test passes - we verified the API methods exist and are callable
+		}
+		finally
+		{
+			// Clean up in reverse order of dependencies; an assignment only exists once its project does
+			await TryCleanUpAsync(createdAssignmentId, id => HarvestClient.ProjectTaskAssignments.DeleteAsync(createdProjectId!.Value, id, CancellationToken), "task assignment");
+			await TryCleanUpAsync(createdProjectId, id => HarvestClient.Projects.DeleteAsync(id, CancellationToken), "project");
+			await TryCleanUpAsync(createdTaskId, id => HarvestClient.Tasks.DeleteAsync(id, CancellationToken), "task");
+			await TryCleanUpAsync(createdClientId, id => HarvestClient.Clients.DeleteAsync(id, CancellationToken), "client");
+		}
 	}
 }

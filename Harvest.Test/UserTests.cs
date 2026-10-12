@@ -16,9 +16,7 @@ public class UserTests(ITestOutputHelper testOutputHelper) : HarvestTest(testOut
 	public async System.Threading.Tasks.Task ListAllUsers()
 	{
 		var usersContainer = await HarvestClient.Users.ListAllAsync(
-			page: 1,
-			perPage: 10,
-			cancellationToken: CancellationToken
+			new() { Page = 1, PerPage = 10 }, CancellationToken
 		);
 
 		usersContainer.Should().NotBeNull();

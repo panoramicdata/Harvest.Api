@@ -14,12 +14,12 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 	/// <summary>
 	/// Creates a test client if needed
 	/// </summary>
-	public async Task<Client> EnsureTestClientAsync(string clientName = "Default Client", bool trackForCleanup = true)
+	public async Task<Client> EnsureTestClientAsync(string clientName, bool trackForCleanup)
 	{
 		if (!testSettings.CreateTestData)
 		{
 			// Return first available client
-			var clients = await harvestClient.Clients.ListAllAsync(page: 1, perPage: 1, cancellationToken: CancellationToken.None);
+			var clients = await harvestClient.Clients.ListAllAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
 			if (clients.Clients.Count > 0)
 			{
 				return clients.Clients[0];
@@ -29,7 +29,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		}
 
 		var fullClientName = $"{testSettings.TestDataPrefix}{clientName}";
-		var existingClients = await harvestClient.Clients.ListAllAsync(cancellationToken: CancellationToken.None);
+		var existingClients = await harvestClient.Clients.ListAllAsync(null, CancellationToken.None);
 		var existingClient = existingClients.Clients.FirstOrDefault(c => c.Name == fullClientName);
 
 		if (existingClient != null)
@@ -58,7 +58,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		catch (Refit.ApiException)
 		{
 			// Fall back to first available client if creation fails
-			var clients = await harvestClient.Clients.ListAllAsync(page: 1, perPage: 1, cancellationToken: CancellationToken.None);
+			var clients = await harvestClient.Clients.ListAllAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
 			if (clients.Clients.Count > 0)
 			{
 				return clients.Clients[0];
@@ -71,12 +71,12 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 	/// <summary>
 	/// Creates a test project if needed
 	/// </summary>
-	public async Task<Project> EnsureTestProjectAsync(string projectName = "Default Project", long? clientId = null, bool trackForCleanup = true)
+	public async Task<Project> EnsureTestProjectAsync(string projectName, long? clientId, bool trackForCleanup)
 	{
 		if (!testSettings.CreateTestData)
 		{
 			// Return first available project
-			var projects = await harvestClient.Projects.ListAllAsync(page: 1, perPage: 1);
+			var projects = await harvestClient.Projects.ListAllAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
 			if (projects.Projects.Count > 0)
 			{
 				return projects.Projects[0];
@@ -86,7 +86,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		}
 
 		var fullProjectName = $"{testSettings.TestDataPrefix}{projectName}";
-		var existingProjects = await harvestClient.Projects.ListAllAsync();
+		var existingProjects = await harvestClient.Projects.ListAllAsync(null, CancellationToken.None);
 		var existingProject = existingProjects.Projects.FirstOrDefault(p => p.Name == fullProjectName);
 
 		if (existingProject != null)
@@ -99,7 +99,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 			// Ensure we have a client
 			var client = clientId.HasValue
 				? await harvestClient.Clients.GetAsync(clientId.Value, CancellationToken.None)
-				: await EnsureTestClientAsync(trackForCleanup: false);
+				: await EnsureTestClientAsync("Default Client", trackForCleanup: false);
 
 			// Create new project
 			var creationDto = new ProjectCreationDto
@@ -122,7 +122,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		catch (Refit.ApiException)
 		{
 			// Fall back to first available project if creation fails
-			var projects = await harvestClient.Projects.ListAllAsync(page: 1, perPage: 1);
+			var projects = await harvestClient.Projects.ListAllAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
 			if (projects.Projects.Count > 0)
 			{
 				return projects.Projects[0];
@@ -135,12 +135,12 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 	/// <summary>
 	/// Creates a test task if needed
 	/// </summary>
-	public async System.Threading.Tasks.Task<Models.Task> EnsureTestTaskAsync(string taskName = "Default Task", bool trackForCleanup = true)
+	public async System.Threading.Tasks.Task<Models.Task> EnsureTestTaskAsync(string taskName, bool trackForCleanup)
 	{
 		if (!testSettings.CreateTestData)
 		{
 			// Return first available task
-			var tasks = await harvestClient.Tasks.ListAllAsync(page: 1, perPage: 1, cancellationToken: CancellationToken.None);
+			var tasks = await harvestClient.Tasks.ListAllAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
 			if (tasks.Tasks.Count > 0)
 			{
 				return tasks.Tasks[0];
@@ -150,7 +150,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		}
 
 		var fullTaskName = $"{testSettings.TestDataPrefix}{taskName}";
-		var existingTasks = await harvestClient.Tasks.ListAllAsync(cancellationToken: CancellationToken.None);
+		var existingTasks = await harvestClient.Tasks.ListAllAsync(null, CancellationToken.None);
 		var existingTask = existingTasks.Tasks.FirstOrDefault(t => t.Name == fullTaskName);
 
 		if (existingTask != null)
@@ -181,7 +181,7 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 		catch (Refit.ApiException)
 		{
 			// Fall back to first available task if creation fails
-			var tasks = await harvestClient.Tasks.ListAllAsync(page: 1, perPage: 1, cancellationToken: CancellationToken.None);
+			var tasks = await harvestClient.Tasks.ListAllAsync(new() { Page = 1, PerPage = 1 }, CancellationToken.None);
 			if (tasks.Tasks.Count > 0)
 			{
 				return tasks.Tasks[0];
@@ -194,11 +194,11 @@ public class TestDataManager(HarvestClient harvestClient, TestSettings testSetti
 	/// <summary>
 	/// Creates a test time entry
 	/// </summary>
-	public async Task<TimeEntry> CreateTestTimeEntryAsync(string notes = "Test time entry", decimal hours = 1.0m, bool trackForCleanup = true)
+	public async Task<TimeEntry> CreateTestTimeEntryAsync(string notes, decimal hours, bool trackForCleanup)
 	{
 		var user = await harvestClient.Users.GetMeAsync(CancellationToken.None);
-		var project = await EnsureTestProjectAsync();
-		var task = await EnsureTestTaskAsync();
+		var project = await EnsureTestProjectAsync("Default Project", clientId: null, trackForCleanup: true);
+		var task = await EnsureTestTaskAsync("Default Task", trackForCleanup: true);
 
 		var creationDto = new TimeEntryCreationDto
 		{

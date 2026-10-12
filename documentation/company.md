@@ -27,7 +27,7 @@ Task<Company> GetAsync(CancellationToken cancellationToken);
 
 ```csharp
 // Get company information
-var company = await harvestClient.Companies.GetAsync();
+var company = await harvestClient.Companies.GetAsync(cancellationToken);
 Console.WriteLine($"Company: {company.Name}");
 ```
 

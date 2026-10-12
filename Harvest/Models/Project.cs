@@ -15,7 +15,7 @@ public class Project
 	/// <summary>
 	/// Unique name for the project.
 	/// </summary>
-	public required string Name { get; set; }
+	public string Name { get; set; } = string.Empty;
 
 	/// <summary>
 	/// The code associated with the project.
@@ -40,7 +40,7 @@ public class Project
 	/// <summary>
 	/// The method by which the project is invoiced.
 	/// </summary>
-	public required string BillBy { get; set; }
+	public string BillBy { get; set; } = string.Empty;
 
 	/// <summary>
 	/// Rate for projects billed by Project Hourly Rate.
@@ -55,7 +55,7 @@ public class Project
 	/// <summary>
 	/// The method by which the project is budgeted.
 	/// </summary>
-	public required string BudgetBy { get; set; }
+	public string BudgetBy { get; set; } = string.Empty;
 
 	/// <summary>
 	/// Whether project managers should be notified when the project goes over budget.

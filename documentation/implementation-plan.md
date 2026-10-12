@@ -93,5 +93,5 @@ This document outlines the plan to achieve complete coverage of the Harvest API 
 - ✅ All medium-priority features implemented
 - ✅ Comprehensive test coverage achieved
 - ✅ Documentation complete and accurate
-- ✅ Backward compatibility maintained
+- ✅ Breaking in 3.0: required CancellationToken on every method; list filters moved into ListOptions
 - ✅ Production-ready code quality

@@ -12,18 +12,17 @@ Retrieves a list of all project assignments for a specific user.
 
 **Parameters:**
 - `id` (long): The ID of the user
-- `updated_since` (DateTime?, optional): Only return assignments that have been updated since the given date
-- `page` (int?, optional): The page number to use in pagination (default: 1)
-- `per_page` (int?, optional): The number of records to return per page (default: 100, max: 100)
+- `options` (ListOptions?): Filtering and paging options; pass `null` to send no query parameters
+  - `UpdatedSince` (DateTime?, sent as `updated_since`): Only return assignments that have been updated since the given date
+  - `Page` (int?, sent as `page`): The page number to use in pagination (default: 1)
+  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 100, range: 1-2000)
 
 **Response:** `UserProjectAssignmentsContainer`
 ```csharp
 Task<UserProjectAssignmentsContainer> ListAllAsync(
     long id,
-    DateTime? updatedSince = null,
-    int? page = null,
-    int? perPage = null,
-    CancellationToken cancellationToken = default
+    [Query] ListOptions? options,
+    CancellationToken cancellationToken
 );
 ```
 
@@ -34,18 +33,14 @@ Task<UserProjectAssignmentsContainer> ListAllAsync(
 Retrieves a list of all project assignments for the currently authenticated user.
 
 **Parameters:**
-- `updated_since` (DateTime?, optional): Only return assignments that have been updated since the given date
-- `page` (int?, optional): The page number to use in pagination (default: 1)
-- `per_page` (int?, optional): The number of records to return per page (default: 100, max: 100)
+- `options` (ListOptions?): Filtering and paging options; pass `null` to send no query parameters
+  - `UpdatedSince` (DateTime?, sent as `updated_since`): Only return assignments that have been updated since the given date
+  - `Page` (int?, sent as `page`): The page number to use in pagination (default: 1)
+  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 100, range: 1-2000)
 
 **Response:** `UserProjectAssignmentsContainer`
 ```csharp
-Task<UserProjectAssignmentsContainer> ListAllMineAsync(
-    DateTime? updatedSince = null,
-    int? page = null,
-    int? perPage = null,
-    CancellationToken cancellationToken = default
-);
+Task<UserProjectAssignmentsContainer> ListAllMineAsync([Query] ListOptions? options, CancellationToken cancellationToken);
 ```
 
 ## Implementation Status
@@ -67,10 +62,10 @@ All user project assignment operations are now implemented in the Harvest API cl
 
 ```csharp
 // List project assignments for current user
-var myAssignments = await harvestClient.UserProjectAssignments.ListAllMineAsync();
+var myAssignments = await harvestClient.UserProjectAssignments.ListAllMineAsync(null, cancellationToken);
 
 // List project assignments for a specific user
-var userAssignments = await harvestClient.UserProjectAssignments.ListAllAsync(12345);
+var userAssignments = await harvestClient.UserProjectAssignments.ListAllAsync(12345, new ListOptions { Page = 1, PerPage = 50 }, cancellationToken);
 ```
 
 ## Data Models

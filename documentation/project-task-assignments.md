@@ -12,17 +12,17 @@ Retrieves a list of all task assignments for a specific project.
 
 **Parameters:**
 - `id` (long): The ID of the project
-- `updated_since` (DateTime?, optional): Only return assignments that have been updated since the given date
-- `page` (int?, optional): The page number to use in pagination (default: 1)
-- `per_page` (int?, optional): The number of records to return per page (default: 100, max: 100)
+- `options` (ListOptions?): Filtering and paging options; pass `null` to send no query parameters
+  - `UpdatedSince` (DateTime?, sent as `updated_since`): Only return assignments that have been updated since the given date
+  - `Page` (int?, sent as `page`): The page number to use in pagination (default: 1)
+  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 100, range: 1-2000)
 
 **Response:** `ProjectTaskAssignmentsContainer`
 ```csharp
 Task<ProjectTaskAssignmentsContainer> ListAllAsync(
     long id,
-    DateTime? updatedSince = null,
-    int? page = null,
-    int? perPage = null
+    [Query] ListOptions? options,
+    CancellationToken cancellationToken
 );
 ```
 
@@ -44,7 +44,7 @@ All task assignment operations are now implemented in the Harvest API client.
 
 ```csharp
 // List all task assignments for a project
-var assignments = await harvestClient.ProjectTaskAssignments.ListAllAsync(12345);
+var assignments = await harvestClient.ProjectTaskAssignments.ListAllAsync(12345, null, cancellationToken);
 ```
 
 ## Data Models

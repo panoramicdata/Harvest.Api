@@ -3,12 +3,7 @@ namespace Harvest.Interfaces;
 public interface IUserApi
 {
 	[Get("/v2/users")]
-	Task<UsersContainer> ListAllAsync(
-		[AliasAs("updated_since")] DateTime? updatedSince = null,
-		int? page = null,
-		[AliasAs("per_page")] int? perPage = null,
-		CancellationToken cancellationToken = default
-	);
+	Task<UsersContainer> ListAllAsync([Query] ListOptions? options, CancellationToken cancellationToken);
 
 	[Get("/v2/users/{id}")]
 	Task<User> GetAsync(long id, CancellationToken cancellationToken);
@@ -17,11 +12,11 @@ public interface IUserApi
 	Task<User> GetMeAsync(CancellationToken cancellationToken);
 
 	[Post("/v2/users")]
-	Task<User> CreateAsync(UserCreationDto creationDto, CancellationToken cancellationToken = default);
+	Task<User> CreateAsync(UserCreationDto creationDto, CancellationToken cancellationToken);
 
 	[Patch("/v2/users/{id}")]
-	Task<User> UpdateAsync(long id, UserPatchDto patchDto, CancellationToken cancellationToken = default);
+	Task<User> UpdateAsync(long id, UserPatchDto patchDto, CancellationToken cancellationToken);
 
 	[Delete("/v2/users/{id}")]
-	System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken = default);
+	System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken);
 }

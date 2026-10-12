@@ -11,32 +11,21 @@ The Time Entries API provides comprehensive time tracking functionality in Harve
 Retrieves a list of time entries with extensive filtering options.
 
 **Parameters:**
-- `user_id` (long?, optional): Only return time entries belonging to the user with the given ID
-- `client_id` (long?, optional): Only return time entries belonging to the client with the given ID
-- `project_id` (long?, optional): Only return time entries belonging to the project with the given ID
-- `is_billed` (bool?, optional): Pass `true` to only return time entries that have been invoiced
-- `is_running` (bool?, optional): Pass `true` to only return running time entries
-- `updated_since` (DateTime?, optional): Only return time entries that have been updated since the given date
-- `from` (string?, optional): Only return time entries with a `spent_date` on or after the given date
-- `to` (string?, optional): Only return time entries with a `spent_date` on or before the given date
-- `page` (int?, optional): The page number to use in pagination (default: 1)
-- `per_page` (int?, optional): The number of records to return per page (default: 100, max: 100)
+- `options` (TimeEntryListOptions?): Filtering and paging options; pass `null` to send no query parameters
+  - `UserId` (long?, sent as `user_id`): Only return time entries belonging to the user with the given ID
+  - `ClientId` (long?, sent as `client_id`): Only return time entries belonging to the client with the given ID
+  - `ProjectId` (long?, sent as `project_id`): Only return time entries belonging to the project with the given ID
+  - `IsBilled` (bool?, sent as `is_billed`): Pass `true` to only return time entries that have been invoiced, `false` for those that have not
+  - `IsRunning` (bool?, sent as `is_running`): Pass `true` to only return running time entries, `false` for stopped ones
+  - `UpdatedSince` (DateTime?, sent as `updated_since`): Only return time entries that have been updated since the given date
+  - `From` (string?, sent as `from`): Only return time entries with a `spent_date` on or after the given date (`YYYY-MM-DD`)
+  - `To` (string?, sent as `to`): Only return time entries with a `spent_date` on or before the given date (`YYYY-MM-DD`)
+  - `Page` (int?, sent as `page`): The page number to use in pagination (default: 1)
+  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 100, range: 1-2000)
 
 **Response:** `TimeEntriesContainer`
 ```csharp
-Task<TimeEntriesContainer> ListAllAsync(
-    long? userId = null,
-    long? clientId = null,
-    long? projectId = null,
-    bool? isBilled = null,
-    bool? isRunning = null,
-    DateTime? updatedSince = null,
-    string? from = null,
-    string? toDate = null,
-    int? page = null,
-    int? perPage = null,
-    CancellationToken cancellationToken = default
-);
+Task<TimeEntriesContainer> ListAllAsync([Query] TimeEntryListOptions? options, CancellationToken cancellationToken);
 ```
 
 ### Get a Time Entry
@@ -107,11 +96,12 @@ Task DeleteAsync(long id, CancellationToken cancellationToken);
 
 ```csharp
 // List time entries for a specific user and date range
-var entries = await harvestClient.TimeEntries.ListAllAsync(
-    userId: 12345,
-    from: "2024-01-01",
-    toDate: "2024-01-31"
-);
+var entries = await harvestClient.TimeEntries.ListAllAsync(new TimeEntryListOptions
+{
+    UserId = 12345,
+    From = "2024-01-01",
+    To = "2024-01-31"
+}, cancellationToken);
 
 // Create a new time entry
 var newEntry = await harvestClient.TimeEntries.CreateAsync(new TimeEntryCreationDto
@@ -121,16 +111,16 @@ var newEntry = await harvestClient.TimeEntries.CreateAsync(new TimeEntryCreation
     SpentDate = "2024-01-15",
     Hours = 4.5m,
     Notes = "Working on feature implementation"
-});
+}, cancellationToken);
 
 // Update a time entry
 await harvestClient.TimeEntries.PatchAsync(entryId, new TimeEntryPatchDto
 {
     Notes = "Updated notes"
-});
+}, cancellationToken);
 
 // Delete a time entry
-await harvestClient.TimeEntries.DeleteAsync(entryId);
+await harvestClient.TimeEntries.DeleteAsync(entryId, cancellationToken);
 ```
 
 ## Data Models

@@ -33,28 +33,39 @@ To use the Harvest API, you'll need:
 using Harvest;
 
 // Create a client
-var harvestClient = new HarvestClient(
-    accountId: 123456,
-    accessToken: "your-access-token"
-);
+var harvestClient = new HarvestClient(new HarvestClientOptions
+{
+    AccountId = 123456,
+    AccessToken = "your-access-token"
+});
+
+// Every method takes a CancellationToken as its last argument
+var cancellationToken = CancellationToken.None;
 
 // Get current user
-var me = await harvestClient.Users.GetMeAsync();
+var me = await harvestClient.Users.GetMeAsync(cancellationToken);
 Console.WriteLine($"Hello, {me.FirstName}!");
 
-// List all clients
-var clientsContainer = await harvestClient.Clients.ListAllAsync();
+// List clients (null options: Harvest's defaults, first page of 100)
+var clientsContainer = await harvestClient.Clients.ListAllAsync(null, cancellationToken);
 foreach (var client in clientsContainer.Clients)
 {
     Console.WriteLine($"Client: {client.Name}");
 }
 
-// List all projects
-var projectsContainer = await harvestClient.Projects.ListAllAsync();
+// List projects, with paging and filtering through ListOptions
+var projectsContainer = await harvestClient.Projects.ListAllAsync(
+    new ListOptions { Page = 1, PerPage = 50, UpdatedSince = DateTime.UtcNow.AddDays(-7) },
+    cancellationToken);
 foreach (var project in projectsContainer.Projects)
 {
     Console.WriteLine($"Project: {project.Name}");
 }
+
+// List this week's time entries for one project
+var timeEntries = await harvestClient.TimeEntries.ListAllAsync(
+    new TimeEntryListOptions { ProjectId = 12345678, From = "2025-01-13", To = "2025-01-19" },
+    cancellationToken);
 
 // Create a time entry
 var timeEntry = await harvestClient.TimeEntries.CreateAsync(new TimeEntryCreationDto
@@ -64,7 +75,20 @@ var timeEntry = await harvestClient.TimeEntries.CreateAsync(new TimeEntryCreatio
     SpentDate = "2025-01-15",
     Hours = 2.5m,
     Notes = "Working on feature X"
-});
+}, cancellationToken);
+```
+
+### Upgrading from 2.x
+
+Version 3.0 makes two breaking changes:
+- Every method takes a required `CancellationToken` as its last parameter.
+- List methods take a `ListOptions` object (`TimeEntryListOptions` for time entries) in place of the optional `updatedSince`, `page`, `perPage` and filter parameters. Pass `null` for none.
+
+```csharp
+// 2.x
+await harvestClient.Clients.ListAllAsync(page: 2, perPage: 50);
+// 3.x
+await harvestClient.Clients.ListAllAsync(new ListOptions { Page = 2, PerPage = 50 }, cancellationToken);
 ```
 
 ## Available APIs
@@ -87,11 +111,12 @@ The `HarvestClient` provides access to the following API endpoints:
 If you need to route requests through a proxy:
 
 ```csharp
-var harvestClient = new HarvestClient(
-    accountId: 123456,
-    accessToken: "your-access-token",
-    proxyUrl: "http://proxy.example.com:8080"
-);
+var harvestClient = new HarvestClient(new HarvestClientOptions
+{
+    AccountId = 123456,
+    AccessToken = "your-access-token",
+    ProxyUrl = "http://proxy.example.com:8080"
+});
 ```
 
 ## API Documentation

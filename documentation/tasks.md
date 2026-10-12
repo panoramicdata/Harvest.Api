@@ -11,18 +11,14 @@ The Tasks API provides access to task management functionality in Harvest.
 Retrieves a list of all tasks for the authenticated account.
 
 **Parameters:**
-- `updated_since` (DateTime?, optional): Only return tasks that have been updated since the given date
-- `page` (int?, optional): The page number to use in pagination (default: 1)
-- `per_page` (int?, optional): The number of records to return per page (default: 100, max: 100)
+- `options` (ListOptions?): Filtering and paging options; pass `null` to send no query parameters
+  - `UpdatedSince` (DateTime?, sent as `updated_since`): Only return tasks that have been updated since the given date
+  - `Page` (int?, sent as `page`): The page number to use in pagination (default: 1)
+  - `PerPage` (int?, sent as `per_page`): The number of records to return per page (default: 100, range: 1-2000)
 
 **Response:** `TasksContainer`
 ```csharp
-Task<TasksContainer> ListAllAsync(
-    DateTime? updatedSince = null,
-    int? page = null,
-    int? perPage = null,
-    CancellationToken cancellationToken = default
-);
+Task<TasksContainer> ListAllAsync([Query] ListOptions? options, CancellationToken cancellationToken);
 ```
 
 ### Get a Task
@@ -57,10 +53,10 @@ All task management operations are now implemented in the Harvest API client.
 
 ```csharp
 // List all tasks
-var tasks = await harvestClient.Tasks.ListAllAsync();
+var tasks = await harvestClient.Tasks.ListAllAsync(null, cancellationToken);
 
 // Get a specific task
-var task = await harvestClient.Tasks.GetAsync(12345);
+var task = await harvestClient.Tasks.GetAsync(12345, cancellationToken);
 ```
 
 ## Data Models

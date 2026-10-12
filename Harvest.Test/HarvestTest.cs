@@ -59,5 +59,58 @@ public class HarvestTest : IDisposable
 		return configuration;
 	}
 
+	/// <summary>
+	/// Creates a uniquely named, prefixed client for a CRUD test; the caller deletes it.
+	/// </summary>
+	protected async Task<Client> CreateTestClientAsync(string purpose)
+	{
+		var client = await HarvestClient.Clients.CreateAsync(new ClientCreationDto
+		{
+			Name = $"{Configuration.TestSettings.TestDataPrefix}{purpose} Test Client {DateTime.UtcNow:yyyyMMddHHmmss}",
+			IsActive = true,
+			Currency = "USD"
+		}, CancellationToken);
+		Logger.LogInformation("Created test client: {ClientId} - {ClientName}", client.Id, client.Name);
+		return client;
+	}
+
+	/// <summary>
+	/// Creates a uniquely named, prefixed project under a client for a CRUD test; the caller deletes it.
+	/// </summary>
+	protected async Task<Project> CreateTestProjectAsync(long clientId, string purpose)
+	{
+		var project = await HarvestClient.Projects.CreateAsync(new ProjectCreationDto
+		{
+			Name = $"{Configuration.TestSettings.TestDataPrefix}{purpose} Test Project {DateTime.UtcNow:yyyyMMddHHmmss}",
+			ClientId = clientId,
+			BillBy = "Project",
+			BudgetBy = "project",
+			IsBillable = true
+		}, CancellationToken);
+		Logger.LogInformation("Created test project: {ProjectId} - {ProjectName}", project.Id, project.Name);
+		return project;
+	}
+
+	/// <summary>
+	/// Deletes a test object if it was created and not already deleted, ignoring API errors.
+	/// </summary>
+	protected async System.Threading.Tasks.Task TryCleanUpAsync(long? id, Func<long, System.Threading.Tasks.Task> deleteAsync, string description)
+	{
+		if (!id.HasValue)
+		{
+			return;
+		}
+
+		try
+		{
+			await deleteAsync(id.Value);
+			Logger.LogInformation("Cleaned up test {Description}: {Id}", description, id.Value);
+		}
+		catch (Refit.ApiException)
+		{
+			// Already deleted or doesn't exist
+		}
+	}
+
 	public void Dispose() => TestDataManager?.Dispose();
 }
