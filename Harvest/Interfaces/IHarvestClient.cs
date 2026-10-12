@@ -6,11 +6,17 @@ namespace Harvest.Interfaces;
 /// </summary>
 public interface IHarvestClient : IDisposable
 {
+	/// <summary>The billable rates of users.</summary>
+	IBillableRateApi BillableRates { get; }
+
 	/// <summary>Clients.</summary>
 	IClientApi Clients { get; }
 
 	/// <summary>The company of the authenticated user.</summary>
 	ICompanyApi Companies { get; }
+
+	/// <summary>The cost rates of users.</summary>
+	ICostRateApi CostRates { get; }
 
 	/// <summary>Projects.</summary>
 	IProjectApi Projects { get; }
@@ -23,6 +29,9 @@ public interface IHarvestClient : IDisposable
 
 	/// <summary>Tasks.</summary>
 	ITaskApi Tasks { get; }
+
+	/// <summary>The teammates assigned to managers.</summary>
+	ITeammateApi Teammates { get; }
 
 	/// <summary>Time entries.</summary>
 	ITimeEntryApi TimeEntries { get; }

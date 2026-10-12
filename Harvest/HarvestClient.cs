@@ -52,12 +52,15 @@ public sealed class HarvestClient : IHarvestClient
 		ArgumentNullException.ThrowIfNull(innerHandler);
 		Validated(options);
 		_httpClient = CreateHttpClient(options, new RetryHandler(options) { InnerHandler = innerHandler });
+		BillableRates = For<IBillableRateApi>();
 		Clients = For<IClientApi>();
 		Companies = For<ICompanyApi>();
+		CostRates = For<ICostRateApi>();
 		Projects = For<IProjectApi>();
 		ProjectTaskAssignments = For<IProjectTaskAssignmentApi>();
 		Roles = For<IRoleApi>();
 		Tasks = For<ITaskApi>();
+		Teammates = For<ITeammateApi>();
 		TimeEntries = For<ITimeEntryApi>();
 		Users = For<IUserApi>();
 		UserProjectAssignments = For<IUserProjectAssignmentApi>();
@@ -92,10 +95,16 @@ public sealed class HarvestClient : IHarvestClient
 	};
 
 	/// <inheritdoc />
+	public IBillableRateApi BillableRates { get; }
+
+	/// <inheritdoc />
 	public IClientApi Clients { get; }
 
 	/// <inheritdoc />
 	public ICompanyApi Companies { get; }
+
+	/// <inheritdoc />
+	public ICostRateApi CostRates { get; }
 
 	/// <inheritdoc />
 	public IProjectApi Projects { get; }
@@ -108,6 +117,9 @@ public sealed class HarvestClient : IHarvestClient
 
 	/// <inheritdoc />
 	public ITaskApi Tasks { get; }
+
+	/// <inheritdoc />
+	public ITeammateApi Teammates { get; }
 
 	/// <inheritdoc />
 	public ITimeEntryApi TimeEntries { get; }
