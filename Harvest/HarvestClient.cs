@@ -55,6 +55,7 @@ public sealed class HarvestClient : IHarvestClient
 		Clients = For<IClientApi>();
 		Companies = For<ICompanyApi>();
 		EstimateItemCategories = For<IEstimateItemCategoryApi>();
+		EstimateMessages = For<IEstimateMessageApi>();
 		Estimates = For<IEstimateApi>();
 		Projects = For<IProjectApi>();
 		ProjectTaskAssignments = For<IProjectTaskAssignmentApi>();
@@ -100,6 +101,9 @@ public sealed class HarvestClient : IHarvestClient
 
 	/// <inheritdoc />
 	public IEstimateItemCategoryApi EstimateItemCategories { get; }
+
+	/// <inheritdoc />
+	public IEstimateMessageApi EstimateMessages { get; }
 
 	/// <inheritdoc />
 	public IEstimateApi Estimates { get; }
