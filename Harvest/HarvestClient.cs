@@ -61,6 +61,7 @@ public sealed class HarvestClient : IHarvestClient
 		Users = For<IUserApi>();
 		UserProjectAssignments = For<IUserProjectAssignmentApi>();
 		PtoWorkSchedules = For<IPtoWorkScheduleApi>();
+		PtoTypes = For<IPtoTypeApi>();
 	}
 
 	/// <summary>
@@ -117,6 +118,9 @@ public sealed class HarvestClient : IHarvestClient
 
 	/// <inheritdoc />
 	public IPtoWorkScheduleApi PtoWorkSchedules { get; }
+
+	/// <inheritdoc />
+	public IPtoTypeApi PtoTypes { get; }
 
 	/// <inheritdoc />
 	public void Dispose() => _httpClient.Dispose();

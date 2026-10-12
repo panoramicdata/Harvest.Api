@@ -32,4 +32,7 @@ public interface IHarvestClient : IDisposable
 
 	/// <summary>PTO work schedules (403 for accounts without the gradually rolled-out PTO API).</summary>
 	IPtoWorkScheduleApi PtoWorkSchedules { get; }
+
+	/// <summary>PTO time off policies (PTO types; 403 for accounts without the gradually rolled-out PTO API).</summary>
+	IPtoTypeApi PtoTypes { get; }
 }
