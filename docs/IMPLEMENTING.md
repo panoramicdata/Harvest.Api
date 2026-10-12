@@ -86,6 +86,11 @@ Always confirm field lists, parameters and required flags against the resource's
 
 - `<Resource>CreationDto : CreationDto` for POST and `<Resource>PatchDto : PatchDto` for PATCH, in
   `Harvest/Models/<Resource>Dtos.cs` (or one file each when large).
+- Never repeat a run of fields. When the creation and patch bodies share optional fields, put them in an abstract
+  `<Resource>DtoBase` that both derive from instead (`ProjectDtoBase`, `UserDtoBase`); when a response model shares them
+  too, name the base for what the fields are (`ContactDetails`, `PtoAccrualSettings`, `PtoScheduleHours`). Estimates and
+  invoices share `BillingDocument<TLineItem>`, `BillingDocumentDto<TLineItem>`, `LineItem` and the line item DTO bases.
+  System.Text.Json writes a derived class's own properties before its base's, which the body tests pin.
 - The body of another action is `<Resource><Action>Dto` and derives from neither base (`PtoRequestDeclineDto` for
   `PtoRequests.DeclineAsync`).
 - Creation DTO: documented-required fields are C# `required` (non-nullable); every optional field is nullable so it is

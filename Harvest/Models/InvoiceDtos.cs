@@ -1,17 +1,11 @@
 using Harvest.Dtos;
-using System.Text.Json.Serialization;
 
 namespace Harvest.Models;
 
-/// <summary>
-/// The body of <c>POST /v2/invoices</c>. Harvest documents two variants: a free-form invoice, given its
-/// <see cref="LineItems"/>, and an invoice based on tracked time and expenses, given a <see cref="LineItemsImport"/>.
-/// </summary>
-public class InvoiceCreationDto : CreationDto
+/// <summary>The optional fields the bodies that create and update an invoice share, beyond those of any document.</summary>
+/// <typeparam name="TLineItem">The body's line item type.</typeparam>
+public abstract class InvoiceDtoBase<TLineItem> : BillingDocumentDto<TLineItem> where TLineItem : class
 {
-	/// <summary>The ID of the client this invoice belongs to.</summary>
-	public required long ClientId { get; set; }
-
 	/// <summary>
 	/// The ID of the retainer you want to add funds to with this invoice (free-form invoices only). Retainers cannot otherwise
 	/// be used through the API: adding funds is the only available action.
@@ -20,33 +14,6 @@ public class InvoiceCreationDto : CreationDto
 
 	/// <summary>The ID of the estimate associated with this invoice.</summary>
 	public long? EstimateId { get; set; }
-
-	/// <summary>The invoice number; Harvest generates one if none is set.</summary>
-	public string? Number { get; set; }
-
-	/// <summary>The purchase order number.</summary>
-	public string? PurchaseOrder { get; set; }
-
-	/// <summary>This percentage is applied to the subtotal, including line items and discounts. Use 10.0 for 10.0%.</summary>
-	public decimal? Tax { get; set; }
-
-	/// <summary>This percentage is applied to the subtotal, including line items and discounts. Use 10.0 for 10.0%.</summary>
-	public decimal? Tax2 { get; set; }
-
-	/// <summary>This percentage is subtracted from the subtotal. Use 10.0 for 10.0%.</summary>
-	public decimal? Discount { get; set; }
-
-	/// <summary>The invoice subject.</summary>
-	public string? Subject { get; set; }
-
-	/// <summary>Any additional notes to include on the invoice.</summary>
-	public string? Notes { get; set; }
-
-	/// <summary>The currency used by the invoice; Harvest's default is the client's currency.</summary>
-	public string? Currency { get; set; }
-
-	/// <summary>Date the invoice was issued; Harvest's default is today.</summary>
-	public DateOnly? IssueDate { get; set; }
 
 	/// <summary>
 	/// Date the invoice is due; Harvest's default is the issue date if no <see cref="PaymentTerm"/> is specified. Harvest only
@@ -66,37 +33,26 @@ public class InvoiceCreationDto : CreationDto
 	/// configured for them under Settings &gt; Integrations &gt; Online payment.
 	/// </summary>
 	public List<string>? PaymentOptions { get; set; }
+}
 
-	/// <summary>The line items of a free-form invoice.</summary>
-	public List<InvoiceLineItemCreationDto>? LineItems { get; set; }
+/// <summary>
+/// The body of <c>POST /v2/invoices</c>. Harvest documents two variants: a free-form invoice, given its line items, and an
+/// invoice based on tracked time and expenses, given a <see cref="LineItemsImport"/>.
+/// </summary>
+public class InvoiceCreationDto : InvoiceDtoBase<InvoiceLineItemCreationDto>
+{
+	/// <summary>The ID of the client this invoice belongs to.</summary>
+	public required long ClientId { get; set; }
 
 	/// <summary>The time and expenses to import as line items, for an invoice based on tracked time and expenses.</summary>
 	public InvoiceLineItemsImportCreationDto? LineItemsImport { get; set; }
 }
 
-/// <summary>A line item of a free-form invoice, in <see cref="InvoiceCreationDto.LineItems"/>.</summary>
-public class InvoiceLineItemCreationDto : CreationDto
+/// <summary>A line item of a free-form invoice, in <see cref="InvoiceCreationDto"/>'s line items.</summary>
+public class InvoiceLineItemCreationDto : LineItemCreationDto
 {
 	/// <summary>The ID of the project associated with this line item.</summary>
 	public long? ProjectId { get; set; }
-
-	/// <summary>The name of an invoice item category.</summary>
-	public required string Kind { get; set; }
-
-	/// <summary>Text description of the line item.</summary>
-	public string? Description { get; set; }
-
-	/// <summary>The unit quantity of the item; Harvest's default is 1.</summary>
-	public decimal? Quantity { get; set; }
-
-	/// <summary>The individual price per unit.</summary>
-	public required decimal UnitPrice { get; set; }
-
-	/// <summary>Whether the invoice's tax percentage applies to this line item; Harvest's default is <see langword="false"/>.</summary>
-	public bool? Taxed { get; set; }
-
-	/// <summary>Whether the invoice's tax2 percentage applies to this line item; Harvest's default is <see langword="false"/>.</summary>
-	public bool? Taxed2 { get; set; }
 }
 
 /// <summary>The <c>line_items_import</c> object of <see cref="InvoiceCreationDto"/>: what tracked time and expenses to invoice.</summary>
@@ -162,89 +118,19 @@ public class InvoiceExpenseImportCreationDto : CreationDto
 }
 
 /// <summary>
-/// The body of <c>PATCH /v2/invoices/{id}</c>. <see cref="LineItems"/> adds, updates and deletes line items: an entry
-/// without an <see cref="InvoiceLineItemPatchDto.Id"/> is added, one with an ID updates that line item, and one with an ID
-/// and <see cref="InvoiceLineItemPatchDto.Destroy"/> set deletes it. Line items not listed are unchanged.
+/// The body of <c>PATCH /v2/invoices/{id}</c>. Its line items add, update and delete line items: an entry without an
+/// <see cref="LineItemPatchDto.Id"/> is added, one with an ID updates that line item, and one with an ID and
+/// <see cref="LineItemPatchDto.Destroy"/> set deletes it. Line items not listed are unchanged.
 /// </summary>
-public class InvoicePatchDto : PatchDto
+public class InvoicePatchDto : InvoiceDtoBase<InvoiceLineItemPatchDto>
 {
 	/// <summary>The ID of the client this invoice belongs to.</summary>
 	public long? ClientId { get; set; }
-
-	/// <summary>The ID of the retainer associated with this invoice.</summary>
-	public long? RetainerId { get; set; }
-
-	/// <summary>The ID of the estimate associated with this invoice.</summary>
-	public long? EstimateId { get; set; }
-
-	/// <summary>The invoice number.</summary>
-	public string? Number { get; set; }
-
-	/// <summary>The purchase order number.</summary>
-	public string? PurchaseOrder { get; set; }
-
-	/// <summary>This percentage is applied to the subtotal, including line items and discounts. Use 10.0 for 10.0%.</summary>
-	public decimal? Tax { get; set; }
-
-	/// <summary>This percentage is applied to the subtotal, including line items and discounts. Use 10.0 for 10.0%.</summary>
-	public decimal? Tax2 { get; set; }
-
-	/// <summary>This percentage is subtracted from the subtotal. Use 10.0 for 10.0%.</summary>
-	public decimal? Discount { get; set; }
-
-	/// <summary>The invoice subject.</summary>
-	public string? Subject { get; set; }
-
-	/// <summary>Any additional notes to include on the invoice.</summary>
-	public string? Notes { get; set; }
-
-	/// <summary>The currency used by the invoice.</summary>
-	public string? Currency { get; set; }
-
-	/// <summary>Date the invoice was issued.</summary>
-	public DateOnly? IssueDate { get; set; }
-
-	/// <summary>Date the invoice is due.</summary>
-	public DateOnly? DueDate { get; set; }
-
-	/// <summary>The timeframe in which the invoice should be paid: one of the <see cref="InvoicePaymentTerm"/> values.</summary>
-	public string? PaymentTerm { get; set; }
-
-	/// <summary>The payment options available to pay the invoice: <see cref="InvoicePaymentOption"/> values.</summary>
-	public List<string>? PaymentOptions { get; set; }
-
-	/// <summary>The line items to add, update or delete.</summary>
-	public List<InvoiceLineItemPatchDto>? LineItems { get; set; }
 }
 
-/// <summary>A line item to add, update or delete, in <see cref="InvoicePatchDto.LineItems"/>.</summary>
-public class InvoiceLineItemPatchDto : PatchDto
+/// <summary>A line item to add, update or delete, in <see cref="InvoicePatchDto"/>'s line items.</summary>
+public class InvoiceLineItemPatchDto : LineItemPatchDto
 {
-	/// <summary>The ID of the line item to update or delete; <see langword="null"/> to add a new line item.</summary>
-	public long? Id { get; set; }
-
 	/// <summary>The ID of the project associated with this line item.</summary>
 	public long? ProjectId { get; set; }
-
-	/// <summary>The name of an invoice item category. Required by Harvest when adding a line item.</summary>
-	public string? Kind { get; set; }
-
-	/// <summary>Text description of the line item.</summary>
-	public string? Description { get; set; }
-
-	/// <summary>The unit quantity of the item; Harvest's default for a new line item is 1.</summary>
-	public decimal? Quantity { get; set; }
-
-	/// <summary>The individual price per unit. Required by Harvest when adding a line item.</summary>
-	public decimal? UnitPrice { get; set; }
-
-	/// <summary>Whether the invoice's tax percentage applies to this line item.</summary>
-	public bool? Taxed { get; set; }
-
-	/// <summary>Whether the invoice's tax2 percentage applies to this line item.</summary>
-	public bool? Taxed2 { get; set; }
-
-	/// <summary>Set to <see langword="true"/>, with <see cref="Id"/>, to delete the line item (<c>_destroy</c>).</summary>
-	[JsonPropertyName("_destroy")]
-	public bool? Destroy { get; set; }
 }

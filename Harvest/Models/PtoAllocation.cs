@@ -7,7 +7,7 @@ namespace Harvest.Models;
 /// when not customized) and the effective values
 /// (<see href="https://help.getharvest.com/api-v2/pto-api/pto/assignments-and-allocations/"/>).
 /// </summary>
-public class PtoAllocation
+public class PtoAllocation : PtoAccrualSettings
 {
 	/// <summary>Unique ID for the allocation record.</summary>
 	public long Id { get; set; }
@@ -20,24 +20,6 @@ public class PtoAllocation
 
 	/// <summary>The time off policy: its id, name, color and icon.</summary>
 	public PtoTypeReference? PtoType { get; set; }
-
-	/// <summary>Accrual type override if customized, otherwise <see langword="null"/> (see <see cref="PtoAccrualType"/>).</summary>
-	public string? AccrualType { get; set; }
-
-	/// <summary>Accrual schedule override if customized, otherwise <see langword="null"/> (see <see cref="PtoAccrualSchedule"/>).</summary>
-	public string? AccrualSchedule { get; set; }
-
-	/// <summary>First payday override for accruals if customized.</summary>
-	public DateOnly? AccrualFirstPayday { get; set; }
-
-	/// <summary>Leave hours per accrual period if customized.</summary>
-	public decimal? AccrualLeaveHours { get; set; }
-
-	/// <summary>Worked hours base if customized.</summary>
-	public decimal? AccrualWorkedHours { get; set; }
-
-	/// <summary>Maximum accrued hours cap per year if customized.</summary>
-	public decimal? AccrualMaxHoursPerYear { get; set; }
 
 	/// <summary>Annual allowance override in days if customized.</summary>
 	public decimal? DaysPerYear { get; set; }

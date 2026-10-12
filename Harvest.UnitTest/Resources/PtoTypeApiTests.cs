@@ -112,7 +112,7 @@ public class PtoTypeApiTests
 		}, ct), PtoTypeJson);
 
 		call.ShouldBe(HttpMethod.Post, "/v2/pto/types", body: """
-			{"name":"Sick","color":"orange","icon":"calendar","accrual_type":"accrued","accrual_schedule":"hourly","accrual_first_payday":"2026-01-09","accrual_leave_hours":1,"accrual_worked_hours":30,"accrual_max_hours_per_year":48,"default_days_per_year":2.5,"max_carryover_days":0,"requires_approval":false,"visible_to_all":true}
+			{"name":"Sick","color":"orange","icon":"calendar","default_days_per_year":2.5,"max_carryover_days":0,"requires_approval":false,"visible_to_all":true,"accrual_type":"accrued","accrual_schedule":"hourly","accrual_first_payday":"2026-01-09","accrual_leave_hours":1,"accrual_worked_hours":30,"accrual_max_hours_per_year":48}
 			""");
 	}
 
@@ -138,7 +138,7 @@ public class PtoTypeApiTests
 		}, ct), PtoTypeJson);
 
 		call.ShouldBe(HttpMethod.Patch, "/v2/pto/types/101", body: """
-			{"name":"Vacation","color":"blue","icon":"vacation","accrual_type":"unlimited","accrual_schedule":"semimonthly","accrual_first_payday":"2026-02-06","accrual_leave_hours":2,"accrual_worked_hours":40,"accrual_max_hours_per_year":80,"default_days_per_year":28,"max_carryover_days":5,"requires_approval":true,"visible_to_all":false,"deactivated":false}
+			{"name":"Vacation","deactivated":false,"color":"blue","icon":"vacation","default_days_per_year":28,"max_carryover_days":5,"requires_approval":true,"visible_to_all":false,"accrual_type":"unlimited","accrual_schedule":"semimonthly","accrual_first_payday":"2026-02-06","accrual_leave_hours":2,"accrual_worked_hours":40,"accrual_max_hours_per_year":80}
 			""");
 	}
 
