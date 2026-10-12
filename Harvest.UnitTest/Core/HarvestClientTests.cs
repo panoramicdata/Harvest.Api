@@ -129,6 +129,9 @@ public class HarvestClientTests
 		client.Contacts.Should().NotBeNull();
 		client.ExpenseCategories.Should().NotBeNull();
 		client.Expenses.Should().NotBeNull();
+		client.EstimateItemCategories.Should().NotBeNull();
+		client.EstimateMessages.Should().NotBeNull();
+		client.Estimates.Should().NotBeNull();
 		client.Projects.Should().NotBeNull();
 		client.ProjectTaskAssignments.Should().NotBeNull();
 		client.Reports.Should().NotBeNull();

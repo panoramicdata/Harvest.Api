@@ -139,6 +139,9 @@ The `HarvestClient` (and `IHarvestClient`) provides access to the following API 
 | `Contacts` | Manage client contacts |
 | `ExpenseCategories` | Manage expense categories |
 | `Expenses` | Manage expenses and their receipts |
+| `EstimateItemCategories` | Manage estimate item categories |
+| `EstimateMessages` | Send estimate messages and mark estimates sent, accepted, declined or re-opened |
+| `Estimates` | Manage estimates and their line items |
 | `Projects` | Manage projects |
 | `ProjectTaskAssignments` | Manage task assignments for projects |
 | `Reports` | Time, expense, uninvoiced and project budget reports (100 requests per 15 minutes) |

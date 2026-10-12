@@ -21,6 +21,15 @@ public interface IHarvestClient : IDisposable
 	/// <summary>Expenses, with their receipts.</summary>
 	IExpenseApi Expenses { get; }
 
+	/// <summary>Estimate item categories.</summary>
+	IEstimateItemCategoryApi EstimateItemCategories { get; }
+
+	/// <summary>The messages of estimates, which also mark estimates sent, accepted, declined or re-opened.</summary>
+	IEstimateMessageApi EstimateMessages { get; }
+
+	/// <summary>Estimates.</summary>
+	IEstimateApi Estimates { get; }
+
 	/// <summary>Projects.</summary>
 	IProjectApi Projects { get; }
 
