@@ -4,7 +4,7 @@
 interfaces, 149 public methods); see [README.md](README.md#coverage) for the coverage summary and what remains to be
 verified against the live API.
 
-## How coverage was reached (3.0)
+## How coverage was reached (2.5)
 
 1. **Core hardening**: a required `CancellationToken` on every method, `ListAsync` methods taking `ListOptions`,
    `HarvestApiException`, retries of throttled and transient failures, a configurable `User-Agent`, and a unit test
@@ -20,7 +20,7 @@ verified against the live API.
 
 ## Remaining work
 
-- **Live verification**: exercise the resources added in 3.0 against a real (non-production) Harvest account and correct
+- **Live verification**: exercise the resources added in 2.5 against a real (non-production) Harvest account and correct
   any field that Harvest sends differently from its documentation.
 - **Harvest changes**: when Harvest documents a new endpoint or field, add it following
   [docs/IMPLEMENTING.md](../docs/IMPLEMENTING.md).

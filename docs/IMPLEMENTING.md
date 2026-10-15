@@ -24,7 +24,7 @@ Always confirm field lists, parameters and required flags against the resource's
   | Delete | `DeleteAsync` | `System.Threading.Tasks.Task DeleteAsync(long id, CancellationToken cancellationToken)` |
   | Other actions | verb + `Async` | e.g. `RestartAsync`, `StopAsync`, `ApproveAsync` |
 
-  Decision (3.0): list methods are `ListAsync`, not `ListAllAsync` - they return one page, and the old name implied
+  Decision (2.5): list methods are `ListAsync`, not `ListAllAsync` - they return one page, and the old name implied
   otherwise. `ListAllAsync` and `TimeEntries.PatchAsync` were renamed in this release; do not reintroduce them. A list
   scoped to the current user is `ListMineAsync`.
 - Parent IDs come first, named for what they are: `ListAsync(long projectId, ...)`, `GetAsync(long projectId, long id, ...)`.

@@ -33,7 +33,7 @@ Task<UserProjectAssignmentsContainer> ListMineAsync([Query] ListOptions? options
 | GET | `/v2/users/{userId}/project_assignments` | ✅ Implemented |
 | GET | `/v2/users/me/project_assignments` | ✅ Implemented |
 
-Version 3.0 removed `GetAsync`, `CreateAsync`, `UpdateAsync` and `DeleteAsync` (and their DTOs): Harvest does not
+Version 2.5 removed `GetAsync`, `CreateAsync`, `UpdateAsync` and `DeleteAsync` (and their DTOs): Harvest does not
 document those endpoints.
 
 ## Usage Examples

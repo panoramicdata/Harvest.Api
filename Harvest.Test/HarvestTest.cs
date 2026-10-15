@@ -72,6 +72,21 @@ public abstract class HarvestTest : IAsyncLifetime
 		}
 	}
 
+	/// <summary>
+	/// Runs a scenario that creates test data, unless test data creation is disabled. Unlike <see cref="RunCrudScenarioAsync"/>
+	/// it does not swallow 403 or 422, so a rejected request (which may be a library bug) fails the test.
+	/// </summary>
+	protected async Task RunStrictScenarioAsync(Func<Task> scenario)
+	{
+		if (!Configuration.TestSettings.CreateTestData)
+		{
+			Log.TestDataCreationDisabled(Logger);
+			return;
+		}
+
+		await scenario();
+	}
+
 	/// <summary>The first item of a list, or <see langword="null"/> (logged) when the account has none to test with.</summary>
 	protected T? FirstOrLog<T>(IReadOnlyList<T> items, string description) where T : class
 	{
