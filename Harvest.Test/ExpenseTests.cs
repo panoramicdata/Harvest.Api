@@ -1,3 +1,5 @@
+using Refit;
+
 namespace Harvest.Test;
 
 public class ExpenseTests(ITestOutputHelper testOutputHelper) : HarvestTest(testOutputHelper)
