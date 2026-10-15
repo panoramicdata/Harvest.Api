@@ -45,6 +45,8 @@ public class ProjectUserAssignmentTests(ITestOutputHelper testOutputHelper) : Ha
 				HourlyRate = 70m,
 				Budget = 10m
 			}, CancellationToken);
+			updated.Id.Should().Be(created.Id);
+			updated.IsProjectManager.Should().BeTrue();
 
 			await DeleteTrackedAsync("user assignment", created.Id);
 		});
