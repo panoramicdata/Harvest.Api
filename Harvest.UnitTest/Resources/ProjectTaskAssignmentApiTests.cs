@@ -82,7 +82,7 @@ public class ProjectTaskAssignmentApiTests
 	[Fact]
 	public async Task ListAsync_ReadsTheTaskAssignmentsKey()
 	{
-		// Harvest names the array "task_assignments"; before 3.0 the property snake-cased to "project_task_assignments"
+		// Harvest names the array "task_assignments"; before 2.5 the property snake-cased to "project_task_assignments"
 		// and the list was always empty.
 		var page = await TestClient.ReadAsync(
 			(c, ct) => c.ProjectTaskAssignments.ListAsync(14308069, null, ct),

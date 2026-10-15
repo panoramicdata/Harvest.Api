@@ -110,9 +110,9 @@ Harvest's own error text (`StatusCode`, `Content` and the response headers are a
 (HTTP 429, honouring `Retry-After`) and transient server errors are retried first, up to
 `HarvestClientOptions.MaxRetries` times (3 by default; set 0 to disable).
 
-### Upgrading from 2.x
+### Upgrading from 2.4 and earlier
 
-Version 3.0 makes breaking changes:
+The major version of this package follows Harvest's API version (v2), so breaking changes ship in minor releases. Version 2.5 makes breaking changes:
 - Every method takes a required `CancellationToken` as its last parameter.
 - List methods are named `ListAsync` (`ListMineAsync` for the current user's project assignments) and take a
   `ListOptions` object (`TimeEntryListOptions`, `ProjectListOptions`) in place of the optional `updatedSince`, `page`,
@@ -125,9 +125,9 @@ Version 3.0 makes breaking changes:
 - Errors raise `HarvestApiException` (still a Refit `ApiException`).
 
 ```csharp
-// 2.x
+// 2.4 and earlier
 await harvestClient.Clients.ListAllAsync(page: 2, perPage: 50);
-// 3.x
+// 2.5 and later
 await harvestClient.Clients.ListAsync(new ListOptions { Page = 2, PerPage = 50 }, cancellationToken);
 ```
 
