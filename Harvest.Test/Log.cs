@@ -31,4 +31,13 @@ internal static partial class Log
 
 	[LoggerMessage(Level = LogLevel.Warning, Message = "Time entry created but response deserialization failed: {Message}")]
 	public static partial void TimeEntryResponseUnreadable(ILogger logger, string message);
+
+	[LoggerMessage(Level = LogLevel.Information, Message = "{Available} of 7 PTO endpoints are available")]
+	public static partial void PtoSummary(ILogger logger, int available);
+
+	[LoggerMessage(Level = LogLevel.Information, Message = "PTO {Name}: available")]
+	public static partial void PtoAvailable(ILogger logger, string name);
+
+	[LoggerMessage(Level = LogLevel.Information, Message = "PTO {Name}: unavailable ({Message})")]
+	public static partial void PtoUnavailable(ILogger logger, string name, string message);
 }
