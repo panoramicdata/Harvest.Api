@@ -5,7 +5,7 @@ namespace Harvest;
 
 /// <summary>
 /// Settings for a <see cref="HarvestClient"/>. The client copies what it needs at construction: changing an options
-/// object afterwards does not affect a client that already exists.
+/// object afterwards does not affect a client that already exists, except for <see cref="IsReadOnly"/>.
 /// </summary>
 public class HarvestClientOptions
 {
@@ -57,6 +57,12 @@ public class HarvestClientOptions
 	/// The overall time allowed for one call, including any retries and the waits between them. Defaults to five minutes.
 	/// </summary>
 	public TimeSpan Timeout { get; init; } = TimeSpan.FromMinutes(5);
+
+	/// <summary>
+	/// When true, the client refuses every request other than GET, HEAD and OPTIONS, before it is sent. Read on each request,
+	/// so unlike the other settings it can be changed after the client is built. Defaults to false.
+	/// </summary>
+	public bool IsReadOnly { get; set; }
 
 	/// <summary>The logger that retries are reported to. Defaults to <see cref="NullLogger.Instance"/>.</summary>
 	public ILogger Logger { get; init; } = NullLogger.Instance;
