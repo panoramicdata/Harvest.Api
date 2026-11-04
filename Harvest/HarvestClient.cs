@@ -58,7 +58,7 @@ public sealed class HarvestClient : IHarvestClient
 	{
 		ArgumentNullException.ThrowIfNull(innerHandler);
 		_ = Validated(options);
-		var pipeline = new RetryHandler(options) { InnerHandler = innerHandler };
+		var pipeline = new ReadOnlyHandler(options) { InnerHandler = new RetryHandler(options) { InnerHandler = innerHandler } };
 		_httpClient = CreateHttpClient(options, pipeline, forAccount: true);
 		_idHttpClient = CreateHttpClient(options, pipeline, forAccount: false);
 		Accounts = RestService.For<IAccountApi>(_idHttpClient, Settings);
