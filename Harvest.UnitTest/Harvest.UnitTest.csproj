@@ -1,45 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<OutputType>Exe</OutputType>
-		<UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
-		<IsPackable>false</IsPackable>
-		<IsTestProject>true</IsTestProject>
-		<!-- IDE0005 (unnecessary usings) only runs on build when a documentation file is generated; tests carry no XML docs (CS1591). -->
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<!-- CA1707: test names use underscores. CA2007: xUnit tests must not use ConfigureAwait(false) (xUnit1030). -->
-		<NoWarn>$(NoWarn);CS1591;CA1707;CA2007</NoWarn>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="AwesomeAssertions" />
-		<PackageReference Include="AwesomeAssertions.Analyzers">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" />
-		<PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" PrivateAssets="all" />
-		<PackageReference Include="xunit.v3" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Harvest\Harvest.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Using Include="AwesomeAssertions" />
-		<Using Include="Xunit" />
-		<Using Include="Harvest.Models" />
-		<!-- Harvest.Models.Task would otherwise make Task ambiguous; refer to the model as Models.Task. -->
-		<Using Include="System.Threading.Tasks.Task" Alias="Task" />
-		<Using Include="System.Net" />
-	</ItemGroup>
-
+  <PropertyGroup>
+    <TargetFramework>net11.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Exe</OutputType>
+    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <!-- IDE0005 (unnecessary usings) only runs on build when a documentation file is generated; tests carry no XML docs (CS1591). -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- CA1707: test names use underscores. CA2007: xUnit tests must not use ConfigureAwait(false) (xUnit1030). -->
+    <NoWarn>$(NoWarn);CS1591;CA1707;CA2007</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="AwesomeAssertions.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" PrivateAssets="all" />
+    <PackageReference Include="xunit.v3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Harvest\Harvest.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="AwesomeAssertions" />
+    <Using Include="Xunit" />
+    <Using Include="Harvest.Models" />
+    <!-- Harvest.Models.Task would otherwise make Task ambiguous; refer to the model as Models.Task. -->
+    <Using Include="System.Threading.Tasks.Task" Alias="Task" />
+    <Using Include="System.Net" />
+  </ItemGroup>
 </Project>
