@@ -1,5 +1,3 @@
-using System.Reflection;
-
 namespace Harvest.Serialization;
 
 /// <summary>
@@ -15,7 +13,7 @@ internal sealed class HarvestUrlParameterFormatter : DefaultUrlParameterFormatte
 	internal const string DateFormat = "yyyy-MM-dd";
 
 	/// <inheritdoc />
-	public override string? Format(object? parameterValue, ICustomAttributeProvider attributeProvider, Type type)
+	public override string? Format(object? parameterValue, IParameterAttributeProvider attributeProvider, Type type)
 		=> parameterValue switch
 		{
 			bool value => value ? "true" : "false",

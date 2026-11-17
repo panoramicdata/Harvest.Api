@@ -60,7 +60,7 @@ public class SerializationTests
 	public void UrlParameterFormatter_FormatsHarvestValues()
 	{
 		var formatter = new HarvestUrlParameterFormatter();
-		var provider = typeof(SerializationTests);
+		var provider = Refit.GeneratedParameterAttributeProvider.Empty;
 
 		formatter.Format(true, provider, typeof(bool)).Should().Be("true");
 		formatter.Format(false, provider, typeof(bool)).Should().Be("false");
